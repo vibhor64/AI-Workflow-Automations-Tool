@@ -33,12 +33,20 @@ export const NewNode = ({ id, data }) => {
         desc: desc,
         img: img,
         category: category,
+        sources: sources,
+        targets: targets,
     } = data;
 
-    const [currName, setCurrName] = useState(data.name || '');
+    const [currName, setCurrName] = useState('');
+    const [currName2, setCurrName2] = useState('');
     const [inputType, setInputType] = useState(id || 'Text');
     const [LH, setLH] = useState(leftHandles);
     const [isFocused, setIsFocused] = useState(false);
+    const [isFocused2, setIsFocused2] = useState(false);
+    const [hover, setHover] = useState(false);
+    const [hover2, setHover2] = useState(false);
+
+    const [initSources, setInitSources] = useState(sources);
 
     const {
         nodes,
@@ -55,10 +63,18 @@ export const NewNode = ({ id, data }) => {
         setCurrName(e.target.value);
         autoResize(e.target);
 
-        const variableCount = getVariableCount(e.target.value.trim());
-        console.log('LH: ', LH, 'vars: ', variableCount)
+        const matches = getVariableCount(e.target.value.trim());
+        const variableCount = matches.length;
+        // console.log('LH: ', LH, 'vars: ', variableCount)
         updateHandleCount(variableCount + LH);
         updateNodeField(id, 'leftHandles', variableCount + LH)
+        const updatedSources = initSources?.concat(matches); 
+        updateNodeField(id, 'sources', updatedSources)
+    };
+
+    const handleNameChange2 = (e) => {
+        setCurrName2(e.target.value);
+        autoResize(e.target);
     };
 
     const updateNodeInternals = useUpdateNodeInternals();
@@ -78,9 +94,10 @@ export const NewNode = ({ id, data }) => {
     };
 
     const getVariableCount = (name) => {
-        const regex = /\{\{.*?\}\}/g;
-        const matches = name.match(regex);
-        return matches ? matches.length : 0;
+        // const regex = /\{\{.*?\}\}/g;
+        const regex = /\{\{(.*?)\}\}/g;
+        const matches = name.match(regex)?.map(match => match.replace(match, match.slice(2, -2)));
+        return matches ? matches : [];
     };
 
     const textareaRef = useRef(null);
@@ -93,6 +110,10 @@ export const NewNode = ({ id, data }) => {
     return (
         <div style={{ width: 200, minHeight: 60, border: '0px solid #ccc', display: 'flex', flexDirection: 'column', justifyContent: 'center', backgroundColor: bgcolor ? bgcolor : '#3c859e', borderRadius: '8px', boxShadow: ' rgba(255, 255, 255, 0.1) 0px 1px 1px 0px inset, rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px', color: '#fff', fontSize: '11px', fontWeight: '400', padding: '3px 2px' }}>
             <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', backgroundColor: '#ffffff', borderTopLeftRadius: '9px', borderTopRightRadius: '9px', borderBottomLeftRadius: '10px', borderBottomRightRadius: '10px', }}>
+
+                {sources?.map((source, index) => (
+                    <p key={index} style={{ position: 'absolute', left: '-45px', top: `${(index + 1) * (100 / (leftHandles + 1)) - 5}%`, color: '#696969', fontWeight: 400, }}>{source}</p>
+                ))}
 
                 {Array.from({ length: leftHandles }, (_, index) => (
                     <Handle
@@ -110,7 +131,7 @@ export const NewNode = ({ id, data }) => {
                     <span>{name}</span>
                 </div>
 
-                {category === 'LLMs' || category === 'Multi-Modal' ?
+                {category === 'LLMs' || category === 'Multi-Modal' || name === 'Database' ?
                     <>
                         <img src={img} style={{ width: '40px', height: '40px', alignSelf: 'center', marginBottom: '10px' }} />
                     </>
@@ -122,23 +143,67 @@ export const NewNode = ({ id, data }) => {
                 </div> */}
 
                 <div style={{ paddingRight: '10px', paddingLeft: '10px', marginBottom: '10px', display: 'flex', alignItems: 'center', flexDirection: 'column', }}>
+
+                    {category === 'LLMs' || category === 'Multi-Modal' ?
+
+                        <label>
+                            <span style={{ fontWeight: 700, color: '#363636', marginLeft: '2px', fontSize: '9px' }}>System</span>
+                            <textarea
+                                value={currName2}
+                                ref={textareaRef}
+                                onInput={handleInput}
+                                onChange={handleNameChange2}
+                                onMouseEnter={() => setHover2(true)}
+                                onMouseLeave={() => setHover2(false)}
+                                onFocus={() => setIsFocused2(true)}
+                                onBlur={() => setIsFocused2(false)}
+                                rows={1}
+                                placeholder='Enter here'
+                                style={{
+                                    marginTop: '2px',
+                                    fontFamily: 'Inter',
+                                    backgroundColor: hover2 ? '#d9d9d9' : '#ededed',
+                                    border: `2px solid ${isFocused2 ? bgcolor : '#fff'}`,
+                                    borderRadius: '8px',
+                                    lineHeight: '1',
+                                    padding: '5px',
+                                    paddingLeft: '7px',
+                                    paddingRight: '7px',
+                                    minWidth: '150px',
+                                    height: '14px',
+                                    fontSize: '12px',
+                                    outline: 'none',
+                                    overflow: "hidden",
+                                    resize: "none",
+                                    // color: '#a1a1a1',
+                                    color: `${isFocused ? '#000' : '#a1a1a1'}`,
+                                    transition: 'border-color 0.2s ease-in-out',
+                                }}
+                            />
+                        </label>
+                        :
+                        null
+                    }
+
                     {isInput ?
 
                         <label>
-                            <span style={{ fontWeight: 700, color: '#363636', marginLeft: '2px', fontSize: '10px' }}>{data.name === 'Text' ? 'Text:' : data.category === 'LLMs' ? 'System Prompt:' : 'Field Name:'}</span>
+                            <span style={{ fontWeight: 700, color: '#363636', marginLeft: '2px', fontSize: '9px' }}>{data.name === 'Text' ? 'Text:' : category === 'LLMs' || category === 'Multi-Modal' ? 'Prompt:' : 'Field Name:'}</span>
                             <textarea
                                 value={currName}
                                 ref={textareaRef}
                                 onInput={handleInput}
                                 onChange={handleNameChange}
+                                onMouseEnter={() => setHover(true)}
+                                onMouseLeave={() => setHover(false)}
                                 onFocus={() => setIsFocused(true)}
                                 onBlur={() => setIsFocused(false)}
                                 rows={1}
-                                placeholder='Enter text here'
+                                placeholder='Enter here'
                                 style={{
                                     marginTop: '2px',
                                     fontFamily: 'Inter',
-                                    backgroundColor: '#ededed',
+                                    backgroundColor: hover ? '#d9d9d9' : '#ededed',
                                     border: `2px solid ${isFocused ? bgcolor : '#fff'}`,
                                     borderRadius: '8px',
                                     lineHeight: '1',
@@ -192,7 +257,10 @@ export const NewNode = ({ id, data }) => {
                         : null
                     }
                 </div>
-
+                
+                {targets?.map((target, index) => (
+                    <p key={index}  style={{ position: 'absolute', right: name === 'Input' ? '-30px' : category === 'General' ? '-38px' : name === 'Database' ? '-40px' : '-54px', top: `${(index + 1) * (100 / (rightHandles + 1))-2}%`, color: '#696969', fontWeight: 400 }}>{target}</p>
+                ))}
                 {Array.from({ length: rightHandles }, (_, index) => (
                     <Handle
                         key={`${id}-right-handle-${index}`}

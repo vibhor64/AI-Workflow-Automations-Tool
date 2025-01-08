@@ -43,7 +43,7 @@ export const DraggableNode = ({ type, label, configId, img, name }) => {
       onMouseLeave={() => setHover(false)}
     >
       <img src={img} alt={type} style={{ width: '20px', marginTop: '5px', marginBottom: '10px', cursor: name=== 'Coming Soon' ? 'not-allowed' : 'grab', pointerEvents: name=== 'Coming Soon' ? 'none' : 'auto'}} />
-      <span style={{ color: '#ccc', position: 'relative', bottom: '3px'}}>{label}</span>
+      <span style={{ color: name=== 'Coming Soon' ? '#ccc' : '#000', position: 'relative', bottom: '3px'}}>{label}</span>
     </div>
   );
 };

@@ -28,7 +28,7 @@ export const PipelineToolbar = () => {
                         style={{
                             backgroundColor: 'transparent',
                             // color: selectedCategory === category ? '#000' : '#fff',
-                            color: hoveredCategory === category ? '#000' : selectedCategory === category ? '#007BFF' : '#ccc',
+                            color: hoveredCategory === category ? '#000' : selectedCategory === category ? '#1437c4' : '#fff',
                             border: 'none',
                             borderRadius: '5px',
                             cursor: 'pointer',

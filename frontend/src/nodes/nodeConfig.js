@@ -32,6 +32,8 @@ const newNodesConfig = [
       leftHandles: 0,
       img: Input,
       category: 'General',
+      targets: ['Input'],
+      sources: [],
     },
   },
   {
@@ -41,11 +43,12 @@ const newNodesConfig = [
       name: 'Output',
       isInput: true,
       isType: true,
-      bgcolor: '#5b96f5',
+      bgcolor: '#76c965',
       rightHandles: 0,
       leftHandles: 1,
       img: Output,
       category: 'General',
+      sources: ['Output']
     },
   },
   {
@@ -60,6 +63,7 @@ const newNodesConfig = [
       leftHandles: 0,
       img: text,
       category: 'General',
+      targets: ['Output']
     },
   },
   {
@@ -72,8 +76,9 @@ const newNodesConfig = [
       bgcolor: '#5b96f5',
       rightHandles: 1,
       leftHandles: 0,
-      img: text,
+      img: file,
       category: 'General',
+      targets: ['Output']
     },
   },
   {
@@ -90,6 +95,8 @@ const newNodesConfig = [
       desc: 'This is a LLM.',
       img: openai,
       category: 'LLMs',
+      sources: ['system', 'prompt'],
+      targets: ['response']
     },
   },
   {
@@ -106,6 +113,8 @@ const newNodesConfig = [
       desc: 'This is a LLM.',
       img: Anthropic,
       category: 'LLMs',
+      sources: ['system', 'prompt'],
+      targets: ['response']
     },
   },
   {
@@ -122,6 +131,8 @@ const newNodesConfig = [
       desc: 'This is a LLM.',
       img: meta,
       category: 'LLMs',
+      sources: ['system', 'prompt'],
+      targets: ['response']
     },
   },
   {
@@ -138,6 +149,8 @@ const newNodesConfig = [
       desc: 'This is a LLM.',
       img: google,
       category: 'LLMs',
+      sources: ['system', 'prompt'],
+      targets: ['response']
     },
   },
   {
@@ -154,6 +167,8 @@ const newNodesConfig = [
       desc: 'This is a LLM.',
       img: perplexity,
       category: 'LLMs',
+      sources: ['system', 'prompt'],
+      targets: ['response']
     },
   },
   {
@@ -170,6 +185,8 @@ const newNodesConfig = [
       desc: 'This is a LLM.',
       img: aws,
       category: 'LLMs',
+      sources: ['system', 'prompt'],
+      targets: ['response']
     },
   },
 
@@ -181,12 +198,13 @@ const newNodesConfig = [
       isInput: true,
       isType: false,
       rightHandles: 1,
-      leftHandles: 2,
-      bgcolor: '#ffe682',
-      headColor: '#f5d65b',
+      leftHandles: 3,
+      bgcolor: '#c382ff',
       desc: 'This is a LLM.',
       img: openai,
       category: 'Multi-Modal',
+      sources: ['system', 'prompt', 'image'],
+      targets: ['response']
     },
   },
   {
@@ -197,12 +215,13 @@ const newNodesConfig = [
       isInput: true,
       isType: false,
       rightHandles: 1,
-      leftHandles: 2,
-      bgcolor: '#ffe682',
-      headColor: '#f5d65b',
+      leftHandles: 3,
+      bgcolor: '#c382ff',
       desc: 'This is a LLM.',
       img: Anthropic,
       category: 'Multi-Modal',
+      sources: ['system', 'prompt', 'image'],
+      targets: ['response']
     },
   },
   {
@@ -213,12 +232,13 @@ const newNodesConfig = [
       isInput: true,
       isType: false,
       rightHandles: 1,
-      leftHandles: 2,
-      bgcolor: '#ffe682',
-      headColor: '#f5d65b',
+      leftHandles: 3,
+      bgcolor: '#c382ff',
       desc: 'This is a LLM.',
       img: google,
       category: 'Multi-Modal',
+      sources: ['system', 'prompt', 'image'],
+      targets: ['response']
     },
   },
 
@@ -230,12 +250,12 @@ const newNodesConfig = [
       isInput: true,
       isType: false,
       rightHandles: 1,
-      leftHandles: 2,
-      bgcolor: '#ffe682',
-      headColor: '#f5d65b',
-      desc: 'This is a LLM.',
+      leftHandles: 1,
+      bgcolor: '#ff9382',
       img: database,
       category: 'Knowledge Base',
+      sources: ['query'],
+      targets: ['results'],
     },
   },
   {

@@ -8,7 +8,7 @@ function App() {
   const [hover, setHover] = useState(false);
 
   return (
-    <div style={{ padding: '7px', backgroundColor: '#609bd6', }}>
+    <div style={{ padding: '7px', backgroundColor: '#6579c9', }}>
       {/* Category Selector */}
       <div style={{ display: 'flex', gap: '10px', marginBottom: '10px', marginLeft: '15px' }}>
         <select value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)}
@@ -25,7 +25,8 @@ function App() {
             marginLeft: '2px',
             cursor: 'pointer',
             outline: 'none',
-            transition: 'all 0.3s ease',
+            transition: 'all 0.2s ease',
+            fontFamily: 'Roboto',
           }}>
           <option value="Knowledge"
             style={{ fontWeight: 600, color: '#000' }}

@@ -24,7 +24,6 @@ export const useStore = create((set, get) => ({
     set({
       nodes: [...get().nodes, node]
     });
-    console.log(node.id)
   },
   onNodesChange: (changes) => {
     set({
