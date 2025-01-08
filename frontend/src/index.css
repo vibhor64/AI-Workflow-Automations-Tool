@@ -1,0 +1,18 @@
+body {
+  margin: 0;
+  font-family: "Inter", serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.big-man .react-flow__handle {
+  width: 7px;
+  height: 7px;
+  background-color: white;
+  border: 2px solid #ccc;
+  transition: all 0.2s;
+}
+
+.big-man .react-flow__handle.connectionindicator:hover {
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+}
