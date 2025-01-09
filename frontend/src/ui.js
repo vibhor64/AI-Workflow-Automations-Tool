@@ -90,7 +90,7 @@ export const PipelineUI = () => {
 
     const formattedNodes = nodes.map(node => ({
       id: node.id,
-      type: node.type,
+      name: node.data.name,
     }));
 
     const formattedEdges = edges.map(edge => ({
@@ -99,19 +99,24 @@ export const PipelineUI = () => {
       target: edge.target,
     }));
 
-    console.log(JSON.stringify({ formattedNodes, formattedEdges }, null, 2));
+    // console.log(JSON.stringify({ formattedNodes, formattedEdges }, null, 2));
+    console.log(edges);
 
     try {
       const response = await axios.post('http://127.0.0.1:8000/pipelines/parse', {
         formattedNodes,
         formattedEdges
       });
-      console.log('Response:', response.data);
-      const { num_nodes, num_edges, is_dag } = response.data;
-      if (is_dag)
-        alert(`Number of Nodes: ${num_nodes} \n Number of Edges: ${num_edges} \n No cycle found in graph!`);
+      // console.log('Response:', response.data);
+      const { num_nodes, num_edges, is_dag, is_con, inp, out } = response.data;
+      if (!is_dag)
+        alert(` Invalid pipeline! \n A cycle has been detected!`);
+      else if (!is_con)
+        alert(` Invalid pipeline! \n Graph is not connected! \n`);
+      else if (inp < 1 || out < 1)
+        alert(` Invalid pipeline! You need at least 1 input and 1 output node. \n Number of input nodes: ${inp} \n Number of output nodes: ${out} \n`);
       else
-        alert(`Number of Nodes: ${num_nodes} \n Number of Edges: ${num_edges} \n A cycle has been detected!`);
+        alert(` Number of Nodes: ${num_nodes} \n Number of Edges: ${num_edges} \n No cycle found in graph! \n`);
     } catch (error) {
       console.error('Error sending pipeline data:', error);
       alert('Error occurred while processing the pipeline!');

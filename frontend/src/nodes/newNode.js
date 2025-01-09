@@ -68,8 +68,11 @@ export const NewNode = ({ id, data }) => {
         // console.log('LH: ', LH, 'vars: ', variableCount)
         updateHandleCount(variableCount + LH);
         updateNodeField(id, 'leftHandles', variableCount + LH)
-        const updatedSources = initSources?.concat(matches); 
+        const updatedSources = initSources?.concat(matches);
         updateNodeField(id, 'sources', updatedSources)
+        if (name === 'Input' || name === 'File') {
+            updateNodeField(id, 'targets', [`${e.target.value}`])
+        }
     };
 
     const handleNameChange2 = (e) => {
@@ -112,7 +115,7 @@ export const NewNode = ({ id, data }) => {
             <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', backgroundColor: '#ffffff', borderTopLeftRadius: '9px', borderTopRightRadius: '9px', borderBottomLeftRadius: '10px', borderBottomRightRadius: '10px', }}>
 
                 {sources?.map((source, index) => (
-                    <p key={index} style={{ position: 'absolute', left: '-45px', top: `${(index + 1) * (100 / (leftHandles + 1)) - 5}%`, color: '#696969', fontWeight: 400, }}>{source}</p>
+                    <p key={index} style={{ position: 'absolute', right: '210px', top: `${(index + 1) * (100 / (leftHandles + 1)) - 5}%`, color: '#7d7d7d', fontWeight: 400, }}>{source}</p>
                 ))}
 
                 {Array.from({ length: leftHandles }, (_, index) => (
@@ -131,16 +134,12 @@ export const NewNode = ({ id, data }) => {
                     <span>{name}</span>
                 </div>
 
-                {category === 'LLMs' || category === 'Multi-Modal' || name === 'Database' ?
+                {category === 'LLMs' || category === 'Multi-Modal' || category === 'Knowledge Base' || name === 'File' ?
                     <>
                         <img src={img} style={{ width: '40px', height: '40px', alignSelf: 'center', marginBottom: '10px' }} />
                     </>
                     : null
                 }
-
-                {/* <div style={{ display: 'flex', alignItems: 'center', marginLeft: '10px', marginBottom: '5px', fontSize: '12px', fontWeight: '400', color: '#000' }}>
-                    <span>{desc}</span>
-                </div> */}
 
                 <div style={{ paddingRight: '10px', paddingLeft: '10px', marginBottom: '10px', display: 'flex', alignItems: 'center', flexDirection: 'column', }}>
 
@@ -256,10 +255,68 @@ export const NewNode = ({ id, data }) => {
                         </label>
                         : null
                     }
+
+                    {category === 'Knowledge Base' ?
+                        <label style={{ display: 'flex', alignSelf: 'flex-start', marginLeft: '2px', marginTop: '2px', gap: '8px', flexDirection: 'column' }}>
+                            <span style={{ marginTop: '4px', fontWeight: 600, color: '#363636', fontSize: '10px' }}>Select Database:</span>
+                            <select value={inputType} onChange={handleTypeChange}
+                                style={{
+                                    padding: '3px 2px',
+                                    borderRadius: '4px',
+                                    border: `2px solid ${bgcolor}`,
+                                    color: bgcolor ? bgcolor : '#3c859e',
+                                    backgroundColor: '#fff',
+                                    fontSize: '12px',
+                                    fontWeight: 600,
+                                    marginLeft: '1px',
+                                    cursor: 'pointer',
+                                    outline: 'none',
+                                    transition: 'border-color 0.3s, box-shadow 0.3s',
+                                }}
+                                onFocus={(e) => (e.target.style.boxShadow = '0 0 5px rgba(128, 72, 199, 0.5)')}
+                                onBlur={(e) => (e.target.style.boxShadow = 'none')}
+                            >
+                                {name === 'Databse' ?
+                                    <>
+                                        <option value="ReactFlow Docs"
+                                            style={{ fontWeight: 600 }}
+                                        >ReactFlow Docs</option>
+                                        <option value="IBM QnA"
+                                            style={{ fontWeight: 600 }}
+                                        >IBM QnA</option>
+                                        <option value="U.S.A. Presidents Wiki"
+                                            style={{ fontWeight: 600 }}
+                                        >U.S.A. Presidents Wiki</option>
+                                    </>
+                                    :
+                                    <>
+                                        <option value="Token Bufer"
+                                            style={{ fontWeight: 600 }}
+                                        >Token Bufer</option>
+                                        <option value="Message Buffer"
+                                            style={{ fontWeight: 600 }}
+                                        >Message Buffer</option>
+                                        <option value="Full - Formatted"
+                                            style={{ fontWeight: 600 }}
+                                        >Full - Formatted</option>
+                                        <option value="Full - Raw"
+                                            style={{ fontWeight: 600 }}
+                                        >Full - Raw</option>
+                                        <option value="Vector Database"
+                                            style={{ fontWeight: 600 }}
+                                        >Vector Database</option>
+                                    </>
+                                }
+                            </select>
+                        </label>
+                        : null
+                    }
                 </div>
-                
+
                 {targets?.map((target, index) => (
-                    <p key={index}  style={{ position: 'absolute', right: name === 'Input' ? '-30px' : category === 'General' ? '-38px' : name === 'Database' ? '-40px' : '-54px', top: `${(index + 1) * (100 / (rightHandles + 1))-2}%`, color: '#696969', fontWeight: 400 }}>{target}</p>
+                    // <p key={index}  style={{ position: 'absolute', right: name === 'Input' ? '-30px' : category === 'General' ? '-38px' : name === 'Database' ? '-40px' : '-54px', top: `${(index + 1) * (100 / (rightHandles + 1))-2}%`, color: '#7d7d7d', fontWeight: 400 }}>
+                    <p key={index} style={{ position: 'absolute', left: '209px', top: `${(index + 1) * (100 / (rightHandles + 1)) - 2}%`, color: '#7d7d7d', fontWeight: 400 }}>
+                        {target}</p>
                 ))}
                 {Array.from({ length: rightHandles }, (_, index) => (
                     <Handle

@@ -18,6 +18,7 @@ import perplexity from '../assets/perplexity.png';
 import postgresql from '../assets/postgresql.png';
 import s3 from '../assets/s3.png';
 import meta from '../assets/meta.svg';
+import chat from '../assets/chat.png';
 
 const newNodesConfig = [
   {
@@ -247,7 +248,7 @@ const newNodesConfig = [
     type: 'NodeNode',
     data: {
       name: 'Database',
-      isInput: true,
+      isInput: false,
       isType: false,
       rightHandles: 1,
       leftHandles: 1,
@@ -256,6 +257,22 @@ const newNodesConfig = [
       category: 'Knowledge Base',
       sources: ['query'],
       targets: ['results'],
+    },
+  },
+  {
+    id: 'database-2',
+    type: 'NodeNode',
+    data: {
+      name: 'Chat Memory',
+      isInput: false,
+      isType: false,
+      rightHandles: 1,
+      leftHandles: 0,
+      bgcolor: '#ff9382',
+      img: chat,
+      category: 'Knowledge Base',
+      sources: [],
+      targets: ['Chat'],
     },
   },
   {
