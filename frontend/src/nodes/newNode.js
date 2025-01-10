@@ -35,10 +35,12 @@ export const NewNode = ({ id, data }) => {
         category: category,
         sources: sources,
         targets: targets,
+        fieldValue1: fieldValue1,
+        fieldValue2: fieldValue2
     } = data;
 
-    const [currName, setCurrName] = useState('');
-    const [currName2, setCurrName2] = useState('');
+    const [currName, setCurrName] = useState(fieldValue1);
+    const [currName2, setCurrName2] = useState(fieldValue2);
     const [inputType, setInputType] = useState(id || 'Text');
     const [LH, setLH] = useState(leftHandles);
     const [isFocused, setIsFocused] = useState(false);
@@ -73,11 +75,14 @@ export const NewNode = ({ id, data }) => {
         if (name === 'Input' || name === 'File') {
             updateNodeField(id, 'targets', [`${e.target.value}`])
         }
+        updateNodeField(id, 'fieldValue1', `${e.target.value}`)
+        
     };
-
+    
     const handleNameChange2 = (e) => {
         setCurrName2(e.target.value);
         autoResize(e.target);
+        updateNodeField(id, 'fieldValue2', `${e.target.value}`)
     };
 
     const updateNodeInternals = useUpdateNodeInternals();

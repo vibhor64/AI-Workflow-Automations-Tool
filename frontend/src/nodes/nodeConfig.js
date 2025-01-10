@@ -35,6 +35,8 @@ const newNodesConfig = [
       category: 'General',
       targets: ['Input'],
       sources: [],
+      fieldValue1: '',
+      fieldValue2: ''
     },
   },
   {
@@ -49,7 +51,9 @@ const newNodesConfig = [
       leftHandles: 1,
       img: Output,
       category: 'General',
-      sources: ['Output']
+      sources: ['Output'],
+      fieldValue1: '',
+      fieldValue2: ''
     },
   },
   {
@@ -64,7 +68,9 @@ const newNodesConfig = [
       leftHandles: 0,
       img: text,
       category: 'General',
-      targets: ['Output']
+      targets: ['Output'],
+      fieldValue1: '',
+      fieldValue2: ''
     },
   },
   {
@@ -79,7 +85,9 @@ const newNodesConfig = [
       leftHandles: 0,
       img: file,
       category: 'General',
-      targets: ['Output']
+      targets: ['Output'],
+      fieldValue1: '',
+      fieldValue2: ''
     },
   },
   {
@@ -97,7 +105,9 @@ const newNodesConfig = [
       img: openai,
       category: 'LLMs',
       sources: ['system', 'prompt'],
-      targets: ['response']
+      targets: ['response'],
+      fieldValue1: '',
+      fieldValue2: ''
     },
   },
   {
@@ -115,7 +125,9 @@ const newNodesConfig = [
       img: Anthropic,
       category: 'LLMs',
       sources: ['system', 'prompt'],
-      targets: ['response']
+      targets: ['response'],
+      fieldValue1: '',
+      fieldValue2: ''
     },
   },
   {
@@ -133,7 +145,9 @@ const newNodesConfig = [
       img: meta,
       category: 'LLMs',
       sources: ['system', 'prompt'],
-      targets: ['response']
+      targets: ['response'],
+      fieldValue1: '',
+      fieldValue2: ''
     },
   },
   {
@@ -151,7 +165,9 @@ const newNodesConfig = [
       img: google,
       category: 'LLMs',
       sources: ['system', 'prompt'],
-      targets: ['response']
+      targets: ['response'],
+      fieldValue1: '',
+      fieldValue2: ''
     },
   },
   {
@@ -169,7 +185,9 @@ const newNodesConfig = [
       img: perplexity,
       category: 'LLMs',
       sources: ['system', 'prompt'],
-      targets: ['response']
+      targets: ['response'],
+      fieldValue1: '',
+      fieldValue2: ''
     },
   },
   {
@@ -187,7 +205,9 @@ const newNodesConfig = [
       img: aws,
       category: 'LLMs',
       sources: ['system', 'prompt'],
-      targets: ['response']
+      targets: ['response'],
+      fieldValue1: '',
+      fieldValue2: ''
     },
   },
 
@@ -205,7 +225,9 @@ const newNodesConfig = [
       img: openai,
       category: 'Multi-Modal',
       sources: ['system', 'prompt', 'image'],
-      targets: ['response']
+      targets: ['response'],
+      fieldValue1: '',
+      fieldValue2: ''
     },
   },
   {
@@ -222,7 +244,9 @@ const newNodesConfig = [
       img: Anthropic,
       category: 'Multi-Modal',
       sources: ['system', 'prompt', 'image'],
-      targets: ['response']
+      targets: ['response'],
+      fieldValue1: '',
+      fieldValue2: ''
     },
   },
   {
@@ -239,7 +263,9 @@ const newNodesConfig = [
       img: google,
       category: 'Multi-Modal',
       sources: ['system', 'prompt', 'image'],
-      targets: ['response']
+      targets: ['response'],
+      fieldValue1: '',
+      fieldValue2: ''
     },
   },
 
@@ -257,6 +283,8 @@ const newNodesConfig = [
       category: 'Knowledge Base',
       sources: ['query'],
       targets: ['results'],
+      fieldValue1: '',
+      fieldValue2: ''
     },
   },
   {
@@ -273,6 +301,8 @@ const newNodesConfig = [
       category: 'Knowledge Base',
       sources: [],
       targets: ['Chat'],
+      fieldValue1: '',
+      fieldValue2: ''
     },
   },
   {

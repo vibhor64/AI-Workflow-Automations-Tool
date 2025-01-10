@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from typing import List
 from fastapi.middleware.cors import CORSMiddleware
+import json
 
 app = FastAPI()
 
@@ -17,11 +18,17 @@ app.add_middleware(
 class Node(BaseModel):
     id: str
     name: str
+    rightHandles: int
+    leftHandles: int
+    sources: List[str] = []
+    targets: List[str] = []
 
 class Edge(BaseModel):
     id: str
     source: str
     target: str
+    sourceHandle: str
+    targetHandle: str
 
 class Pipeline(BaseModel):
     formattedNodes: List[Node]
@@ -104,4 +111,12 @@ def parse_pipeline(pipeline: Pipeline):
     inp, out = countIONodes(pipeline.formattedNodes)
     if not is_dag and not is_con:
         return {"num_nodes": num_nodes, "num_edges": num_edges, "is_dag": is_dag, "is_con": is_con, "inp": inp, "out": out}
+    
+    file_path = f"pipeline.json"
+    with open(file_path, "w") as file:
+        json.dump(pipeline.dict(), file, indent=4)
     return {"num_nodes": num_nodes, "num_edges": num_edges, "is_dag": is_dag, "is_con": is_con, "inp": inp, "out": out}
+
+@app.post('/deployment/parse')
+def parse_deployment():
+    print("Deployment")

@@ -9,6 +9,7 @@ import { shallow } from 'zustand/shallow';
 import { NewNode } from './nodes/newNode';
 import { newNodesConfig } from './nodes/nodeConfig';
 import RocketImg from './assets/rocket.png';
+import Reset from './assets/reset.png';
 import axios from 'axios';
 
 import 'reactflow/dist/style.css';
@@ -27,6 +28,7 @@ const selector = (state) => ({
   onNodesChange: state.onNodesChange,
   onEdgesChange: state.onEdgesChange,
   onConnect: state.onConnect,
+  clearCanvas: state.clearCanvas,
 });
 
 export const PipelineUI = () => {
@@ -39,7 +41,8 @@ export const PipelineUI = () => {
     addNode,
     onNodesChange,
     onEdgesChange,
-    onConnect
+    onConnect,
+    clearCanvas
   } = useStore(selector, shallow);
 
   const onDrop = useCallback(
@@ -86,21 +89,41 @@ export const PipelineUI = () => {
     event.dataTransfer.dropEffect = 'move';
   }, []);
 
+  const saveJSONFile = (data, fileName) => {
+    const fileData = new Blob([JSON.stringify(data, null, 4)], { type: 'application/json' });
+    const url = URL.createObjectURL(fileData);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   const sendPipelineData = async () => {
 
     const formattedNodes = nodes.map(node => ({
       id: node.id,
       name: node.data.name,
+      rightHandles: node.data.rightHandles,
+      leftHandles: node.data.leftHandles,
+      sources: node.data.sources || [],
+      targets: node.data.targets || [],
     }));
 
     const formattedEdges = edges.map(edge => ({
       id: edge.id,
       source: edge.source,
       target: edge.target,
+      sourceHandle: edge.sourceHandle,
+      targetHandle: edge.targetHandle
     }));
 
     // console.log(JSON.stringify({ formattedNodes, formattedEdges }, null, 2));
     console.log(edges);
+    console.log(nodes);
+    // saveJSONFile(nodes, 'nodes.json');
+    // saveJSONFile(edges, 'edges.json');
 
     try {
       const response = await axios.post('http://127.0.0.1:8000/pipelines/parse', {
@@ -172,9 +195,43 @@ export const PipelineUI = () => {
               justifyContent: 'center'
             }}
             onClick={sendPipelineData}
-            type="submit">Run 
-            <img src={RocketImg} style={{width: '20px', height: '20px', marginLeft: '5px',}}/>
-            </button>
+            type="submit">Run
+            <img src={RocketImg} style={{ width: '20px', height: '20px', marginLeft: '5px', }} />
+          </button>
+        </div>
+
+
+        <div style={{ display: 'flex',flexDirection: 'column', position: 'absolute', bottom: '3px', height: '10vh', alignItems: 'center', justifyContent: 'center', right: '15%' }}>
+          <button
+            style={{
+              backgroundColor: '#d1d1d1',
+              borderRadius: '10px',
+              border: '0px solid #d1d1d1',
+              color: '#fff',
+              cursor: 'pointer',
+              display: 'inline-block',
+              // fontFamily: 'Poppins',
+              fontSize: '18px',
+              fontWeight: 700,
+              listStyle: 'none',
+              margin: '0',
+              padding: '5px 5px',
+              textAlign: 'center',
+              transition: 'all 200ms',
+              verticalAlign: 'baseline',
+              whiteSpace: 'nowrap',
+              userSelect: 'none',
+              WebkitUserSelect: 'none',
+              touchAction: 'manipulation',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: ' rgba(100, 100, 111, 0.2) 0px 7px 29px 0px',
+            }}
+            onClick={clearCanvas}
+            type="submit"><img src={Reset} style={{ width: '20px', height: '20px', }} />
+          </button>
+          <p style={{ fontSize: '12px', color: '#d1d1d1', marginTop: '2px', fontWeight: 500 }}>Reset</p>
         </div>
       </div>
     </>

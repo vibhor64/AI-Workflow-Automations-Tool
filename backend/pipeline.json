@@ -1,0 +1,145 @@
+{
+    "formattedNodes": [
+        {
+            "id": "NodeNode-1",
+            "name": "Input",
+            "rightHandles": 1,
+            "leftHandles": 0,
+            "sources": [],
+            "targets": [
+                "user_query"
+            ]
+        },
+        {
+            "id": "NodeNode-2",
+            "name": "Text",
+            "rightHandles": 1,
+            "leftHandles": 0,
+            "sources": [],
+            "targets": [
+                "Output"
+            ]
+        },
+        {
+            "id": "NodeNode-3",
+            "name": "GPT-4 Vision",
+            "rightHandles": 1,
+            "leftHandles": 5,
+            "sources": [
+                "system",
+                "prompt",
+                "image",
+                "user_query",
+                "context"
+            ],
+            "targets": [
+                "response"
+            ]
+        },
+        {
+            "id": "NodeNode-4",
+            "name": "Database",
+            "rightHandles": 1,
+            "leftHandles": 1,
+            "sources": [
+                "query"
+            ],
+            "targets": [
+                "results"
+            ]
+        },
+        {
+            "id": "NodeNode-5",
+            "name": "GPT-4 Vision",
+            "rightHandles": 1,
+            "leftHandles": 4,
+            "sources": [
+                "system",
+                "prompt",
+                "image",
+                "My_face"
+            ],
+            "targets": [
+                "response"
+            ]
+        },
+        {
+            "id": "NodeNode-6",
+            "name": "File",
+            "rightHandles": 1,
+            "leftHandles": 0,
+            "sources": [],
+            "targets": [
+                "My_face"
+            ]
+        },
+        {
+            "id": "NodeNode-7",
+            "name": "Output",
+            "rightHandles": 0,
+            "leftHandles": 1,
+            "sources": [
+                "Output"
+            ],
+            "targets": []
+        }
+    ],
+    "formattedEdges": [
+        {
+            "id": "reactflow__edge-NodeNode-1NodeNode-1-right-handle-0-NodeNode-4NodeNode-4-left-handle-0",
+            "source": "NodeNode-1",
+            "target": "NodeNode-4",
+            "sourceHandle": "NodeNode-1-right-handle-0",
+            "targetHandle": "NodeNode-4-left-handle-0"
+        },
+        {
+            "id": "reactflow__edge-NodeNode-4NodeNode-4-right-handle-0-NodeNode-3NodeNode-3-left-handle-4",
+            "source": "NodeNode-4",
+            "target": "NodeNode-3",
+            "sourceHandle": "NodeNode-4-right-handle-0",
+            "targetHandle": "NodeNode-3-left-handle-4"
+        },
+        {
+            "id": "reactflow__edge-NodeNode-1NodeNode-1-right-handle-0-NodeNode-3NodeNode-3-left-handle-3",
+            "source": "NodeNode-1",
+            "target": "NodeNode-3",
+            "sourceHandle": "NodeNode-1-right-handle-0",
+            "targetHandle": "NodeNode-3-left-handle-3"
+        },
+        {
+            "id": "reactflow__edge-NodeNode-2NodeNode-2-right-handle-0-NodeNode-3NodeNode-3-left-handle-0",
+            "source": "NodeNode-2",
+            "target": "NodeNode-3",
+            "sourceHandle": "NodeNode-2-right-handle-0",
+            "targetHandle": "NodeNode-3-left-handle-0"
+        },
+        {
+            "id": "reactflow__edge-NodeNode-5NodeNode-5-right-handle-0-NodeNode-7NodeNode-7-left-handle-0",
+            "source": "NodeNode-5",
+            "target": "NodeNode-7",
+            "sourceHandle": "NodeNode-5-right-handle-0",
+            "targetHandle": "NodeNode-7-left-handle-0"
+        },
+        {
+            "id": "reactflow__edge-NodeNode-2NodeNode-2-right-handle-0-NodeNode-5NodeNode-5-left-handle-0",
+            "source": "NodeNode-2",
+            "target": "NodeNode-5",
+            "sourceHandle": "NodeNode-2-right-handle-0",
+            "targetHandle": "NodeNode-5-left-handle-0"
+        },
+        {
+            "id": "reactflow__edge-NodeNode-6NodeNode-6-right-handle-0-NodeNode-5NodeNode-5-left-handle-3",
+            "source": "NodeNode-6",
+            "target": "NodeNode-5",
+            "sourceHandle": "NodeNode-6-right-handle-0",
+            "targetHandle": "NodeNode-5-left-handle-3"
+        },
+        {
+            "id": "reactflow__edge-NodeNode-3NodeNode-3-right-handle-0-NodeNode-5NodeNode-5-left-handle-2",
+            "source": "NodeNode-3",
+            "target": "NodeNode-5",
+            "sourceHandle": "NodeNode-3-right-handle-0",
+            "targetHandle": "NodeNode-5-left-handle-2"
+        }
+    ]
+}
