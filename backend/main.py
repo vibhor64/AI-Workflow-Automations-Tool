@@ -3,6 +3,7 @@ from pydantic import BaseModel
 from typing import List
 from fastapi.middleware.cors import CORSMiddleware
 import json
+from deployment import execute_pipeline
 
 app = FastAPI()
 
@@ -22,6 +23,8 @@ class Node(BaseModel):
     leftHandles: int
     sources: List[str] = []
     targets: List[str] = []
+    fieldValue1: str = ''
+    fieldValue2: str = ''
 
 class Edge(BaseModel):
     id: str
@@ -103,20 +106,25 @@ def read_root():
 
 @app.post('/pipelines/parse')
 def parse_pipeline(pipeline: Pipeline):
-    print(pipeline)
+    # print(pipeline)
     num_nodes = len(pipeline.formattedNodes)
     num_edges = len(pipeline.formattedEdges)
     is_dag = checkDAG(pipeline.formattedNodes, pipeline.formattedEdges)
     is_con = isConnected(pipeline.formattedNodes, pipeline.formattedEdges)
     inp, out = countIONodes(pipeline.formattedNodes)
     if not is_dag and not is_con:
-        return {"num_nodes": num_nodes, "num_edges": num_edges, "is_dag": is_dag, "is_con": is_con, "inp": inp, "out": out}
+        return {"num_nodes": num_nodes, "num_edges": num_edges, "is_dag": is_dag, "is_con": is_con, "inp": inp, "out": out, "output": 'NONE'}
     
     file_path = f"pipeline.json"
     with open(file_path, "w") as file:
         json.dump(pipeline.dict(), file, indent=4)
-    return {"num_nodes": num_nodes, "num_edges": num_edges, "is_dag": is_dag, "is_con": is_con, "inp": inp, "out": out}
+    
+    output = execute_pipeline(pipeline)
+    return {"num_nodes": num_nodes, "num_edges": num_edges, "is_dag": is_dag, "is_con": is_con, "inp": inp, "out": out, "output": output}
 
 @app.post('/deployment/parse')
 def parse_deployment():
     print("Deployment")
+    with open("pipeline.json", "r") as file:
+        pipeline = json.load(file)
+    return execute_pipeline(pipeline)

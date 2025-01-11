@@ -46,6 +46,12 @@ export const useStore = create((set, get) => ({
       edges: []
     });
   },
+  loadTemplate: (template) => {
+    set({
+      nodes: template.nodes,
+      edges: template.edges
+    });
+  },
   onNodesChange: (changes) => {
     set({
       nodes: applyNodeChanges(changes, get().nodes),

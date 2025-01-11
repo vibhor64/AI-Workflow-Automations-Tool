@@ -11,6 +11,7 @@ import { newNodesConfig } from './nodes/nodeConfig';
 import RocketImg from './assets/rocket.png';
 import Reset from './assets/reset.png';
 import axios from 'axios';
+import { Templates } from './components/templates';
 
 import 'reactflow/dist/style.css';
 
@@ -109,6 +110,8 @@ export const PipelineUI = () => {
       leftHandles: node.data.leftHandles,
       sources: node.data.sources || [],
       targets: node.data.targets || [],
+      fieldValue1: node.data.fieldValue1 || '',
+      fieldValue2: node.data.fieldValue2 || '',
     }));
 
     const formattedEdges = edges.map(edge => ({
@@ -131,7 +134,7 @@ export const PipelineUI = () => {
         formattedEdges
       });
       // console.log('Response:', response.data);
-      const { num_nodes, num_edges, is_dag, is_con, inp, out } = response.data;
+      const { num_nodes, num_edges, is_dag, is_con, inp, out, output } = response.data;
       if (!is_dag)
         alert(` Invalid pipeline! \n A cycle has been detected!`);
       else if (!is_con)
@@ -139,7 +142,7 @@ export const PipelineUI = () => {
       else if (inp < 1 || out < 1)
         alert(` Invalid pipeline! You need at least 1 input and 1 output node. \n Number of input nodes: ${inp} \n Number of output nodes: ${out} \n`);
       else
-        alert(` Number of Nodes: ${num_nodes} \n Number of Edges: ${num_edges} \n No cycle found in graph! \n`);
+        alert(` Number of Nodes: ${num_nodes} \n Number of Edges: ${num_edges} \n No cycle found in graph! \n Output: ${output}`);
     } catch (error) {
       console.error('Error sending pipeline data:', error);
       alert('Error occurred while processing the pipeline!');
@@ -233,6 +236,7 @@ export const PipelineUI = () => {
           </button>
           <p style={{ fontSize: '12px', color: '#d1d1d1', marginTop: '2px', fontWeight: 500 }}>Reset</p>
         </div>
+        <Templates/>
       </div>
     </>
   )

@@ -8,7 +8,9 @@
             "sources": [],
             "targets": [
                 "user_query"
-            ]
+            ],
+            "fieldValue1": "user_query",
+            "fieldValue2": ""
         },
         {
             "id": "NodeNode-2",
@@ -18,7 +20,9 @@
             "sources": [],
             "targets": [
                 "Output"
-            ]
+            ],
+            "fieldValue1": "You are ThumbnailGPT, a YouTube thumbnail specialist hired by Mr. Beast, Dude Perfect....",
+            "fieldValue2": ""
         },
         {
             "id": "NodeNode-3",
@@ -34,7 +38,9 @@
             ],
             "targets": [
                 "response"
-            ]
+            ],
+            "fieldValue1": "User's query:\n{{user_query}} \n\nContext:\n{{context}}",
+            "fieldValue2": ""
         },
         {
             "id": "NodeNode-4",
@@ -46,7 +52,9 @@
             ],
             "targets": [
                 "results"
-            ]
+            ],
+            "fieldValue1": "",
+            "fieldValue2": ""
         },
         {
             "id": "NodeNode-5",
@@ -61,7 +69,9 @@
             ],
             "targets": [
                 "response"
-            ]
+            ],
+            "fieldValue1": "Replace the image of the person by my face. Here is a photo of my face: {{My_face}}",
+            "fieldValue2": ""
         },
         {
             "id": "NodeNode-6",
@@ -71,7 +81,9 @@
             "sources": [],
             "targets": [
                 "My_face"
-            ]
+            ],
+            "fieldValue1": "My_face",
+            "fieldValue2": ""
         },
         {
             "id": "NodeNode-7",
@@ -81,7 +93,9 @@
             "sources": [
                 "Output"
             ],
-            "targets": []
+            "targets": [],
+            "fieldValue1": "Final Image",
+            "fieldValue2": ""
         }
     ],
     "formattedEdges": [
