@@ -3,7 +3,7 @@ import google.generativeai as genai
 import markdown
 import PIL.Image
 
-GOOGLE_API_KEY='AIzaSyAYgHK-zB0SSinyXXwvVfxjvJnWiwgfmTk'
+GOOGLE_API_KEY=''
 genai.configure(api_key=GOOGLE_API_KEY)
 model = genai.GenerativeModel('gemini-1.5-flash')
 
