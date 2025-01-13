@@ -30,6 +30,7 @@ const selector = (state) => ({
   onEdgesChange: state.onEdgesChange,
   onConnect: state.onConnect,
   clearCanvas: state.clearCanvas,
+  createDeployment: state.createDeployment,
 });
 
 export const PipelineUI = () => {
@@ -43,7 +44,8 @@ export const PipelineUI = () => {
     onNodesChange,
     onEdgesChange,
     onConnect,
-    clearCanvas
+    clearCanvas,
+    createDeployment,
   } = useStore(selector, shallow);
 
   const onDrop = useCallback(
@@ -123,8 +125,8 @@ export const PipelineUI = () => {
     }));
 
     // console.log(JSON.stringify({ formattedNodes, formattedEdges }, null, 2));
-    console.log(edges);
-    console.log(nodes);
+    // console.log(edges);
+    // console.log(nodes);
     // saveJSONFile(nodes, 'nodes.json');
     // saveJSONFile(edges, 'edges.json');
 
@@ -139,10 +141,13 @@ export const PipelineUI = () => {
         alert(` Invalid pipeline! \n A cycle has been detected!`);
       else if (!is_con)
         alert(` Invalid pipeline! \n Graph is not connected! \n`);
-      else if (inp < 1 || out < 1)
-        alert(` Invalid pipeline! You need at least 1 input and 1 output node. \n Number of input nodes: ${inp} \n Number of output nodes: ${out} \n`);
+      else if (inp.length < 1 || out.length < 1)
+        alert(` Invalid pipeline! You need at least 1 input and 1 output node. \n Number of input nodes: ${inp.length} \n Number of output nodes: ${out.length} \n Make sure you have named all your input and output nodes`);
       else
-        alert(` Number of Nodes: ${num_nodes} \n Number of Edges: ${num_edges} \n No cycle found in graph! \n Output: ${output}`);
+        // alert(` Number of Nodes: ${num_nodes} \n Number of Edges: ${num_edges} \n No cycle found in graph! \n Output: ${output}`);
+        alert(`Deployment Successful! Head over to Deployment tab to access your pipeline`);
+        // console.log(inp, out);
+        createDeployment(inp, out);
     } catch (error) {
       console.error('Error sending pipeline data:', error);
       alert('Error occurred while processing the pipeline!');

@@ -39,8 +39,8 @@ export const NewNode = ({ id, data }) => {
         fieldValue2: fieldValue2
     } = data;
 
-    const [currName, setCurrName] = useState(fieldValue1);
-    const [currName2, setCurrName2] = useState(fieldValue2);
+    const [currName, setCurrName] = useState(fieldValue1 || 'Node-'+id.split('-')[1]);
+    const [currName2, setCurrName2] = useState(fieldValue2 || 'Node-'+id.split('-')[1]);
     const [inputType, setInputType] = useState(id || 'Text');
     const [LH, setLH] = useState(leftHandles);
     const [isFocused, setIsFocused] = useState(false);

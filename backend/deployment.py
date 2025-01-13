@@ -1,4 +1,11 @@
 import networkx as nx
+import google.generativeai as genai
+import markdown
+import PIL.Image
+
+GOOGLE_API_KEY='AIzaSyAYgHK-zB0SSinyXXwvVfxjvJnWiwgfmTk'
+genai.configure(api_key=GOOGLE_API_KEY)
+model = genai.GenerativeModel('gemini-1.5-flash')
 
 def execute_pipeline(pipeline):
     # Create the graph
@@ -36,6 +43,7 @@ def execute_pipeline(pipeline):
             res = handle_output(node_id)
         else:
             print("Unknown node type:", node_type)
+            resMap[id] = node_data["fieldValue1"]
 
     return res
 
@@ -58,7 +66,11 @@ def handle_llm(id, fieldValue1, fieldValue2):
     else:
         prompt = fieldValue1
     
-    resMap[id] = system+prompt
+
+    LLMOut = model.generate_content(system+prompt)
+    # print("LLM OUTPUT: ", LLMOut.text)
+    res=markdown.markdown(LLMOut.text, extensions=['markdown.extensions.tables'])
+    resMap[id] = res
 
 def handle_vision_llm(id, fieldValue1, fieldValue2):
     if str(id + '-left-handle-0') in handleMap:
@@ -76,7 +88,11 @@ def handle_vision_llm(id, fieldValue1, fieldValue2):
     else:
         image = None
     
-    resMap[id] = system+prompt
+    LLMImage = PIL.Image.open("/path/to/organ.png")
+    LLMOut = model.generate_content([system+prompt, LLMImage])
+    # print("LLM OUTPUT: ", LLMOut.text)
+    res=markdown.markdown(LLMOut.text, extensions=['markdown.extensions.tables'])
+    resMap[id] = res
     
 def handle_output(id):
     output = resMap[handleMap[str(id + '-left-handle-0')]]

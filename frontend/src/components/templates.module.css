@@ -29,3 +29,80 @@
 .cons:hover {
     box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
 }
+
+.save{
+    display: flex; 
+    position: absolute; 
+    top: 40%; 
+    left: 50%; 
+    height: 18vh; 
+    width: 20vw; 
+    /* align-items: center;  */
+    /* justify-content: center; */
+    transform: translate(-50%, -50%);
+    border-radius: 8px;
+    background-color: #fff;
+    border: 4px solid #2d4ecf;
+    transition: all 0.2s ease;
+    flex-direction: column;
+}
+
+.saveInput{
+    background-color: #ededed;
+    border-radius: 8px;
+    border: 2px solid #ededed;
+    color: #a1a1a1;
+    font-size: 12px;
+    font-weight: 500;
+    width: 60%;
+    margin: 14px 15px;
+    padding: 8px 8px;
+    list-style: none;
+    text-align: left;
+    transition: all 0.2s;
+    white-space: nowrap;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    outline: none;
+}
+
+.saveInput:hover{
+    background-color: #d9d9d9;
+}
+
+.saveInput:focus{
+    border: 2px solid #2d4ecf;
+    color: #000;
+}
+
+.saveButton{
+    background-color: #2d4ecf;
+    border-radius: 8px;
+    border: 0px solid #2d4ecf;
+    color: #fff;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 600;
+    margin-left: 15px;
+    padding: 6px;
+    align-items: center;
+    justify-content: center;
+    padding-left: 8px;
+    padding-right: 8px;
+    
+    
+    list-style: none;
+    text-align: left;
+    transition: all 200ms;
+    white-space: nowrap;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    max-width: fit-content;
+}
+
+.saveButton:hover{
+    background-color: #3b59d1;
+}

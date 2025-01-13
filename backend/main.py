@@ -89,16 +89,16 @@ def isConnected(nodes, edges):
     return len(visited) == len(nodes)
 
 def countIONodes(nodes):
-    input_count = 0
-    output_count = 0
+    input = []
+    output = []
     
     for node in nodes:
         if node.name == "Input":
-            input_count += 1
+            input.append(node.fieldValue1)
         elif node.name == "Output":
-            output_count += 1
+            output.append(node.fieldValue1)
     
-    return input_count, output_count
+    return input, output
 
 @app.get('/')
 def read_root():
@@ -119,7 +119,7 @@ def parse_pipeline(pipeline: Pipeline):
     with open(file_path, "w") as file:
         json.dump(pipeline.dict(), file, indent=4)
     
-    output = execute_pipeline(pipeline)
+    output = 'Deployed'
     return {"num_nodes": num_nodes, "num_edges": num_edges, "is_dag": is_dag, "is_con": is_con, "inp": inp, "out": out, "output": output}
 
 @app.post('/deployment/parse')

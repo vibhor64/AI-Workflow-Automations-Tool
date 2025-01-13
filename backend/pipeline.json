@@ -1,92 +1,74 @@
 {
     "formattedNodes": [
         {
-            "id": "NodeNode-1",
-            "name": "Input",
+            "id": "NodeNode-21",
+            "name": "Llama",
             "rightHandles": 1,
-            "leftHandles": 0,
-            "sources": [],
-            "targets": [
-                "user_query"
-            ],
-            "fieldValue1": "user_query",
-            "fieldValue2": ""
-        },
-        {
-            "id": "NodeNode-2",
-            "name": "Text",
-            "rightHandles": 1,
-            "leftHandles": 0,
-            "sources": [],
-            "targets": [
-                "Output"
-            ],
-            "fieldValue1": "You are ThumbnailGPT, a YouTube thumbnail specialist hired by Mr. Beast, Dude Perfect....",
-            "fieldValue2": ""
-        },
-        {
-            "id": "NodeNode-3",
-            "name": "GPT-4 Vision",
-            "rightHandles": 1,
-            "leftHandles": 5,
+            "leftHandles": 6,
             "sources": [
                 "system",
                 "prompt",
-                "image",
-                "user_query",
+                "target_audience",
+                "challenges",
+                "solutions",
                 "context"
             ],
             "targets": [
                 "response"
             ],
-            "fieldValue1": "User's query:\n{{user_query}} \n\nContext:\n{{context}}",
-            "fieldValue2": ""
+            "fieldValue1": "Create an email copy without subject that is personalized to: {{target_audience}}\n\nHowever, they face several challenges.\n{{challenges}}\n\nThese are the solutions we provide:\n{{solutions}}\n\nAdditional context:\n{{context}}",
+            "fieldValue2": "Create an email copy and subject line that stresses urgency and scarcity, with a curious tone."
         },
         {
-            "id": "NodeNode-4",
-            "name": "Database",
+            "id": "NodeNode-22",
+            "name": "Input",
             "rightHandles": 1,
-            "leftHandles": 1,
-            "sources": [
-                "query"
-            ],
+            "leftHandles": 0,
+            "sources": [],
             "targets": [
-                "results"
+                ""
             ],
             "fieldValue1": "",
             "fieldValue2": ""
         },
         {
-            "id": "NodeNode-5",
-            "name": "GPT-4 Vision",
-            "rightHandles": 1,
-            "leftHandles": 4,
-            "sources": [
-                "system",
-                "prompt",
-                "image",
-                "My_face"
-            ],
-            "targets": [
-                "response"
-            ],
-            "fieldValue1": "Replace the image of the person by my face. Here is a photo of my face: {{My_face}}",
-            "fieldValue2": ""
-        },
-        {
-            "id": "NodeNode-6",
-            "name": "File",
+            "id": "NodeNode-23",
+            "name": "Input",
             "rightHandles": 1,
             "leftHandles": 0,
             "sources": [],
             "targets": [
-                "My_face"
+                "challenges"
             ],
-            "fieldValue1": "My_face",
+            "fieldValue1": "challenges",
             "fieldValue2": ""
         },
         {
-            "id": "NodeNode-7",
+            "id": "NodeNode-24",
+            "name": "Input",
+            "rightHandles": 1,
+            "leftHandles": 0,
+            "sources": [],
+            "targets": [
+                "solutions"
+            ],
+            "fieldValue1": "solutions",
+            "fieldValue2": ""
+        },
+        {
+            "id": "NodeNode-25",
+            "name": "Input",
+            "rightHandles": 1,
+            "leftHandles": 0,
+            "sources": [],
+            "targets": [
+                "context"
+            ],
+            "fieldValue1": "context",
+            "fieldValue2": ""
+        },
+        {
+            "id": "NodeNode-26",
             "name": "Output",
             "rightHandles": 0,
             "leftHandles": 1,
@@ -94,66 +76,45 @@
                 "Output"
             ],
             "targets": [],
-            "fieldValue1": "Final Image",
+            "fieldValue1": "",
             "fieldValue2": ""
         }
     ],
     "formattedEdges": [
         {
-            "id": "reactflow__edge-NodeNode-1NodeNode-1-right-handle-0-NodeNode-4NodeNode-4-left-handle-0",
-            "source": "NodeNode-1",
-            "target": "NodeNode-4",
-            "sourceHandle": "NodeNode-1-right-handle-0",
-            "targetHandle": "NodeNode-4-left-handle-0"
+            "id": "reactflow__edge-NodeNode-23NodeNode-23-right-handle-0-NodeNode-21NodeNode-21-left-handle-3",
+            "source": "NodeNode-23",
+            "target": "NodeNode-21",
+            "sourceHandle": "NodeNode-23-right-handle-0",
+            "targetHandle": "NodeNode-21-left-handle-3"
         },
         {
-            "id": "reactflow__edge-NodeNode-4NodeNode-4-right-handle-0-NodeNode-3NodeNode-3-left-handle-4",
-            "source": "NodeNode-4",
-            "target": "NodeNode-3",
-            "sourceHandle": "NodeNode-4-right-handle-0",
-            "targetHandle": "NodeNode-3-left-handle-4"
+            "id": "reactflow__edge-NodeNode-22NodeNode-22-right-handle-0-NodeNode-21NodeNode-21-left-handle-2",
+            "source": "NodeNode-22",
+            "target": "NodeNode-21",
+            "sourceHandle": "NodeNode-22-right-handle-0",
+            "targetHandle": "NodeNode-21-left-handle-2"
         },
         {
-            "id": "reactflow__edge-NodeNode-1NodeNode-1-right-handle-0-NodeNode-3NodeNode-3-left-handle-3",
-            "source": "NodeNode-1",
-            "target": "NodeNode-3",
-            "sourceHandle": "NodeNode-1-right-handle-0",
-            "targetHandle": "NodeNode-3-left-handle-3"
+            "id": "reactflow__edge-NodeNode-24NodeNode-24-right-handle-0-NodeNode-21NodeNode-21-left-handle-4",
+            "source": "NodeNode-24",
+            "target": "NodeNode-21",
+            "sourceHandle": "NodeNode-24-right-handle-0",
+            "targetHandle": "NodeNode-21-left-handle-4"
         },
         {
-            "id": "reactflow__edge-NodeNode-2NodeNode-2-right-handle-0-NodeNode-3NodeNode-3-left-handle-0",
-            "source": "NodeNode-2",
-            "target": "NodeNode-3",
-            "sourceHandle": "NodeNode-2-right-handle-0",
-            "targetHandle": "NodeNode-3-left-handle-0"
+            "id": "reactflow__edge-NodeNode-25NodeNode-25-right-handle-0-NodeNode-21NodeNode-21-left-handle-5",
+            "source": "NodeNode-25",
+            "target": "NodeNode-21",
+            "sourceHandle": "NodeNode-25-right-handle-0",
+            "targetHandle": "NodeNode-21-left-handle-5"
         },
         {
-            "id": "reactflow__edge-NodeNode-5NodeNode-5-right-handle-0-NodeNode-7NodeNode-7-left-handle-0",
-            "source": "NodeNode-5",
-            "target": "NodeNode-7",
-            "sourceHandle": "NodeNode-5-right-handle-0",
-            "targetHandle": "NodeNode-7-left-handle-0"
-        },
-        {
-            "id": "reactflow__edge-NodeNode-2NodeNode-2-right-handle-0-NodeNode-5NodeNode-5-left-handle-0",
-            "source": "NodeNode-2",
-            "target": "NodeNode-5",
-            "sourceHandle": "NodeNode-2-right-handle-0",
-            "targetHandle": "NodeNode-5-left-handle-0"
-        },
-        {
-            "id": "reactflow__edge-NodeNode-6NodeNode-6-right-handle-0-NodeNode-5NodeNode-5-left-handle-3",
-            "source": "NodeNode-6",
-            "target": "NodeNode-5",
-            "sourceHandle": "NodeNode-6-right-handle-0",
-            "targetHandle": "NodeNode-5-left-handle-3"
-        },
-        {
-            "id": "reactflow__edge-NodeNode-3NodeNode-3-right-handle-0-NodeNode-5NodeNode-5-left-handle-2",
-            "source": "NodeNode-3",
-            "target": "NodeNode-5",
-            "sourceHandle": "NodeNode-3-right-handle-0",
-            "targetHandle": "NodeNode-5-left-handle-2"
+            "id": "reactflow__edge-NodeNode-21NodeNode-21-right-handle-0-NodeNode-26NodeNode-26-left-handle-0",
+            "source": "NodeNode-21",
+            "target": "NodeNode-26",
+            "sourceHandle": "NodeNode-21-right-handle-0",
+            "targetHandle": "NodeNode-26-left-handle-0"
         }
     ]
 }

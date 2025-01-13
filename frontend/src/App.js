@@ -1,3 +1,4 @@
+import { DepScreen } from './components/depScreen';
 import { PipelineToolbar } from './toolbar';
 import { PipelineUI } from './ui';
 import { useState } from 'react';
@@ -8,7 +9,7 @@ function App() {
   const [hover, setHover] = useState(false);
 
   return (
-    <div style={{ padding: '7px', backgroundColor: '#6579c9', }}>
+    <div style={{ padding: '7px', backgroundColor: '#6B87E3', }}>
       {/* Category Selector */}
       <div style={{ display: 'flex', gap: '10px', marginBottom: '10px', marginLeft: '15px' }}>
         <select value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)}
@@ -48,8 +49,7 @@ function App() {
       }
       {selectedCategory === 'Deployment' &&
         <>
-          {/* <PipelineToolbar />
-      <PipelineUI /> */}
+          <DepScreen />
         </>
       }
       {selectedCategory === 'Knowledge' &&

@@ -1,19 +1,45 @@
 // templates.js
 import Add from '../assets/add.png';
+import save from '../assets/save.png';
 import Close from '../assets/close.png';
+import select from '../assets/select.png';
 import { useState } from 'react';
 import styles from './templates.module.css';
+// import { templateNodes } from './templateNodes';
+import { useStore } from '../store';
+import { shallow } from 'zustand/shallow';
+
+const selector = (state) => ({
+    loadTemplate: state.loadTemplate,
+    addTemplate: state.addTemplate,
+    templateWorkflows: state.templateWorkflows,
+    nodes: state.nodes,
+    edges: state.edges,
+  });
 
 export const Templates = () => {
 
     const [hover, setHover] = useState(false);
     const [hoverClose, setHoverClose] = useState(false);
+    const [hoverSave, setHoverSave] = useState(false);
     const [showBox, setShowBox] = useState(false);
     const [showBox2, setShowBox2] = useState(false);
+    const [saveBox, setSaveBox] = useState(false);
+    const [content, setContent] = useState('All Templates');
+    const [tempName, setTempName] = useState('My template-1');
+
+    const {
+        loadTemplate,
+        addTemplate,
+        templateWorkflows,
+        nodes,
+        edges,
+      } = useStore(selector, shallow);
 
     const handleClick = () => {
         setHoverClose(false);
         setShowBox2(false);
+        setSaveBox(false);
         setTimeout(() => setShowBox(false), 180);
     };
 
@@ -22,7 +48,29 @@ export const Templates = () => {
         setTimeout(() => setShowBox2(true), 20);
     };
 
+    const handleSaveBox = () => {
+        setSaveBox(!saveBox);
+    };
 
+    const handleTemplateClick = (template) => {
+        handleClick();
+        loadTemplate(template);
+    }
+
+    const saveTemplate = () => {
+        handleClick();
+        const newTemplate = {
+            templateName: tempName,
+            displayImage: select,
+            templateId: `template-${templateWorkflows.length + 2}`,
+            tags: ["Saved"],
+            nodes: nodes,
+            edges: edges,
+          };
+        addTemplate(newTemplate);
+    }
+
+    // console.log(templateWorkflows[0])
 
     return (
         <>
@@ -61,6 +109,54 @@ export const Templates = () => {
                 </button>
             </div>
 
+            <div style={{ display: 'flex', position: 'absolute', top: '10px', height: '10vh', alignItems: 'center', justifyContent: 'center', left: '86.6%', justifyItems: 'center' }}>
+                <button
+                    onMouseEnter={() => setHoverSave(true)}
+                    onMouseLeave={() => setHoverSave(false)}
+                    onClick={handleSaveBox}
+                    style={{
+                        backgroundColor: hoverSave ? '#3b59d1' : '#2d4ecf',
+                        borderRadius: '4px',
+                        border: hoverSave ? '2px solid #3b59d1' : '2px solid #2d4ecf',
+                        color: '#9dadff',
+                        color: '#fff',
+                        cursor: 'pointer',
+                        display: 'inline-block',
+                        fontSize: '8px',
+                        fontWeight: 600,
+                        listStyle: 'none',
+                        margin: '0',
+                        padding: '6px 6px',
+                        textAlign: 'center',
+                        transition: 'all 200ms',
+                        verticalAlign: 'baseline',
+                        whiteSpace: 'nowrap',
+                        userSelect: 'none',
+                        WebkitUserSelect: 'none',
+                        touchAction: 'manipulation',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        display: 'flex',
+                        flexDirection: 'column'
+                    }}
+                    type="submit">
+                    <img src={save} alt="Add" style={{ width: '26px', height: '26px' }} />
+                </button>
+            </div>
+
+            {saveBox && (
+                <div className={styles.save}>
+                    <span style={{ fontSize: '26px', fontWeight: 'bold', color: '#000', marginLeft: '15px', marginTop: '14px' }}>Save Template</span>
+                    <input className={styles.saveInput} type="text" placeholder="Template Name" value={tempName} onChange={(e) => setTempName(e.target.value)} />
+                    <button onClick={saveTemplate} className={styles.saveButton}>Save</button>
+
+                    <button onMouseEnter={() => setHoverClose(true)} onMouseLeave={() => setHoverClose(false)}
+                        style={{ backgroundColor: hoverClose ? '#d1d1d1' : '#fff', height: hoverClose ? '30px' : '24px', width: hoverClose ? '30px' : '24px', position: 'absolute', top: '10px', right: '10px', border: 'none', cursor: 'pointer', alignItems: 'center', justifyContent: 'center', display: 'flex', borderRadius: '50%', transition: 'all 0.2s ease' }}
+                        onClick={handleClick}><img src={Close} alt="Close" style={{ width: '22px', height: '22px' }} /></button>
+                </div>
+
+            )}
+
             {showBox && (
 
                 <div style={{ display: 'flex', position: 'absolute', top: '40%', height: showBox2 ? '60vh' : '0vh', left: '50%', backgroundColor: '#fff', width: showBox2 ? '70vw' : '0vw', transform: 'translate(-50%, -50%)', borderRadius: '8px', border: showBox2 ? '4px solid #2d4ecf' : '0px solid #2d4ecf', transition: 'all 0.2s ease', flexDirection: 'row', opacity: showBox2 ? 1 : 0 }}>
@@ -71,11 +167,11 @@ export const Templates = () => {
 
                     <div style={{ height: '100%', width: '22%', display: 'flex', flexDirection: 'column', backgroundColor: '#D9D9D9', borderTopLeftRadius: '4px', borderBottomLeftRadius: '4px', }}>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '0px', marginTop: '70px', marginLeft: '30px' }}>
-                            <button className={styles.buttons}>All Templates</button>
-                            <button className={styles.buttons}>Gmail</button>
-                            <button className={styles.buttons}>Gen AI</button>
-                            <button className={styles.buttons}>YouTube</button>
-                            <button className={styles.buttons}>Saved</button>
+                            <button onClick={() => setContent('All Templates')} className={styles.buttons}>All Templates</button>
+                            <button onClick={() => setContent('Gmail')} className={styles.buttons}>Gmail</button>
+                            <button onClick={() => setContent('Gen AI')} className={styles.buttons}>Gen AI</button>
+                            <button onClick={() => setContent('YouTube')} className={styles.buttons}>YouTube</button>
+                            <button onClick={() => setContent('Saved')} className={styles.buttons}>Saved</button>
                         </div>
                     </div>
 
@@ -86,15 +182,23 @@ export const Templates = () => {
 
                         <div style={{ display: 'flex', marginTop: '0px', marginLeft: '30px', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'flex-start', alignItems: 'flex-start' }}>
 
-                            <div className={styles.cons} style={{ height: '120px', width: '120px', backgroundColor: '#D9D9D9', borderRadius: '8px', alignItems: 'center', justifyContent: 'center', display: 'flex', marginTop: '0px', marginRight: '20px' }}>
+                            {templateWorkflows
+                            .filter((template) => content === "All Templates" || template.tags.includes(content))
+                            .map((template) => (
+                                <button key={template.templateId} className={styles.cons} 
+                                onClick={() => handleTemplateClick(template)}
+                                style={{ height: '120px', width: '120px', backgroundColor: '#D9D9D9', borderRadius: '8px', alignItems: 'center', justifyContent: 'space-between', display: 'flex', marginTop: '0px', marginRight: '20px', display: 'flex', flexDirection: 'column', border: '0px solid #2d4ecf', cursor: 'pointer' }}>
+                                    <img src={template?.displayImage} alt="Image" style={{ height: '40px', marginTop: '20px', opacity: '0.8'}} />
+                                    <p style={{ fontSize: '9px', fontWeight: 'bold', color: '#fff', textAlign: 'center', marginLeft: '8px', marginRight: '8px', marginBottom: '15px' }}>{template.templateName}</p>
+                                </button>
+                            ))}
+
+                            {/* <div className={styles.cons} style={{ height: '120px', width: '120px', backgroundColor: '#D9D9D9', borderRadius: '8px', alignItems: 'center', justifyContent: 'center', display: 'flex', marginTop: '0px', marginRight: '20px' }}>
                                 <p style={{ fontSize: '9px', fontWeight: 'bold', color: '#fff', textAlign: 'center', marginLeft: '8px', marginRight: '8px' }}>YouTube Thumbnail leveraging Gen AI</p>
                             </div>
                             <div className={styles.cons} style={{ height: '120px', width: '120px', backgroundColor: '#D9D9D9', borderRadius: '8px', alignItems: 'center', justifyContent: 'center', display: 'flex', marginTop: '0px', marginRight: '20px' }}>
                                 <p style={{ fontSize: '9px', fontWeight: 'bold', color: '#fff', textAlign: 'center', marginLeft: '8px', marginRight: '8px' }}>YouTube Thumbnail leveraging Gen AI</p>
-                            </div>
-                            <div className={styles.cons} style={{ height: '120px', width: '120px', backgroundColor: '#D9D9D9', borderRadius: '8px', alignItems: 'center', justifyContent: 'center', display: 'flex', marginTop: '0px', marginRight: '20px' }}>
-                                <p style={{ fontSize: '9px', fontWeight: 'bold', color: '#fff', textAlign: 'center', marginLeft: '8px', marginRight: '8px' }}>YouTube Thumbnail leveraging Gen AI</p>
-                            </div>
+                            </div> */}
 
 
                         </div>

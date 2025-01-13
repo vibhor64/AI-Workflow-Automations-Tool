@@ -3,6 +3,7 @@
 import { create } from "zustand";
 import { defaultNodes } from "./nodes/nodes"
 import { defaultEdges } from "./nodes/edges"
+import { templateNodes } from "./components/templateNodes";
 
 import {
   addEdge,
@@ -14,6 +15,11 @@ import {
 export const useStore = create((set, get) => ({
   nodes: defaultNodes,
   edges: defaultEdges,
+  templateWorkflows: templateNodes,
+  deploymentVariables: {
+    "inputs": ['Category', 'YOE', 'Description'],
+    "outputs": [''],
+  },
   nodeIDs: (() => {
     // Initialize nodeIDs based on the defaultNodes
     const ids = {};
@@ -52,6 +58,16 @@ export const useStore = create((set, get) => ({
       edges: template.edges
     });
   },
+  addTemplate: (template) => {
+    set({
+      templateWorkflows: [...get().templateWorkflows, template],
+    });
+  },
+    createDeployment: (inp, out) => {
+      set({
+        deploymentVariables: {"inputs": inp, "outputs": out}
+      });
+    },
   onNodesChange: (changes) => {
     set({
       nodes: applyNodeChanges(changes, get().nodes),
