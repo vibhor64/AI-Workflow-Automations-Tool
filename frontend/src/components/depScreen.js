@@ -26,7 +26,7 @@ export const DepScreen = () => {
             </div>
 
             {Object.keys(deploymentVariables).length > 0 ? (
-                <Deployment inputs={deploymentVariables.inputs} outputs={deploymentVariables.outputs}/>
+                <Deployment inputs={deploymentVariables.inputs} outputs={deploymentVariables.outputs} integrations = {deploymentVariables.integration}/>
             ) : 
             <BlankDeployment/>
             }

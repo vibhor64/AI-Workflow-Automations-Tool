@@ -19,12 +19,13 @@ export const useStore = create((set, get) => ({
   deploymentVariables: {
     "inputs": ['Category', 'YOE', 'Description'],
     "outputs": [''],
+    "integration": [],
   },
   nodeIDs: (() => {
     // Initialize nodeIDs based on the defaultNodes
     const ids = {};
     defaultNodes.forEach((node) => {
-      const [type, count] = node.id.split('-'); // Assume IDs are in the format "type-number"
+      const [type, count] = node.id.split('-');
       const number = parseInt(count, 10);
       if (!isNaN(number)) {
         ids[type] = Math.max(ids[type] || 0, number);
@@ -63,9 +64,9 @@ export const useStore = create((set, get) => ({
       templateWorkflows: [...get().templateWorkflows, template],
     });
   },
-    createDeployment: (inp, out) => {
+    createDeployment: (inp, out, integration) => {
       set({
-        deploymentVariables: {"inputs": inp, "outputs": out}
+        deploymentVariables: {"inputs": inp, "outputs": out, "integration": integration},
       });
     },
   onNodesChange: (changes) => {

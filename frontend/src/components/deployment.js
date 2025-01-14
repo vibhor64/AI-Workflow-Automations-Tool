@@ -4,12 +4,28 @@ import { FourSquare } from "react-loading-indicators";
 
 export const Deployment = (props) => {
     // console.log(inputs, outputs)
-    const { inputs, outputs } = props;
+    const { inputs, outputs, integrations } = props;
+    const [inputValues, setInputValues] = useState({});
     const [hoverInput, setHoverInput] = useState(null);
     const [hoverButton, setHoverButton] = useState(false);
     const [hoverButton2, setHoverButton2] = useState(false);
     const [focusInput, setFocusInput] = useState(null);
-    console.log(inputs)
+    // console.log(inputs, outputs, integrations)
+
+    const handleInputChange = (index, value) => {
+        setInputValues(prev => ({ ...prev, [index]: value }));
+        console.log(inputValues);
+    };
+
+    const autoResize = (e) => {
+        e.target.style.paddingBottom = '0px';
+        e.target.style.height = 'auto';
+        e.target.style.height = `${e.target.scrollHeight}px`;
+    };
+
+    const handleRun = () => {
+        // console.log(inputs, outputs, integrations)
+    }
 
     return (
         <div style={{ height: '89vh', width: '99vw', backgroundColor: '#fff', color: '#000', display: 'flex', borderRadius: '10px' }}>
@@ -25,6 +41,9 @@ export const Deployment = (props) => {
                                     : styles.textInput}
                             type="text"
                             placeholder="Type here..."
+                            value={inputValues[value] || ''}
+                            onChange={(e) => handleInputChange(value, e.target.value)}
+                            onInput={autoResize}
                             onMouseEnter={() => setHoverInput(index)}
                             onMouseLeave={() => setHoverInput(null)}
                             onFocus={() => setFocusInput(index)}
@@ -33,21 +52,24 @@ export const Deployment = (props) => {
                         />
                     </div>
                 ))}
-                <button style={hoverButton2 ? { ...styles.goButton, backgroundColor: '#385EF4' } : styles.goButton} onMouseEnter={() => setHoverButton2(true)} onMouseLeave={() => setHoverButton2(false)}>Run</button>
+                <button style={hoverButton2 ? { ...styles.goButton, backgroundColor: '#385EF4' } : styles.goButton} onMouseEnter={() => setHoverButton2(true)} onMouseLeave={() => setHoverButton2(false)}
+                    onClick={handleRun}
+                >Run</button>
             </div>
 
+            {/* Output */}
             <div style={{ marginTop: '1.5vh', marginLeft: '10em', width: '30vw' }}>
                 <h1 style={{ fontSize: '55px', fontWeight: 'bold', }}>Output</h1>
-                <div style={{ display: 'flex', marginLeft: '7em', marginTop: '3em',}}>
+                <div style={{ display: 'flex', marginLeft: '7em', marginTop: '3em', }}>
                     <FourSquare color="#2D4ECF" size="medium" text="Thinking Hard..." textColor="" />
                 </div>
             </div>
 
-
+            {/* Automation */}
             <div style={{ marginTop: '1.5vh', width: '30vw', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                 <h1 style={{ fontSize: '55px', fontWeight: 'bold', color: '#2D4ECF' }}>Automation</h1>
-                <span style={{ fontSize: '18px', fontWeight: 'bold', marginTop: '5vh', maxWidth: '90%', textAlign: 'center', color: '#5B5B5B' }}>Your current workflow can be completely automated using 3rd party integrations. Click the button below to never bother doing this task again by yourself!</span>
-                <button style={hoverButton ? { ...styles.autoButton, backgroundColor: '#2744B3' } : styles.autoButton} onMouseEnter={() => setHoverButton(true)} onMouseLeave={() => setHoverButton(false)}>Automate this ✨</button>
+                <span style={{ fontSize: '18px', fontWeight: 'bold', marginTop: '5vh', maxWidth: '90%', textAlign: 'center', color: '#5B5B5B' }}> {integrations.length > 0 ? 'Your current workflow can be completely automated using 3rd party integrations. Click the button below to never bother doing this task again by yourself!' : 'Your current workflow is already full automated. If you utilize third party integrations, you will need to perform this step.'}</span>
+                <button style={hoverButton && integrations.length > 0 ? { ...styles.autoButton, backgroundColor: '#2744B3' } : integrations.length > 0 ? styles.autoButton : { ...styles.autoButton, backgroundColor: '#8AA1FF' }} onMouseEnter={() => setHoverButton(true)} onMouseLeave={() => setHoverButton(false)}> {integrations.length > 0 ? 'Automate this ✨' : 'Automated ✅'}</button>
             </div>
         </div>
     )
@@ -63,19 +85,15 @@ const styles = {
         fontSize: '14px',
         marginTop: '0.7em',
         fontWeight: 'medium',
-        width: '15vw',
+        minWidth: '15vw',
+        // height: '14px',
         padding: '8px',
         paddingBottom: '8px',
-        listStyle: 'none',
-        textAlign: 'left',
         transition: 'all 0.2s',
+        lineHeight: '1',
+        outline: 'none',
         overflow: "hidden",
         resize: "none",
-        whiteSpace: 'nowrap',
-        userSelect: 'none',
-        WebkitUserSelect: 'none',
-        outline: 'none',
-        touchAction: 'manipulation',
     },
     autoButton: {
         backgroundColor: '#2D4ECF',

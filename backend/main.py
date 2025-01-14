@@ -91,14 +91,17 @@ def isConnected(nodes, edges):
 def countIONodes(nodes):
     input = []
     output = []
+    integration = []
     
     for node in nodes:
         if node.name == "Input":
             input.append(node.fieldValue1)
         elif node.name == "Output":
             output.append(node.fieldValue1)
+        elif node.name == "Coming Soon":
+            integration.append(node.name)
     
-    return input, output
+    return input, output, integration
 
 @app.get('/')
 def read_root():
@@ -111,7 +114,7 @@ def parse_pipeline(pipeline: Pipeline):
     num_edges = len(pipeline.formattedEdges)
     is_dag = checkDAG(pipeline.formattedNodes, pipeline.formattedEdges)
     is_con = isConnected(pipeline.formattedNodes, pipeline.formattedEdges)
-    inp, out = countIONodes(pipeline.formattedNodes)
+    inp, out, integration = countIONodes(pipeline.formattedNodes)
     if not is_dag and not is_con:
         return {"num_nodes": num_nodes, "num_edges": num_edges, "is_dag": is_dag, "is_con": is_con, "inp": inp, "out": out, "output": 'NONE'}
     
@@ -120,7 +123,7 @@ def parse_pipeline(pipeline: Pipeline):
         json.dump(pipeline.dict(), file, indent=4)
     
     output = 'Deployed'
-    return {"num_nodes": num_nodes, "num_edges": num_edges, "is_dag": is_dag, "is_con": is_con, "inp": inp, "out": out, "output": output}
+    return {"num_nodes": num_nodes, "num_edges": num_edges, "is_dag": is_dag, "is_con": is_con, "inp": inp, "out": out,"integration" : integration, "output": output}
 
 @app.post('/deployment/parse')
 def parse_deployment():

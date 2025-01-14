@@ -3,7 +3,7 @@
 // --------------------------------------------------
 
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { Handle, Position, useUpdateNodeInternals } from 'reactflow';
 // import { Position } from 'reactflow';
 import { useStore } from '../store';
@@ -39,8 +39,14 @@ export const NewNode = ({ id, data }) => {
         fieldValue2: fieldValue2
     } = data;
 
-    const [currName, setCurrName] = useState(fieldValue1 || 'Node-'+id.split('-')[1]);
-    const [currName2, setCurrName2] = useState(fieldValue2 || 'Node-'+id.split('-')[1]);
+    const {
+        updateNodeField,
+    } = useStore(selector, shallow);
+
+    const initialName = fieldValue1 || `Node-${id.split('-')[1]}`;
+    const initialName2 = fieldValue2 || `Node-${id.split('-')[1]}`;
+    const [currName, setCurrName] = useState(initialName);
+    const [currName2, setCurrName2] = useState(initialName2);
     const [inputType, setInputType] = useState(id || 'Text');
     const [LH, setLH] = useState(leftHandles);
     const [isFocused, setIsFocused] = useState(false);
@@ -50,16 +56,10 @@ export const NewNode = ({ id, data }) => {
 
     const [initSources, setInitSources] = useState(sources);
 
-    const {
-        nodes,
-        edges,
-        getNodeID,
-        addNode,
-        onNodesChange,
-        onEdgesChange,
-        onConnect,
-        updateNodeField,
-    } = useStore(selector, shallow);
+    useEffect(() => {
+        updateNodeField(id, 'fieldValue1', initialName);
+        updateNodeField(id, 'fieldValue2', initialName2);
+    }, [id, initialName, initialName2]);
 
     const handleNameChange = (e) => {
         setCurrName(e.target.value);
@@ -210,13 +210,13 @@ export const NewNode = ({ id, data }) => {
                                     backgroundColor: hover ? '#d9d9d9' : '#ededed',
                                     border: `2px solid ${isFocused ? bgcolor : '#fff'}`,
                                     borderRadius: '8px',
-                                    lineHeight: '1',
                                     padding: '5px',
                                     paddingLeft: '7px',
                                     paddingRight: '7px',
                                     minWidth: '150px',
                                     height: '14px',
                                     fontSize: '12px',
+                                    lineHeight: '1',
                                     outline: 'none',
                                     overflow: "hidden",
                                     resize: "none",

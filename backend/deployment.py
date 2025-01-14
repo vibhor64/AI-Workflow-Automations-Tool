@@ -2,8 +2,9 @@ import networkx as nx
 import google.generativeai as genai
 import markdown
 import PIL.Image
+import os
 
-GOOGLE_API_KEY=''
+GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 genai.configure(api_key=GOOGLE_API_KEY)
 model = genai.GenerativeModel('gemini-1.5-flash')
 

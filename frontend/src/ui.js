@@ -136,7 +136,7 @@ export const PipelineUI = () => {
         formattedEdges
       });
       // console.log('Response:', response.data);
-      const { num_nodes, num_edges, is_dag, is_con, inp, out, output } = response.data;
+      const { num_nodes, num_edges, is_dag, is_con, inp, out, integration, output } = response.data;
       if (!is_dag)
         alert(` Invalid pipeline! \n A cycle has been detected!`);
       else if (!is_con)
@@ -146,8 +146,8 @@ export const PipelineUI = () => {
       else
         // alert(` Number of Nodes: ${num_nodes} \n Number of Edges: ${num_edges} \n No cycle found in graph! \n Output: ${output}`);
         alert(`Deployment Successful! Head over to Deployment tab to access your pipeline`);
-        // console.log(inp, out);
-        createDeployment(inp, out);
+        console.log(inp, out, integration);
+        createDeployment(inp, out, integration);
     } catch (error) {
       console.error('Error sending pipeline data:', error);
       alert('Error occurred while processing the pipeline!');

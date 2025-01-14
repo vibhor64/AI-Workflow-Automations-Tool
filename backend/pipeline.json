@@ -26,10 +26,10 @@
             "leftHandles": 0,
             "sources": [],
             "targets": [
-                ""
+                "audience"
             ],
-            "fieldValue1": "",
-            "fieldValue2": ""
+            "fieldValue1": "audience",
+            "fieldValue2": "Node-22"
         },
         {
             "id": "NodeNode-23",
@@ -41,7 +41,7 @@
                 "challenges"
             ],
             "fieldValue1": "challenges",
-            "fieldValue2": ""
+            "fieldValue2": "Node-23"
         },
         {
             "id": "NodeNode-24",
@@ -53,7 +53,7 @@
                 "solutions"
             ],
             "fieldValue1": "solutions",
-            "fieldValue2": ""
+            "fieldValue2": "Node-24"
         },
         {
             "id": "NodeNode-25",
@@ -65,7 +65,7 @@
                 "context"
             ],
             "fieldValue1": "context",
-            "fieldValue2": ""
+            "fieldValue2": "Node-25"
         },
         {
             "id": "NodeNode-26",
@@ -76,8 +76,8 @@
                 "Output"
             ],
             "targets": [],
-            "fieldValue1": "",
-            "fieldValue2": ""
+            "fieldValue1": "Node-26",
+            "fieldValue2": "Node-26"
         }
     ],
     "formattedEdges": [
