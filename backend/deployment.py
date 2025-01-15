@@ -3,7 +3,9 @@ import google.generativeai as genai
 import markdown
 import PIL.Image
 import os
+from dotenv import load_dotenv
 
+load_dotenv()
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 genai.configure(api_key=GOOGLE_API_KEY)
 model = genai.GenerativeModel('gemini-1.5-flash')
@@ -15,6 +17,7 @@ def execute_pipeline(pipeline):
     handleMap = {} # handle id : source node id
     global resMap
     resMap = {} # node id : result
+    print(pipeline.formattedNodes)
 
     for node in pipeline.formattedNodes:
         G.add_node(node.id, type=node.name, rightHandles = int(node.rightHandles), leftHandles = int(node.leftHandles), sources = node.sources, targets = node.targets, fieldValue1 = node.fieldValue1, fieldValue2 = node.fieldValue2)
@@ -36,7 +39,7 @@ def execute_pipeline(pipeline):
             handle_DB(node_id)
 
         elif node_type == "OpenAI" or node_type == "Anthropic" or node_type == "Llama"or node_type == "Gemini" or node_type == "Perplexity" or node_type == "AWS":
-            handle_llm(node_id, node_data["fieldValue1"], node_data["fieldValue2"])
+            handle_llm(node_id, node_data["fieldValue1"], node_data["fieldValue2"], node_data["sources"])
         elif node_type == "GPT-4 Vision" or node_type == "Anthropic Vision" or node_type == "Gemini Vis":
             handle_vision_llm(node_id, node_data["fieldValue1"], node_data["fieldValue2"])
 
@@ -46,6 +49,7 @@ def execute_pipeline(pipeline):
             print("Unknown node type:", node_type)
             resMap[id] = node_data["fieldValue1"]
 
+    print(res)
     return res
 
 
@@ -56,7 +60,7 @@ def handle_DB(id):
     query = resMap[handleMap[str(id + '-left-handle-0')]]
     resMap[id] = query
 
-def handle_llm(id, fieldValue1, fieldValue2):
+def handle_llm(id, fieldValue1, fieldValue2, sources):
     if str(id + '-left-handle-0') in handleMap:
         system = resMap[handleMap[str(id + '-left-handle-0')]]
     else:
@@ -67,10 +71,15 @@ def handle_llm(id, fieldValue1, fieldValue2):
     else:
         prompt = fieldValue1
     
-
+    for i in range(2, len(sources)):
+        if str(id + '-left-handle-' + str(i)) in handleMap:
+            userVariable = resMap[handleMap[str(id + '-left-handle-' + str(i))]]
+            prompt = prompt.replace('{{' + sources[i] + '}}', userVariable)
+    
+    print('waiting for LLM')
+    print(system + prompt)
     LLMOut = model.generate_content(system+prompt)
-    # print("LLM OUTPUT: ", LLMOut.text)
-    res=markdown.markdown(LLMOut.text, extensions=['markdown.extensions.tables'])
+    res= markdown.markdown(LLMOut.text, extensions=['markdown.extensions.tables'])
     resMap[id] = res
 
 def handle_vision_llm(id, fieldValue1, fieldValue2):

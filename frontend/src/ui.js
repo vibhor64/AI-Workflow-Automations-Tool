@@ -131,6 +131,7 @@ export const PipelineUI = () => {
     // saveJSONFile(edges, 'edges.json');
 
     try {
+      console.log('Sent information to backend');
       const response = await axios.post('http://127.0.0.1:8000/pipelines/parse', {
         formattedNodes,
         formattedEdges

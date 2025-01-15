@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
-from typing import List
+from typing import List, Dict
 from fastapi.middleware.cors import CORSMiddleware
 import json
 from deployment import execute_pipeline
@@ -36,6 +36,9 @@ class Edge(BaseModel):
 class Pipeline(BaseModel):
     formattedNodes: List[Node]
     formattedEdges: List[Edge]
+
+class PipelineInputs(BaseModel):
+    inputValues: Dict[str, str]
 
 # Verification functions
 def checkDAG(nodes, edges):
@@ -115,19 +118,24 @@ def parse_pipeline(pipeline: Pipeline):
     is_dag = checkDAG(pipeline.formattedNodes, pipeline.formattedEdges)
     is_con = isConnected(pipeline.formattedNodes, pipeline.formattedEdges)
     inp, out, integration = countIONodes(pipeline.formattedNodes)
-    if not is_dag and not is_con:
+    if not is_dag or not is_con:
         return {"num_nodes": num_nodes, "num_edges": num_edges, "is_dag": is_dag, "is_con": is_con, "inp": inp, "out": out, "output": 'NONE'}
     
-    file_path = f"pipeline.json"
-    with open(file_path, "w") as file:
-        json.dump(pipeline.dict(), file, indent=4)
+    # file_path = f"pipeline.json"
+    # with open(file_path, "w") as file:
+    #     json.dump(pipeline.dict(), file, indent=4)
     
     output = 'Deployed'
     return {"num_nodes": num_nodes, "num_edges": num_edges, "is_dag": is_dag, "is_con": is_con, "inp": inp, "out": out,"integration" : integration, "output": output}
 
 @app.post('/deployment/parse')
-def parse_deployment():
-    print("Deployment")
-    with open("pipeline.json", "r") as file:
-        pipeline = json.load(file)
-    return execute_pipeline(pipeline)
+def parse_deployment(pipeline: Pipeline):
+    # print("Deployment")
+    # with open("pipeline.json", "r") as file:
+    #     pipeline = json.load(file)
+    is_dag = checkDAG(pipeline.formattedNodes, pipeline.formattedEdges)
+    is_con = isConnected(pipeline.formattedNodes, pipeline.formattedEdges)
+    if not is_dag or not is_con:
+        return {"pipelineOutput": "<h1>Invalid Pipeline!</h1> <p>Your pipeline is either not fully connected, or contains a cycle.</p>"}
+    pipelineOutput = execute_pipeline(pipeline)
+    return {"pipelineOutput": pipelineOutput}

@@ -16,11 +16,7 @@ export const useStore = create((set, get) => ({
   nodes: defaultNodes,
   edges: defaultEdges,
   templateWorkflows: templateNodes,
-  deploymentVariables: {
-    "inputs": ['Category', 'YOE', 'Description'],
-    "outputs": [''],
-    "integration": [],
-  },
+  deploymentVariables: {},
   nodeIDs: (() => {
     // Initialize nodeIDs based on the defaultNodes
     const ids = {};
