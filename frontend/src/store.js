@@ -4,6 +4,7 @@ import { create } from "zustand";
 import { defaultNodes } from "./nodes/nodes"
 import { defaultEdges } from "./nodes/edges"
 import { templateNodes } from "./components/templateNodes";
+// import { TemplateBooks } from "./components/templateBooks";
 
 import {
   addEdge,
@@ -17,6 +18,7 @@ export const useStore = create((set, get) => ({
   edges: defaultEdges,
   templateWorkflows: templateNodes,
   deploymentVariables: {},
+  database: [],
   nodeIDs: (() => {
     // Initialize nodeIDs based on the defaultNodes
     const ids = {};
@@ -60,11 +62,21 @@ export const useStore = create((set, get) => ({
       templateWorkflows: [...get().templateWorkflows, template],
     });
   },
-    createDeployment: (inp, out, integration) => {
-      set({
-        deploymentVariables: {"inputs": inp, "outputs": out, "integration": integration},
-      });
-    },
+  createDeployment: (inp, out, integration) => {
+    set({
+      deploymentVariables: { "inputs": inp, "outputs": out, "integration": integration },
+    });
+  },
+  addBooks: (books) => {
+    set({
+      database: [...get().database, ...books],
+    });
+  },
+  modifyBook: (book) => {
+    set({
+      database: get().database.map((b) => (b.id === book.id ? book : b)),
+    });
+  },
   onNodesChange: (changes) => {
     set({
       nodes: applyNodeChanges(changes, get().nodes),

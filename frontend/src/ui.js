@@ -12,6 +12,7 @@ import RocketImg from './assets/rocket.png';
 import Reset from './assets/reset.png';
 import axios from 'axios';
 import { Templates } from './components/templates';
+// import './CreateDatabase.css';
 
 import 'reactflow/dist/style.css';
 

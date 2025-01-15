@@ -1,3 +1,4 @@
+import { DatabaseScreen } from './components/databaseScreen';
 import { DepScreen } from './components/depScreen';
 import { PipelineToolbar } from './toolbar';
 import { PipelineUI } from './ui';
@@ -54,8 +55,7 @@ function App() {
       }
       {selectedCategory === 'Knowledge' &&
         <>
-          <PipelineToolbar />
-          <PipelineUI />
+          <DatabaseScreen />
         </>
       }
     </div>
