@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FourSquare } from "react-loading-indicators";
 import axios from 'axios';
+import './deploy.css'
 
 export const Deployment = (props) => {
     // console.log(inputs, outputs)
@@ -13,6 +14,26 @@ export const Deployment = (props) => {
     const [pipelineOutput, setPipelineOutput] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     // console.log(inputs, outputs, integrations)
+    const [isVisible, setIsVisible] = useState(false);
+
+    // useEffect(() => {
+    //     if (pipelineOutput) {
+    //         setIsVisible(true);
+    //     }
+    // }, [pipelineOutput]);
+
+    useEffect(() => {
+        if (pipelineOutput) {
+
+            const container = document.querySelector('.output-container');
+            const children = container.children;
+
+            Array.from(children).forEach((child, index) => {
+                child.style.animationDelay = `${index * 0.15}s`; // Adjust delay per element
+            });
+        }
+    }, [pipelineOutput]);
+
 
     const handleInputChange = (index, value) => {
         setInputValues(prev => ({ ...prev, [index]: value }));
@@ -26,7 +47,7 @@ export const Deployment = (props) => {
     };
 
     const sendPipelineData = async () => {
-
+        setIsVisible(false);
         const formattedNodes = nodes.map(node => ({
             id: node.id,
             name: node.data.name,
@@ -113,15 +134,19 @@ export const Deployment = (props) => {
             {/* Output */}
             <div style={{ marginTop: '1.5vh', marginLeft: '10em', width: '33vw' }}>
                 <h1 style={{ fontSize: '55px', fontWeight: 'bold', }}>Output</h1>
-                {isLoading && (
+                {isLoading ? (
                     <div style={{ display: 'flex', marginLeft: '7em', marginTop: '3em', }}>
                         <FourSquare color="#2D4ECF" size="medium" text="Thinking Hard..." textColor="" />
                     </div>
+                ) :
+                    null}
+                {!isLoading && pipelineOutput && (
+                    <div
+                        className={`output-container ${isVisible ? 'fade-in' : ''}`}
+                        dangerouslySetInnerHTML={{ __html: pipelineOutput }}
+                        style={{ marginTop: '1em', paddingBottom: '1em', transition: 'all 0.3s ease-out' }}
+                    ></div>
                 )}
-                <div
-                    dangerouslySetInnerHTML={{ __html: pipelineOutput }}
-                    style={{ marginTop: '1em', paddingBottom: '1em' }}
-                />
             </div>
 
             {/* Automation */}

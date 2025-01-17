@@ -1,10 +1,11 @@
 import { useState } from "react";
 import Close from '../assets/close.png';
+import Delete from '../assets/delete.png';
 import info from '../assets/info.png';
-import './CreateDatabase.css';
 
-export const CreateDatabase = ({ onClose, type, name, text, urls, addBooks, modifyBook }) => {
+export const CreateDatabase = ({ onClose, type, id, name, text, urls, addBooks, modifyBook, deleteBook }) => {
     const [hoverClose, setHoverClose] = useState(false);
+    const [hoverDelete, setHoverDelete] = useState(false);
     const [bookName, setBookName] = useState(name);
     const [bookText, setBookText] = useState(text);
     const [bookUrl, setBookUrl] = useState(urls || []);
@@ -15,7 +16,7 @@ export const CreateDatabase = ({ onClose, type, name, text, urls, addBooks, modi
     const [hoverInput3, setHoverInput3] = useState(false);
     const [hoverInput4, setHoverInput4] = useState(false);
     const [hoverInput5, setHoverInput5] = useState(false);
-    console.log(bookUrl);
+    // console.log(id);
 
     const handleButtonClick = (e) => {
         e.stopPropagation();
@@ -37,9 +38,14 @@ export const CreateDatabase = ({ onClose, type, name, text, urls, addBooks, modi
 
     const saveBook = (e) => {
         if (type === 'create')
-            addBooks([{ "name": bookName, "text": bookText, "urls": bookUrl }]);
+            addBooks([{"id": id, "name": bookName, "text": bookText, "urls": bookUrl }]);
         else
-            modifyBook([{ "name": bookName, "text": bookText, "urls": bookUrl }]);
+            modifyBook({"id": id, "name": bookName, "text": bookText, "urls": bookUrl });
+        handleButtonClick(e);
+    }
+
+    const DeleteBook = (e) => {
+        deleteBook({"id": id, "name": bookName, "text": bookText, "urls": bookUrl });
         handleButtonClick(e);
     }
 
@@ -51,6 +57,12 @@ export const CreateDatabase = ({ onClose, type, name, text, urls, addBooks, modi
                 style={{ backgroundColor: hoverClose ? '#d1d1d1' : '#fff', height: hoverClose ? '30px' : '24px', width: hoverClose ? '30px' : '24px', position: 'absolute', top: '10px', right: '10px', border: 'none', cursor: 'pointer', alignItems: 'center', justifyContent: 'center', display: 'flex', borderRadius: '50%', transition: 'all 0.2s ease' }}
                 onClick={handleButtonClick}><img src={Close} alt="Close" style={{ width: '22px', height: '22px' }} /></button>
 
+            {type != 'create' ? (
+
+                <button onMouseEnter={() =>setHoverDelete(true)} onMouseLeave={() =>setHoverDelete(false)}
+                style={{ backgroundColor: hoverDelete ? '#d1d1d1' : '#fff', height: hoverDelete ? '30px' : '24px', width: hoverDelete ? '30px' : '24px', position: 'absolute', top: '10px', right: '50px', border: 'none', cursor: 'pointer', alignItems: 'center', justifyContent: 'center', display: 'flex', borderRadius: '50%', transition: 'all 0.2s ease' }}
+                onClick={DeleteBook}><img src={Delete} alt="Close" style={{ width: '22px', height: '22px' }} /></button>
+            ) : null}
             <button onMouseEnter={() => setHoverInput5(true)} onMouseLeave={() => setHoverInput5(false)}
                 style={{ backgroundColor: hoverInput5 ? '#d1d1d1' : '#2D4ECF', height: '26px', width: '50px', position: 'absolute', bottom: '10px', right: '20px', border: 'none', cursor: 'pointer', alignItems: 'center', justifyContent: 'center', display: 'flex', borderRadius: '6px', transition: 'all 0.2s ease', color: '#fff', fontWeight: 'bold' }}
                 onClick={saveBook}>Save</button>
@@ -175,6 +187,7 @@ const styles = {
         outline: 'none',
         overflow: "hidden",
         resize: "none",
+        cursor: "pointer"
     },
     addLink: {
         // fontFamily: 'Monospace',

@@ -68,14 +68,54 @@ export const useStore = create((set, get) => ({
     });
   },
   addBooks: (books) => {
-    set({
-      database: [...get().database, ...books],
-    });
+    if (books.length === 0) {return}
+    else if (books.length ===1 ){
+      const newBook = [{
+        id: get().database.length + 1,
+        name: books[0].name,
+        text: books[0].text,
+        urls: books[0].urls
+      }];
+      if (newBook[0].name === "" && newBook[0].text === "" && newBook[0].urls.length === 0){
+        console.log(newBook);
+        return;
+      }
+      set({
+        database: [...get().database, ...newBook],
+      });
+    }
+    else{
+      set({
+        database: [...get().database, ...books],
+      });
+    }
+    
   },
   modifyBook: (book) => {
-    set({
-      database: get().database.map((b) => (b.id === book.id ? book : b)),
-    });
+    const currentDatabase = get().database;
+    const bookExists = currentDatabase.some((b) => b.id === book.id);
+
+    if (bookExists) {
+      set({
+        database: currentDatabase.map((b) =>
+          b.id === book.id ? { ...b, ...book } : b
+        ),
+      });
+    } else {
+      console.warn(`Book with name "${book.name}" does not exist.`);
+    }
+  },
+  deleteBook: (book) => {
+    const currentDatabase = get().database;
+    const bookExists = currentDatabase.some((b) => b.id === book.id);
+  
+    if (bookExists) {
+      set({
+        database: currentDatabase.filter((b) => b.id !== book.id),
+      });
+    } else {
+      console.warn(`Book with id "${book.id}" does not exist.`);
+    }
   },
   onNodesChange: (changes) => {
     set({

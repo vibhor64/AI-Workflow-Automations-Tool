@@ -10,6 +10,7 @@ const selector = (state) => ({
     database: state.database,
     addBooks: state.addBooks,
     modifyBook: state.modifyBook,
+    deleteBook: state.deleteBook,
   });
 
 export const DatabaseScreen = () => {
@@ -19,6 +20,7 @@ export const DatabaseScreen = () => {
         database,
         addBooks,
         modifyBook,
+        deleteBook,
           } = useStore(selector, shallow);
         // console.log(deploymentVariables)
     return (
@@ -30,7 +32,7 @@ export const DatabaseScreen = () => {
             </div>
 
             {Object.keys(database).length > 0 ? (
-                <Database books={database} addBooks={addBooks} modifyBook={modifyBook}/>
+                <Database books={database} addBooks={addBooks} modifyBook={modifyBook} deleteBook={deleteBook}/>
             ) : 
             <BlankDatabase addBooks={addBooks}/>
             }

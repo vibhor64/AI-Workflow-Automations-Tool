@@ -5,7 +5,7 @@ import { CreateDatabase } from "./createDatabase";
 
 export const Database = (props) => {
     // console.log(inputs, outputs)
-    const { books, addBooks, modifyBook } = props;
+    const { books, addBooks, modifyBook, deleteBook } = props;
     const [hoverButton, setHoverButton] = useState(null);
     const [isCreateDatabaseVisible, setCreateDatabaseVisible] = useState(false);
     const [modifyDatabase, setModifyDatabase] = useState(null);
@@ -16,7 +16,7 @@ export const Database = (props) => {
 
     const closeBook = () => {
         setModifyDatabase(null);
-        console.log('closed man');
+        // console.log('closed man');
     }
 
     const autoResize = (e) => {
@@ -29,7 +29,7 @@ export const Database = (props) => {
         // Header
         <div style={{ height: '89vh', width: '99vw', backgroundColor: '#fff', color: '#000', display: 'flex', borderRadius: '10px', overflowY: 'auto', flexDirection: 'column' }}>
             <div style={{ display: 'flex', flexDirection: 'row' }}>
-                <h1 style={{ marginLeft: '1.5em' }}>{ books.length ===1 ? 'Your Database Is Ready' : 'Your Databases Are Ready'}</h1>
+                <h1 style={{ marginLeft: '1.5em' }}>{ books && books.length ===1 ? 'Your Database Is Ready' : 'Your Databases Are Ready'}</h1>
                 <img src={myimg} alt="Create Database" style={{ height: '45px', marginTop: '1.3em', marginLeft: '10px' }} />
             </div>
 
@@ -43,13 +43,13 @@ export const Database = (props) => {
                         onMouseEnter={() => setHoverButton(i)}
                         onMouseLeave={() => setHoverButton(null)}
                     >
-                        <div style={{ padding: '18px 15px', color: '#878787', fontWeight: 700, height: '40vh', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'normal', fontSize: '14px' }}>{book.text.length > 444 ? book.text.substring(0, 444) + '...' : book.text}</div>
+                        <div style={{ padding: '18px 15px', color: '#878787', fontWeight: 700, height: '40vh', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'normal', fontSize: '14px' }}>{books && book.text.length > 444 ? book.text.substring(0, 444) + '...' : book.text}</div>
                         <div style={{ position: 'relative', width: '29vw', height: '13vh', backgroundColor: '#385EF4', bottom: 0, borderBottomLeftRadius: '10px', borderBottomRightRadius: '10px', color: '#fff', display: 'flex', alignItems: 'center', fontWeight: 'bold'}}>
                             <div style={{marginLeft: '14px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',}}>
                             {book.name}
                             </div>
                             </div>
-                        {modifyDatabase===i ? (<CreateDatabase key={`modify-${i}`} onClose={closeBook} type="modify" name={book.name} text={book.text} urls={book.urls} addBooks={addBooks} modifyBook={modifyBook} />) : null}
+                        {modifyDatabase===i ? (<CreateDatabase key={`modify-${i}`} onClose={closeBook} type="modify" id={book.id} name={book.name} text={book.text} urls={book.urls} addBooks={addBooks} modifyBook={modifyBook} deleteBook={deleteBook} />) : null}
                     </div>
                 ))}
 
@@ -65,7 +65,7 @@ export const Database = (props) => {
                         <span style={{ fontSize: '20px', fontWeight: '400', marginRight: '10px' }}>+</span>
                         New Database</div>
                 </div>
-                {isCreateDatabaseVisible && <CreateDatabase onClose={handleClose} type="create" name="" text="" urls="" addBooks={addBooks} modifyBook={modifyBook}/>}
+                {isCreateDatabaseVisible && <CreateDatabase onClose={handleClose} type="create" name="" text="" urls="" id="None" addBooks={addBooks} modifyBook={modifyBook} deleteBook/>}
         <div style={{height: '6vh', backgroundColor: '#fff', width: '100%', marginTop: '2vh'}}></div>
             </div>
         </div>

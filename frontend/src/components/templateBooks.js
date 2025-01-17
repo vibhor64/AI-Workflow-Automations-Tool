@@ -1,10 +1,12 @@
 export const TemplateBooks = [
     {
-        "name": "React-flow Documentation-1",
+        "id": 1,
+        "name": "React-flow Documentation",
         "text": "If you want to get up-and-running as soon as possible you’re in the right place! This page will take you from zero to a working React Flow app in a few minutes. From there, you can take a deeper look at what React Flow is all about, check out the examples, or dive into the API docs. If you want to get up-and-running as soon as possible you’re in the right place! This page will take you from zero to a working React Flow app in a few minutes.",
         "urls": ['https://reactflow.dev/', 'https://reactflow.dev/docs/components/'],
     },
     {
+        "id": 2,
         "name": "Client Portfolio Report",
         "text": `{
   "clients": [
@@ -98,6 +100,7 @@ export const TemplateBooks = [
         "urls": [],
     },
     {
+        "id": 3,
         "name": "SmartHub 360 Pro Product Manual",
         "text": `Welcome to the SmartHub 360 Pro
 Thank you for choosing the SmartHub 360 Pro, a state-of-the-art smart home management system designed to centralize and simplify control over your connected devices. With its powerful hardware and advanced software, the SmartHub 360 Pro serves as the backbone of your smart ecosystem, seamlessly integrating lighting, security, climate control, entertainment, and more into one intuitive interface.
