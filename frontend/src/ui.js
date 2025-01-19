@@ -15,6 +15,7 @@ import { Templates } from './components/templates';
 // import './CreateDatabase.css';
 
 import 'reactflow/dist/style.css';
+import { LoginWindow } from './loginWindow';
 
 const gridSize = 20;
 const proOptions = { hideAttribution: true };
@@ -244,6 +245,7 @@ export const PipelineUI = () => {
           <p style={{ fontSize: '12px', color: '#d1d1d1', marginTop: '2px', fontWeight: 500 }}>Reset</p>
         </div>
         <Templates/>
+        <LoginWindow/>
       </div>
     </>
   )

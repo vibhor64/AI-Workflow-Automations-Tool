@@ -1,0 +1,82 @@
+from pydantic import BaseModel
+from datetime import datetime, timedelta, timezone
+from jose import JWTError, jwt
+from passlib.context import CryptContext
+from fastapi import HTTPException
+import os
+from dotenv import load_dotenv
+
+# Settings
+load_dotenv()
+SECRET_KEY = os.getenv("SECRET_KEY")  # Change to a strong secret key
+ALGORITHM = os.getenv("ALGORITHM")
+ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
+REFRESH_TOKEN_EXPIRE_DAYS = int(os.getenv("REFRESH_TOKEN_EXPIRE_DAYS"))
+
+# Mock user database for demo
+class User(BaseModel):
+    username: str
+    hashed_password: str
+    disabled: bool = False
+
+class UserCreate(BaseModel):
+    username: str
+    password: str
+
+class UserLogin(BaseModel):
+    username: str
+    password: str
+
+class Token(BaseModel):
+    access_token: str
+    # refresh_token: str
+    token_type: str
+
+# Password hashing context
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+# Mock user database
+fake_users_db = {
+    "aa": User(username="aa", hashed_password=pwd_context.hash("bb"))
+}
+
+# Helper functions
+def verify_password(plain_password, hashed_password):
+    return pwd_context.verify(plain_password, hashed_password)
+
+def get_password_hash(password):
+    return pwd_context.hash(password)
+
+def authenticate_user(username: str, password: str):
+    user = fake_users_db.get(username)
+    if not user or not verify_password(password, user.hashed_password):
+        print('No user found')
+        return None
+    print(user)
+    return user
+
+def create_access_token(data: dict, expires_delta: timedelta | None = None):
+    to_encode = data.copy()
+    if expires_delta:
+        expire = datetime.now(timezone.utc) + expires_delta
+    else:
+        expire = datetime.now(timezone.utc) + timedelta(minutes=15)
+    to_encode.update({"exp": expire})
+    return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+
+# Create refresh tokens
+def create_refresh_token(data: dict):
+    expire = datetime.now(timezone.utc) + timedelta(days=REFRESH_TOKEN_EXPIRE_DAYS)
+    data.update({"exp": expire})
+    return jwt.encode(data, SECRET_KEY, algorithm=ALGORITHM)
+
+# Verify refresh tokens
+def verify_refresh_token(token: str):
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        username: str = payload.get("sub")
+        if username is None:
+            raise JWTError()
+        return username
+    except JWTError:
+        raise HTTPException(status_code=401, detail="Invalid refresh token")

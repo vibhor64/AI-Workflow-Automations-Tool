@@ -1,11 +1,13 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends, HTTPException, status, Response
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+import auth
 from pydantic import BaseModel
 from typing import List, Dict
 from fastapi.middleware.cors import CORSMiddleware
-import json
 from deployment import execute_pipeline
 
 app = FastAPI()
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 app.add_middleware(
     CORSMiddleware,
@@ -106,6 +108,25 @@ def countIONodes(nodes):
     
     return input, output, integration
 
+# Dependency to get the current user
+def get_current_user(token: str = Depends(oauth2_scheme)):
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    try:
+        payload = auth.jwt.decode(token, auth.SECRET_KEY, algorithms=[auth.ALGORITHM])
+        username: str = payload.get("sub")
+        if username is None:
+            raise credentials_exception
+    except auth.JWTError:
+        raise credentials_exception
+    user = auth.fake_users_db.get(username)
+    if user is None:
+        raise credentials_exception
+    return user
+
 @app.get('/')
 def read_root():
     return {'Bing': 'Bong'}
@@ -139,3 +160,71 @@ def parse_deployment(pipeline: Pipeline):
         return {"pipelineOutput": "<h1>Invalid Pipeline!</h1> <p>Your pipeline is either not fully connected, or contains a cycle.</p>"}
     pipelineOutput = execute_pipeline(pipeline)
     return {"pipelineOutput": pipelineOutput}
+
+# Authorization
+@app.post("/register", response_model=auth.Token)
+def register(user: auth.UserCreate, response: Response):
+    if user.username in auth.fake_users_db:
+        raise HTTPException(status_code=400, detail="User already exists")
+    hashed_password = auth.get_password_hash(user.password)
+    auth.fake_users_db[user.username] = auth.User(username=user.username, hashed_password=hashed_password)
+    access_token = auth.create_access_token(data={"sub": user.username})
+    refresh_token = auth.create_refresh_token(data={"sub": user.username})
+    # Set the refresh token as an HTTP-only cookie
+    response.set_cookie(
+        key="refresh_token",
+        value=refresh_token,
+        httponly=True,
+        max_age=auth.REFRESH_TOKEN_EXPIRE_DAYS * 24 * 60 * 60, 
+        secure=True,  # Use True if using HTTPS
+        samesite="strict",  # Strict cookie policy
+    )
+    return {"access_token": access_token, "token_type": "bearer"}
+
+@app.post("/token", response_model=auth.Token)
+def login(form_data: OAuth2PasswordRequestForm = Depends(), response: Response = None):
+    print(form_data.username, form_data.password)
+    user = auth.authenticate_user(form_data.username, form_data.password)
+    if not user:
+        raise HTTPException(status_code=400, detail="Incorrect username or password")
+    access_token = auth.create_access_token(data={"sub": user.username})
+    refresh_token = auth.create_refresh_token(data={"sub": user.username})
+    # Set the refresh token as an HTTP-only cookie
+    response.set_cookie(
+        key="refresh_token",
+        value=refresh_token,
+        httponly=True,
+        max_age=auth.REFRESH_TOKEN_EXPIRE_DAYS * 24 * 60 * 60, 
+        secure=True,  # Use only for HTTPS
+    )
+    return {"access_token": access_token, "token_type": "bearer"}
+
+@app.get("/users/me")
+def read_users_me(current_user: auth.User = Depends(get_current_user)):
+    return current_user
+
+@app.post("/refresh", response_model=auth.Token)
+def refresh(response: Response, refresh_token: str = Depends(oauth2_scheme)):
+    """
+    Checks if the user has a valid refresh token for seamless login.
+    """
+    try:
+        username = auth.verify_refresh_token(refresh_token)
+    except HTTPException as e:
+        raise HTTPException(status_code=401, detail="Invalid or expired refresh token")
+
+    # Create new tokens
+    access_token = auth.create_access_token(data={"sub": username})
+    new_refresh_token = auth.create_refresh_token(data={"sub": username})
+
+    # Update the refresh token cookie
+    response.set_cookie(
+        key="refresh_token",
+        value=new_refresh_token,
+        httponly=True,
+        max_age=auth.REFRESH_TOKEN_EXPIRE_DAYS * 24 * 60 * 60,
+        secure=True,  # Use True if using HTTPS
+        samesite="strict",  # Strict cookie policy
+    )
+
+    return {"access_token": access_token, "token_type": "bearer"}
