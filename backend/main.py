@@ -1,10 +1,14 @@
-from fastapi import FastAPI, Depends, HTTPException, status, Response
+from fastapi import FastAPI, Depends, HTTPException, status, Response, Request
+from fastapi.responses import RedirectResponse
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 import auth
 from pydantic import BaseModel
 from typing import List, Dict
 from fastapi.middleware.cors import CORSMiddleware
 from deployment import execute_pipeline
+from authlib.integrations.starlette_client import OAuth
+from starlette.config import Config
+from starlette.middleware.sessions import SessionMiddleware
 
 app = FastAPI()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
@@ -15,6 +19,19 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+)
+
+app.add_middleware(SessionMiddleware, secret_key="your-secret-key")
+
+# OAuth Configuration
+config = Config(environ={"GOOGLE_CLIENT_ID": auth.GOOGLE_CLIENT_ID, "GOOGLE_CLIENT_SECRET": auth.GOOGLE_CLIENT_SECRET})
+oauth = OAuth(config)
+oauth.register(
+    name="google",
+    client_id=config("GOOGLE_CLIENT_ID"),
+    client_secret=config("GOOGLE_CLIENT_SECRET"),
+    server_metadata_url="https://accounts.google.com/.well-known/openid-configuration",
+    client_kwargs={"scope": "openid email profile"},
 )
 
 # Define models
@@ -228,3 +245,81 @@ def refresh(response: Response, refresh_token: str = Depends(oauth2_scheme)):
     )
 
     return {"access_token": access_token, "token_type": "bearer"}
+
+# Google Authentication
+@app.get("/auth/google")
+async def google_login(request: Request):
+    redirect_uri = request.url_for("google_callback")
+    return await oauth.google.authorize_redirect(request, redirect_uri)
+
+# @app.get("/auth/google/callback")
+# async def google_callback(request: Request, response: Response):
+#     token = await oauth.google.authorize_access_token(request)
+#     user_info = token.get("userinfo")
+    
+#     if not user_info:
+#         raise HTTPException(status_code=400, detail="Google login failed")
+
+#     # Check if the user exists in your fake_users_db or create a new user
+#     username = user_info["email"]
+#     if username not in auth.fake_users_db:
+#         # Create a new user in your fake_users_db
+#         hashed_password = auth.get_password_hash("google")  # Use a dummy password or handle separately
+#         auth.fake_users_db[username] = auth.User(username=username, hashed_password=hashed_password)
+
+#     # Generate tokens
+#     access_token = auth.create_access_token(data={"sub": username})
+#     refresh_token = auth.create_refresh_token(data={"sub": username})
+
+#     # Set refresh token as a cookie
+#     response.set_cookie(
+#         key="refresh_token",
+#         value=refresh_token,
+#         httponly=True,
+#         max_age=auth.REFRESH_TOKEN_EXPIRE_DAYS * 24 * 60 * 60,
+#         secure=True,  # Use True if using HTTPS
+#     )
+
+#     return {"access_token": access_token, "token_type": "bearer"}
+
+
+@app.get("/auth/google/callback")
+async def google_callback(request: Request, response: Response):
+    token = await oauth.google.authorize_access_token(request)
+    user_info = token.get("userinfo")
+
+    if not user_info:
+        raise HTTPException(status_code=400, detail="Google login failed")
+
+    # Check if the user exists in your fake_users_db or create a new user
+    username = user_info["email"]
+    if username not in auth.fake_users_db:
+        # Create a new user in your fake_users_db
+        hashed_password = auth.get_password_hash("google")  # Use a dummy password or handle separately
+        auth.fake_users_db[username] = auth.User(username=username, hashed_password=hashed_password)
+
+    # Generate tokens
+    access_token = auth.create_access_token(data={"sub": username})
+    refresh_token = auth.create_refresh_token(data={"sub": username})
+
+    # Set the tokens as HTTP-only cookies
+    response.set_cookie(
+        key="access_token",
+        value=access_token,
+        httponly=True,
+        max_age=15 * 60,  # Access token expiry (15 minutes)
+        secure=False,  # Use True if using HTTPS
+        samesite="lax",
+    )
+    response.set_cookie(
+        key="refresh_token",
+        value=refresh_token,
+        httponly=True,
+        max_age=auth.REFRESH_TOKEN_EXPIRE_DAYS * 24 * 60 * 60,
+        secure=False,  # Use True if using HTTPS
+        samesite="lax",
+    )
+
+    # Redirect to the frontend after setting cookies
+    redirect_url = "http://localhost:3000/dashboard"
+    return RedirectResponse(redirect_url)

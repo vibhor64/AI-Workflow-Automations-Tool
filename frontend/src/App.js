@@ -1,12 +1,13 @@
 import { DatabaseScreen } from './components/databaseScreen';
 import { DepScreen } from './components/depScreen';
+import { LoginWindow } from './loginWindow';
 import { PipelineToolbar } from './toolbar';
 import { PipelineUI } from './ui';
 import { useState } from 'react';
 
 function App() {
 
-  const [selectedCategory, setSelectedCategory] = useState('Pipelines');
+  const [selectedCategory, setSelectedCategory] = useState('Login');
   const [hover, setHover] = useState(false);
 
   return (
@@ -42,10 +43,15 @@ function App() {
         </select>
       </div>
 
+      {selectedCategory === 'Login' &&
+        <>
+          <LoginWindow setSelectedCategory={setSelectedCategory} />
+        </>
+      }
       {selectedCategory === 'Pipelines' &&
         <>
           <PipelineToolbar />
-          <PipelineUI />
+          <PipelineUI setSelectedCategory={setSelectedCategory}/>
         </>
       }
       {selectedCategory === 'Deployment' &&

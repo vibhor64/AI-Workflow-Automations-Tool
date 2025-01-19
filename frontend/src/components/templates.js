@@ -2,12 +2,14 @@
 import Add from '../assets/add.png';
 import save from '../assets/save.png';
 import Close from '../assets/close.png';
+import logout from '../assets/logout.png';
 import select from '../assets/select.png';
 import { useState } from 'react';
 import styles from './templates.module.css';
 // import { templateNodes } from './templateNodes';
 import { useStore } from '../store';
 import { shallow } from 'zustand/shallow';
+import { logoutUser } from '../auth';
 
 const selector = (state) => ({
     loadTemplate: state.loadTemplate,
@@ -17,7 +19,7 @@ const selector = (state) => ({
     edges: state.edges,
   });
 
-export const Templates = () => {
+export const Templates = ({setSelectedCategory}) => {
 
     const [hover, setHover] = useState(false);
     const [hoverClose, setHoverClose] = useState(false);
@@ -27,6 +29,7 @@ export const Templates = () => {
     const [saveBox, setSaveBox] = useState(false);
     const [content, setContent] = useState('All Templates');
     const [tempName, setTempName] = useState('My template-1');
+    const [logoutBox, setLogoutBox] = useState(false);
 
     const {
         loadTemplate,
@@ -40,6 +43,14 @@ export const Templates = () => {
         setHoverClose(false);
         setShowBox2(false);
         setSaveBox(false);
+        setTimeout(() => setShowBox(false), 180);
+    };
+
+    const handleClick2 = () => {
+        setHoverClose(false);
+        setShowBox2(false);
+        setSaveBox(false);
+        setLogoutBox(false);
         setTimeout(() => setShowBox(false), 180);
     };
 
@@ -70,11 +81,17 @@ export const Templates = () => {
         addTemplate(newTemplate);
     }
 
+    const handleLogout = () => {
+        logoutUser();
+        handleClick2();
+        setSelectedCategory('Login');
+    }
+
     // console.log(templateWorkflows[0])
 
     return (
         <>
-            <div style={{ display: 'flex', position: 'absolute', top: '10px', height: '10vh', alignItems: 'center', justifyContent: 'center', left: '90%', justifyItems: 'center' }}>
+            <div style={{ display: 'flex', position: 'absolute', top: '10px', height: '10vh', alignItems: 'center', justifyContent: 'center', right: '2em', justifyItems: 'center' }}>
                 <button
                     onMouseEnter={() => setHover(true)}
                     onMouseLeave={() => setHover(false)}
@@ -109,15 +126,15 @@ export const Templates = () => {
                 </button>
             </div>
 
-            <div style={{ display: 'flex', position: 'absolute', top: '10px', height: '10vh', alignItems: 'center', justifyContent: 'center', left: '86.6%', justifyItems: 'center' }}>
+            <div style={{ display: 'flex', position: 'absolute', top: '10px', height: '10vh', alignItems: 'center', justifyContent: 'center',  right: '8.9em', justifyItems: 'center' }}>
                 <button
-                    onMouseEnter={() => setHoverSave(true)}
-                    onMouseLeave={() => setHoverSave(false)}
+                    onMouseEnter={() => setHoverSave(1)}
+                    onMouseLeave={() => setHoverSave(0)}
                     onClick={handleSaveBox}
                     style={{
-                        backgroundColor: hoverSave ? '#3b59d1' : '#2d4ecf',
+                        backgroundColor: hoverSave ===1 ? '#3b59d1' : '#2d4ecf',
                         borderRadius: '4px',
-                        border: hoverSave ? '2px solid #3b59d1' : '2px solid #2d4ecf',
+                        border: hoverSave ===1 ? '2px solid #3b59d1' : '2px solid #2d4ecf',
                         color: '#9dadff',
                         color: '#fff',
                         cursor: 'pointer',
@@ -143,6 +160,41 @@ export const Templates = () => {
                     <img src={save} alt="Add" style={{ width: '26px', height: '26px' }} />
                 </button>
             </div>
+            {/* Logout */}
+            <div style={{ display: 'flex', position: 'absolute', top: '10px', height: '10vh', alignItems: 'center', justifyContent: 'center',  right: '12em', justifyItems: 'center' }}>
+                <button
+                    onMouseEnter={() => setHoverSave(2)}
+                    onMouseLeave={() => setHoverSave(0)}
+                    onClick={()=> setLogoutBox(true)}
+                    style={{
+                        backgroundColor: hoverSave===2 ? '#3b59d1' : '#2d4ecf',
+                        borderRadius: '4px',
+                        border: hoverSave===2 ? '2px solid #3b59d1' : '2px solid #2d4ecf',
+                        color: '#9dadff',
+                        color: '#fff',
+                        cursor: 'pointer',
+                        display: 'inline-block',
+                        fontSize: '8px',
+                        fontWeight: 600,
+                        listStyle: 'none',
+                        margin: '0',
+                        padding: '6px 6px',
+                        textAlign: 'center',
+                        transition: 'all 200ms',
+                        verticalAlign: 'baseline',
+                        whiteSpace: 'nowrap',
+                        userSelect: 'none',
+                        WebkitUserSelect: 'none',
+                        touchAction: 'manipulation',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        display: 'flex',
+                        flexDirection: 'column'
+                    }}
+                    type="submit">
+                    <img src={logout} alt="Add" style={{ width: '26px', height: '26px' }} />
+                </button>
+            </div>
 
             {saveBox && (
                 <div className={styles.save}>
@@ -153,6 +205,21 @@ export const Templates = () => {
                     <button onMouseEnter={() => setHoverClose(true)} onMouseLeave={() => setHoverClose(false)}
                         style={{ backgroundColor: hoverClose ? '#d1d1d1' : '#fff', height: hoverClose ? '30px' : '24px', width: hoverClose ? '30px' : '24px', position: 'absolute', top: '10px', right: '10px', border: 'none', cursor: 'pointer', alignItems: 'center', justifyContent: 'center', display: 'flex', borderRadius: '50%', transition: 'all 0.2s ease' }}
                         onClick={handleClick}><img src={Close} alt="Close" style={{ width: '22px', height: '22px' }} /></button>
+                </div>
+
+            )}
+
+
+            {logoutBox && (
+                <div className={styles.save} style={{width: '22vw'}}>
+                    <span style={{ fontSize: '26px', fontWeight: 'bold', color: '#000', marginLeft: '15px', marginTop: '14px' }}>Confirm Logout?</span>
+                    <div style={{ fontSize: '12px', fontWeight: 'normal', color: '#ababab', marginTop: '14px', marginLeft: '17px', marginRight: '17px', marginBottom: '14px' }}>Make sure to save your sensitive data before logging out.</div>
+
+                    <button onClick={handleLogout} className={styles.saveButton} style={{borderRadius: '6px'}}>Log me out!</button>
+
+                    <button onMouseEnter={() => setHoverClose(true)} onMouseLeave={() => setHoverClose(false)}
+                        style={{ backgroundColor: hoverClose ? '#d1d1d1' : '#fff', height: hoverClose ? '30px' : '24px', width: hoverClose ? '30px' : '24px', position: 'absolute', top: '10px', right: '10px', border: 'none', cursor: 'pointer', alignItems: 'center', justifyContent: 'center', display: 'flex', borderRadius: '50%', transition: 'all 0.2s ease' }}
+                        onClick={handleClick2}><img src={Close} alt="Close" style={{ width: '22px', height: '22px' }} /></button>
                 </div>
 
             )}

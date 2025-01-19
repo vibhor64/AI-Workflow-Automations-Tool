@@ -1,5 +1,3 @@
-let accessToken = null; // Store in memory (cleared on page reload)
-
 const BASE_URL = "http://127.0.0.1:8000"; // Replace with your FastAPI backend URL
 
 // Utility to set/get access token
@@ -104,4 +102,24 @@ export async function requestWithAuth(endpoint, options = {}) {
     }
 
     return await response.json();
+}
+
+export async function signInWithGoogle() {
+    try {
+        const response = await fetch(`${BASE_URL}/auth/google`, {
+            method: "GET",
+            credentials: "include", // Include cookies in requests
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json(); // Parse error details from the server
+            throw new Error(errorData.detail || "Login failed!");
+        }
+
+        const data = await response.json();
+        setAccessToken(data.access_token);
+    } catch (error) {
+        console.error("Error during login:", error.message);
+        throw error; // Re-throw the error for higher-level handling
+    }
 }
