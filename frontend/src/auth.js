@@ -58,18 +58,24 @@ export function logoutUser() {
 }
 
 export async function refreshToken() {
-    const response = await fetch(`${BASE_URL}/refresh`, {
-        method: "POST",
-        credentials: "include", // Automatically sends the refresh token cookie
-    });
+    try {
+        const response = await fetch(`${BASE_URL}/refresh`, {
+            method: "POST",
+            credentials: "include", // Important for sending/receiving cookies
+        });
 
-    if (!response.ok) {
+        if (!response.ok) {
+            clearAccessToken();
+            return false;
+        }
+
+        const data = await response.json();
+        setAccessToken(data.access_token);
+        return true;
+    } catch (error) {
         clearAccessToken();
-        throw new Error("Failed to refresh token!");
+        return false;
     }
-
-    const data = await response.json();
-    setAccessToken(data.access_token);
 }
 
 // Generic API Wrapper for Authenticated Requests

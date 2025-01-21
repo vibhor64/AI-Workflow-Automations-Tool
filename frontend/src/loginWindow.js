@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { loginUser, registerUser, logoutUser, requestWithAuth, refreshToken, signInWithGoogle } from "./auth"
 import guest from "./assets/guest.png"
 import google from "./assets/google.png"
-
+import queryString from "query-string";
 
 
 async function handleLogout() {
@@ -41,6 +41,16 @@ export const LoginWindow = ({ setSelectedCategory }) => {
 
     async function initializeUserSession() {
         const accessToken = sessionStorage.getItem("access_token");
+        if (!accessToken) {
+            const parsed = queryString.parse(window.location.search);
+            const accessToken = parsed.access_token;
+            if (accessToken) {
+                sessionStorage.setItem("access_token", accessToken);
+                // Remove the query parameters from the URL
+                const newUrl = window.location.origin + window.location.pathname;
+                window.history.replaceState({}, document.title, newUrl);
+            }
+        }
         try {
 
             if (!accessToken) {
@@ -105,12 +115,6 @@ export const LoginWindow = ({ setSelectedCategory }) => {
             console.log("Logging in with Google...");
             window.location.href = "http://127.0.0.1:8000/auth/google";
             // await signInWithGoogle();
-            console.log("Logged in!");
-            const userData = await fetchData();
-            console.log("User Data:", userData);
-            if (userData) {
-                gotoWeb();
-            }
         } catch (error) {
             console.error("Error:", error.message);
             setIncorrect("Some error has occured");
@@ -207,10 +211,10 @@ export const LoginWindow = ({ setSelectedCategory }) => {
                         style={hover === 5 ? { ...styles.autoButton2, backgroundColor: '#454545' } : styles.autoButton2}
                         onMouseEnter={() => setHover(5)} onMouseLeave={() => setHover(0)}
                         onClick={() => handleRegister(username, pass)}>Register</button>
-                    <button
+                    {/* <button
                         style={hover === 5 ? { ...styles.autoButton2, backgroundColor: '#454545' } : styles.autoButton2}
                         onMouseEnter={() => setHover(5)} onMouseLeave={() => setHover(0)}
-                        onClick={() => fetchData()}>fetch data</button>
+                        onClick={() => fetchData()}>fetch data</button> */}
                 </div>
 
             </div>
