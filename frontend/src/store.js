@@ -4,6 +4,7 @@ import { create } from "zustand";
 import { defaultNodes } from "./nodes/nodes"
 import { defaultEdges } from "./nodes/edges"
 import { templateNodes } from "./components/templateNodes";
+import { pushBook, deleteBook as removeBook, modifyBook as editBook } from "./logic/auth";
 // import { TemplateBooks } from "./components/templateBooks";
 
 import {
@@ -19,23 +20,32 @@ export const useStore = create((set, get) => ({
   templateWorkflows: templateNodes,
   deploymentVariables: {},
   database: [],
-  nodeIDs: (() => {
-    // Initialize nodeIDs based on the defaultNodes
-    const ids = {};
-    defaultNodes.forEach((node) => {
+  nodeIDs: {},
+  updateNodeIDTracking: (nodes) => {
+    const currentIDs = { ...get().nodeIDs };
+
+    nodes.forEach((node) => {
       const [type, count] = node.id.split('-');
       const number = parseInt(count, 10);
+
       if (!isNaN(number)) {
-        ids[type] = Math.max(ids[type] || 0, number);
+        currentIDs[type] = Math.max(currentIDs[type] || 0, number);
       }
     });
-    return ids;
-  })(),
+
+    set({ nodeIDs: currentIDs });
+  },
   getNodeID: (type) => {
     const newIDs = { ...get().nodeIDs };
     if (newIDs[type] === undefined) {
-      newIDs[type] = 0;
+      // Initialize by scanning all nodes including template nodes
+      get().updateNodeIDTracking([
+        ...get().nodes,
+        ...get().templateWorkflows.flatMap(template => template.nodes)
+      ]);
+      newIDs[type] = get().nodeIDs[type] || 0;
     }
+
     newIDs[type] += 1;
     set({ nodeIDs: newIDs });
     return `${type}-${newIDs[type]}`;
@@ -48,13 +58,24 @@ export const useStore = create((set, get) => ({
   clearCanvas: () => {
     set({
       nodes: [],
-      edges: []
+      edges: [],
     });
   },
   loadTemplate: (template) => {
+    // Create deep copies of the template data to prevent reference issues
+    const templateNodes = template.nodes.map(node => ({
+      ...node,
+      data: { ...node.data }  // Deep copy the node data
+    }));
+    const templateEdges = template.edges.map(edge => ({ ...edge }));
+
+    // Update ID tracking to consider template nodes
+    get().updateNodeIDTracking(templateNodes);
+
+    // Set the new template state with copied data
     set({
-      nodes: template.nodes,
-      edges: template.edges
+      nodes: templateNodes,
+      edges: templateEdges
     });
   },
   addTemplate: (template) => {
@@ -68,30 +89,32 @@ export const useStore = create((set, get) => ({
     });
   },
   addBooks: (books) => {
-    if (books.length === 0) {return}
-    else if (books.length ===1 ){
+    if (books.length === 0) { return }
+    else if (books.length === 1) {
       const newBook = [{
-        id: get().database.length + 1,
+        id: String(get().database.length + 1),
         name: books[0].name,
         text: books[0].text,
         urls: books[0].urls
       }];
-      if (newBook[0].name === "" && newBook[0].text === "" && newBook[0].urls.length === 0){
+      if (newBook[0].name === "" && newBook[0].text === "" && newBook[0].urls.length === 0) {
         console.log(newBook);
         return;
       }
       set({
         database: [...get().database, ...newBook],
       });
+      pushBook(newBook[0]);
     }
-    else{
+    else {
       set({
         database: [...get().database, ...books],
       });
     }
-    
+
   },
   modifyBook: (book) => {
+    console.log(book);
     const currentDatabase = get().database;
     const bookExists = currentDatabase.some((b) => b.id === book.id);
 
@@ -101,6 +124,7 @@ export const useStore = create((set, get) => ({
           b.id === book.id ? { ...b, ...book } : b
         ),
       });
+      editBook(book.id, book);
     } else {
       console.warn(`Book with name "${book.name}" does not exist.`);
     }
@@ -108,11 +132,12 @@ export const useStore = create((set, get) => ({
   deleteBook: (book) => {
     const currentDatabase = get().database;
     const bookExists = currentDatabase.some((b) => b.id === book.id);
-  
+
     if (bookExists) {
       set({
         database: currentDatabase.filter((b) => b.id !== book.id),
       });
+      // removeBook(book.name);
     } else {
       console.warn(`Book with id "${book.id}" does not exist.`);
     }

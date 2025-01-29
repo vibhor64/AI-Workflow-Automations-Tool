@@ -2,6 +2,7 @@ import { useState } from "react";
 import Close from '../assets/close.png';
 import Delete from '../assets/delete.png';
 import info from '../assets/info.png';
+import { pushBook, deleteBook as removeBook, modifyBook as editBook} from '../logic/auth';
 
 export const CreateDatabase = ({ onClose, type, id, name, text, urls, addBooks, modifyBook, deleteBook }) => {
     const [hoverClose, setHoverClose] = useState(false);
@@ -37,15 +38,22 @@ export const CreateDatabase = ({ onClose, type, id, name, text, urls, addBooks, 
     };
 
     const saveBook = (e) => {
-        if (type === 'create')
+        if (type === 'create' && bookName !== ''){
+            // pushBook({"id": id, "name": bookName, "text": bookText, "urls": bookUrl });
             addBooks([{"id": id, "name": bookName, "text": bookText, "urls": bookUrl }]);
-        else
+            console.log("Created book with id: ",id);
+            handleButtonClick(e);
+        }
+        else if (bookName !== ''){
+            // editBook(bookName, {"id": id, "name": bookName, "text": bookText, "urls": bookUrl });
             modifyBook({"id": id, "name": bookName, "text": bookText, "urls": bookUrl });
-        handleButtonClick(e);
+            handleButtonClick(e);
+        }
     }
 
-    const DeleteBook = (e) => {
-        deleteBook({"id": id, "name": bookName, "text": bookText, "urls": bookUrl });
+    const DeleteBook = async (e) => {
+        await deleteBook({"id": id, "name": bookName, "text": bookText, "urls": bookUrl });
+        await removeBook(bookName);
         handleButtonClick(e);
     }
 

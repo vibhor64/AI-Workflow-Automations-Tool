@@ -2,16 +2,14 @@ from fastapi import FastAPI, Depends, HTTPException, status, Response, Request
 from fastapi.responses import RedirectResponse
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 import utils.auth as auth
-from pydantic import BaseModel
-from typing import List, Dict
 from fastapi.middleware.cors import CORSMiddleware
 from utils.deployment import execute_pipeline
 from authlib.integrations.starlette_client import OAuth
 from starlette.config import Config
 from starlette.middleware.sessions import SessionMiddleware
 from utils.validate import checkDAG, isConnected, countIONodes
-from models import Node, Edge, Pipeline, PipelineInputs, UserCreate, Token, Epic_DB
-from utils.database import find_user, register_user, update_user, delete_user, add_template
+from models import Node, Edge, Pipeline, PipelineInputs, UserCreate, Token, Epic_DB, BookName, ModifyBook
+from utils.database import find_user, register_user, add_template, add_book, modify_book, remove_book
 
 app = FastAPI()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
@@ -120,6 +118,7 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), response: Resp
             httponly=True,
             max_age=auth.REFRESH_TOKEN_EXPIRE_DAYS * 24 * 60 * 60, 
             secure=True,  # Use only for HTTPS
+            samesite="None",  # Strict cookie policy
         )
         return {"access_token": access_token, "token_type": "bearer"}
     except Exception as e:
@@ -152,7 +151,7 @@ def refresh(response: Response, refresh_token: str = Depends(oauth2_scheme)):
         httponly=True,
         max_age=auth.REFRESH_TOKEN_EXPIRE_DAYS * 24 * 60 * 60,
         secure=True,  # Use True if using HTTPS
-        samesite="strict",  # Strict cookie policy
+        samesite="None",  # Strict cookie policy
     )
 
     return {"access_token": access_token, "token_type": "bearer"}
@@ -239,11 +238,40 @@ async def google_callback(request: Request, response: Response):
 #         raise HTTPException(status_code=400, detail=result["message"])
 
 # Template operations
-
 # Add template
 @app.post('/database/add_template')
-async def call_add_template(template_data: dict, current_user: auth.User = Depends(get_current_user)):
-    result = await add_template(current_user.username, template_data)
+async def call_add_template(template_data: dict, current_user = Depends(get_current_user)):
+    result = await add_template(current_user["username"], template_data)
+    if result["status"] == "success":
+        return result
+    else:
+        raise HTTPException(status_code=400, detail=result["message"])
+
+
+# Book Operations
+# Add book
+@app.post('/database/add_book')
+async def call_add_book(book_data: dict, current_user = Depends(get_current_user)):
+    # user = Epic_DB(**current_user)
+    result = await add_book(current_user["username"], book_data)
+    if result["status"] == "success":
+        return result
+    else:
+        raise HTTPException(status_code=400, detail=result["message"])
+
+# Remove book
+@app.delete('/database/remove_book')
+async def call_remove_book(book_name: BookName, current_user = Depends(get_current_user)):
+    result = await remove_book(current_user["username"], book_name.book_name)
+    if result["status"] == "success":
+        return result
+    else:
+        raise HTTPException(status_code=400, detail=result["message"])
+
+# Modify book
+@app.put('/database/modify_book')
+async def call_modify_book(book: ModifyBook, current_user = Depends(get_current_user)):
+    result = await modify_book(current_user["username"], book.id, book.new_data)
     if result["status"] == "success":
         return result
     else:

@@ -63,3 +63,45 @@ async def remove_template(username: str, template_name: str):
         return {"status": "success", "message": "Template removed successfully"}
     except Exception as e:
         return {"status": "error", "message": str(e)}
+
+# Book operations
+async def add_book(username: str, book_data: dict):
+    try:
+        result = collection_name.update_one(
+            {"_id": username},  
+            {"$push": {"books": book_data}},  
+            upsert=True  # If user doesn't exist, create one with this field
+        )
+        if result.matched_count == 0:
+            return {"status": "error", "message": "User not found"}
+        return {"status": "success", "message": "Book added successfully"}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
+async def remove_book(username: str, book_name: str):
+    try:
+        print(username, book_name)
+        result = collection_name.update_one(
+            {"_id": username},
+            {"$pull": {"books": {"name": book_name}}}  
+        )
+        if result.modified_count == 0:
+            return {"status": "error", "message": "Book not found or user does not exist"}
+        return {"status": "success", "message": "Book removed successfully"}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
+async def modify_book(username: str, book_id: str, new_data: dict):
+    try:
+        print(username, book_id, new_data)
+        result = collection_name.update_one(
+            {"_id": username, "books.id": book_id},
+            # {"_id": username, "books.name": book_name},
+            {"$set": {"books.$": new_data}}
+        )
+        if result.modified_count == 0:
+            return {"status": "error", "message": "Book not found or user does not exist"}
+        return {"status": "success", "message": "Book modified successfully"}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+    

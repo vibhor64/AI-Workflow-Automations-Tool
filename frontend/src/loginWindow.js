@@ -1,20 +1,19 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { loginUser, registerUser, requestWithAuth, refreshToken, } from "./logic/auth";
 import guest from "./assets/guest.png"
 import google from "./assets/google.png"
 import queryString from "query-string";
+import { useStore } from "./store";
+import { shallow } from 'zustand/shallow';
 
-async function fetchData() {
-    try {
-        const data = await requestWithAuth("/users/me");
-        // console.log("Protected Data:", data);
-        return data;
-    } catch (error) {
-        console.error("Error fetching data:", error.message);
-        return null;
-    }
-}
-
+const selector = (state) => ({
+    loadTemplate: state.loadTemplate,
+    addTemplate: state.addTemplate,
+    templateWorkflows: state.templateWorkflows,
+    nodes: state.nodes,
+    edges: state.edges,
+    addBooks: state.addBooks,
+});
 
 export const LoginWindow = ({ setSelectedCategory }) => {
     const [username, setUsername] = useState("");
@@ -23,7 +22,36 @@ export const LoginWindow = ({ setSelectedCategory }) => {
     const [focus, setFocus] = useState(0);
     const [incorrect, setIncorrect] = useState(false);
 
+    const {
+        addTemplate,
+        addBooks,
+    } = useStore(selector, shallow);
+
+    async function fetchData() {
+        try {
+            const data = await requestWithAuth("/users/me");
+
+            if (Array.isArray(data["templates"]) && data["templates"].length > 0) {
+                for (let i = 0; i < data["templates"].length; i++) {
+                    addTemplate(data["templates"][i]["template"]);
+                }
+            }
+            
+            if (Array.isArray(data["books"]) && data["books"].length > 0) {
+                addBooks(data["books"]);
+            }
+            return data;
+        } catch (error) {
+            console.error("Error fetching data:", error.message);
+            return null;
+        }
+    }
+
+    const hasRun = useRef(false);
     useEffect(() => {
+
+        if (hasRun.current) return; // Prevents second execution
+        hasRun.current = true;
         async function initSession() {
             await initializeUserSession();
         }
@@ -54,8 +82,9 @@ export const LoginWindow = ({ setSelectedCategory }) => {
                     // Redirect user to login page or show login prompt
                     console.log("User needs to log in manually");
                 }
-            } else {
+            } else if (accessToken) {
                 console.log("User is already logged in");
+                await fetchData();
                 gotoWeb();
             }
         } catch (e) {
@@ -94,6 +123,7 @@ export const LoginWindow = ({ setSelectedCategory }) => {
         try {
             await registerUser(username, password);
             console.log("Logged in!");
+            await fetchData();
         } catch (error) {
             console.error("Error:", error.message);
             setIncorrect("Username already exists");

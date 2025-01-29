@@ -9,7 +9,7 @@ import styles from './templates.module.css';
 // import { templateNodes } from './templateNodes';
 import { useStore } from '../store';
 import { shallow } from 'zustand/shallow';
-import { logoutUser } from '../logic/auth';
+import { logoutUser, pushTemplate } from '../logic/auth';
 
 const selector = (state) => ({
     loadTemplate: state.loadTemplate,
@@ -78,6 +78,8 @@ export const Templates = ({setSelectedCategory}) => {
             nodes: nodes,
             edges: edges,
           };
+
+        pushTemplate(newTemplate);
         addTemplate(newTemplate);
     }
 
@@ -86,8 +88,6 @@ export const Templates = ({setSelectedCategory}) => {
         handleClick2();
         setSelectedCategory('Login');
     }
-
-    // console.log(templateWorkflows[0])
 
     return (
         <>
@@ -100,10 +100,10 @@ export const Templates = ({setSelectedCategory}) => {
                         backgroundColor: hover ? '#3b59d1' : '#2d4ecf',
                         borderRadius: '4px',
                         border: hover ? '2px solid #3b59d1' : '2px solid #2d4ecf',
-                        color: '#9dadff',
+                        // color: '#9dadff',
                         color: '#fff',
                         cursor: 'pointer',
-                        display: 'inline-block',
+                        // display: 'inline-block',
                         fontSize: '12px',
                         fontWeight: 600,
                         listStyle: 'none',
@@ -242,7 +242,7 @@ export const Templates = ({setSelectedCategory}) => {
                         </div>
                     </div>
 
-                    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', width: '78%', }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', width: '78%', overflowY: 'auto'}}>
 
 
                         <p style={{ marginLeft: '30px', marginTop: '20px', fontSize: '48px', fontWeight: 'bold' }}>Templates</p>
@@ -250,12 +250,12 @@ export const Templates = ({setSelectedCategory}) => {
                         <div style={{ display: 'flex', marginTop: '0px', marginLeft: '30px', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'flex-start', alignItems: 'flex-start' }}>
 
                             {templateWorkflows
-                            .filter((template) => content === "All Templates" || template.tags.includes(content))
+                            .filter((template) => content === "All Templates" || template?.tags.includes(content))
                             .map((template) => (
                                 <button key={template.templateId} className={styles.cons} 
                                 onClick={() => handleTemplateClick(template)}
-                                style={{ height: '120px', width: '120px', backgroundColor: '#D9D9D9', borderRadius: '8px', alignItems: 'center', justifyContent: 'space-between', display: 'flex', marginTop: '0px', marginRight: '20px', display: 'flex', flexDirection: 'column', border: '0px solid #2d4ecf', cursor: 'pointer' }}>
-                                    <img src={template?.displayImage} alt="Image" style={{ height: '40px', marginTop: '20px', opacity: '0.8'}} />
+                                style={{ height: '120px', width: '120px', backgroundColor: '#D9D9D9', borderRadius: '8px', alignItems: 'center', justifyContent: 'space-between', display: 'flex', marginTop: '0px', marginRight: '20px', display: 'flex', flexDirection: 'column', border: '0px solid #2d4ecf', cursor: 'pointer', marginBottom: '20px' }}>
+                                    <img src={template?.displayImage ? template.displayImage : select} alt="Template" style={{ height: '40px', marginTop: '20px', opacity: '0.8'}} />
                                     <p style={{ fontSize: '9px', fontWeight: 'bold', color: '#fff', textAlign: 'center', marginLeft: '8px', marginRight: '8px', marginBottom: '15px' }}>{template.templateName}</p>
                                 </button>
                             ))}

@@ -74,6 +74,7 @@ export async function refreshToken() {
         return true;
     } catch (error) {
         clearAccessToken();
+        console.log("Error refreshing token:", error);
         return false;
     }
 }
@@ -126,6 +127,138 @@ export async function signInWithGoogle() {
         setAccessToken(data.access_token);
     } catch (error) {
         console.error("Error during login:", error.message);
+        throw error; // Re-throw the error for higher-level handling
+    }
+}
+
+// Save New Template
+export async function pushTemplate(template) {
+    try {
+        let token = getAccessToken();
+
+        if (!token) {
+            await refreshToken(); // Get a new token if none exists
+            token = getAccessToken();
+        }
+        const response = await fetch(`${BASE_URL}/database/add_template`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ template }), // Send the template data as JSON
+            credentials: "include", // Include cookies in requests
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json(); // Parse error details from the server
+            throw new Error(errorData.detail || "Login failed!");
+        }
+
+        const data = await response.json();
+        console.log("Response from push template: ", data);
+    } catch (error) {
+        console.error("Error during login:", error.message);
+        throw error; // Re-throw the error for higher-level handling
+    }
+}
+
+// Book Operations
+export async function pushBook(book) {
+    try {
+        let token = getAccessToken();
+
+        if (!token) {
+            await refreshToken(); // Get a new token if none exists
+            token = getAccessToken();
+        }
+        const response = await fetch(`${BASE_URL}/database/add_book`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(book), // Send the book data as JSON
+            credentials: "include", // Include cookies in requests
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json(); // Parse error details from the server
+            throw new Error(errorData.detail || "Login failed!");
+        }
+
+        const data = await response.json();
+        console.log("Response from push book: ", data);
+    } catch (error) {
+        console.error("Error during login:", error.message);
+        throw error; // Re-throw the error for higher-level handling
+    }
+}
+
+// Delete Book
+export async function deleteBook(book_name) {
+    try {
+        let token = getAccessToken();
+
+        if (!token) {
+            await refreshToken(); // Get a new token if none exists
+            token = getAccessToken();
+        }
+        const response = await fetch(`${BASE_URL}/database/remove_book`, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({book_name}),
+            credentials: "include", // Include cookies in requests
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json(); // Parse error details from the server
+            throw new Error(errorData.detail || "Login failed!");
+        }
+
+        const data = await response.json();
+        console.log("Response from delete book: ", data);
+    } catch (error) {
+        console.error("Error during login:", error.message);
+        throw error; // Re-throw the error for higher-level handling
+    }
+}
+
+// Modify Book
+export async function modifyBook(bookId, newData) {
+    try {
+        let token = getAccessToken();
+
+        if (!token) {
+            await refreshToken(); // Get a new token if none exists
+            token = getAccessToken();
+        }
+
+        const response = await fetch(`${BASE_URL}/database/modify_book`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+                id: bookId,  // Send book name
+                new_data: newData,    // Send new data
+            }),
+            credentials: "include", // Include cookies in requests
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json(); // Parse error details from the server
+            throw new Error(errorData.detail || "Failed to modify book");
+        }
+
+        const data = await response.json();
+        console.log("Response from modify book: ", data);
+    } catch (error) {
+        console.error("Error during modify book:", error.message);
         throw error; // Re-throw the error for higher-level handling
     }
 }

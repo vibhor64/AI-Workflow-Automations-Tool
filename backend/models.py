@@ -32,10 +32,17 @@ class User(BaseModel):
     hashed_password: str
     disabled: bool = False
 
+class BookName(BaseModel):
+    book_name: str
+
+class ModifyBook(BaseModel):
+    id: str
+    new_data: dict
+
 class Epic_DB(BaseModel):
     _id: str
     username: str
-    hashed_password: str
+    password: str
     templates: List
 
 class UserCreate(BaseModel):
