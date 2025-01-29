@@ -1,22 +1,13 @@
 import { useEffect, useState } from "react";
-import { loginUser, registerUser, logoutUser, requestWithAuth, refreshToken, signInWithGoogle } from "./auth"
+import { loginUser, registerUser, requestWithAuth, refreshToken, } from "./logic/auth";
 import guest from "./assets/guest.png"
 import google from "./assets/google.png"
 import queryString from "query-string";
 
-
-async function handleLogout() {
-    try {
-        logoutUser();
-        console.log("Logged out!");
-    } catch (error) {
-        console.error("Error:", error.message);
-    }
-}
 async function fetchData() {
     try {
         const data = await requestWithAuth("/users/me");
-        console.log("Protected Data:", data);
+        // console.log("Protected Data:", data);
         return data;
     } catch (error) {
         console.error("Error fetching data:", error.message);
@@ -40,12 +31,14 @@ export const LoginWindow = ({ setSelectedCategory }) => {
     }, []);
 
     async function initializeUserSession() {
-        const accessToken = sessionStorage.getItem("access_token");
+        let accessToken = sessionStorage.getItem("access_token");
         if (!accessToken) {
             const parsed = queryString.parse(window.location.search);
-            const accessToken = parsed.access_token;
-            if (accessToken) {
-                sessionStorage.setItem("access_token", accessToken);
+            const queryAccessToken = parsed.access_token;
+            if (queryAccessToken) {
+                sessionStorage.setItem("access_token", queryAccessToken);
+                accessToken = queryAccessToken;
+                // console.log("Access token found in query parameters");
                 // Remove the query parameters from the URL
                 const newUrl = window.location.origin + window.location.pathname;
                 window.history.replaceState({}, document.title, newUrl);
@@ -72,12 +65,12 @@ export const LoginWindow = ({ setSelectedCategory }) => {
     }
 
     async function handleLogin(username, password) {
-        console.log(username, password);
+        // console.log(username, password);
         try {
             await loginUser(username, password);
             console.log("Logged in!");
             const userData = await fetchData();
-            console.log("User Data:", userData);
+            // console.log("User Data:", userData);
             if (userData) {
                 gotoWeb();
             }
@@ -121,26 +114,27 @@ export const LoginWindow = ({ setSelectedCategory }) => {
         }
     }
 
-    async function fetchProtectedData() {
-        try {
-            const response = await fetch("http://127.0.0.1:8000/users/me", {
-                method: "GET",
-                credentials: "include", // Include cookies in the request
-            });
+    // async function fetchProtectedData() {
+    //     try {
+    //         const response = await fetch("http://127.0.0.1:8000/users/me", {
+    //             method: "GET",
+    //             credentials: "include", // Include cookies in the request
+    //         });
 
-            if (!response.ok) {
-                throw new Error("Failed to fetch protected data");
-            }
+    //         if (!response.ok) {
+    //             throw new Error("Failed to fetch protected data");
+    //         }
 
-            const data = await response.json();
-            console.log("Protected Data:", data);
-            gotoWeb();
-        } catch (error) {
-            console.error("Error fetching protected data:", error.message);
-        }
-    }
+    //         const data = await response.json();
+    //         console.log("Protected Data:", data);
+    //         gotoWeb();
+    //     } catch (error) {
+    //         console.error("Error fetching protected data:", error.message);
+    //     }
+    // }
 
     const gotoWeb = () => {
+        // Successfully logs in user, navigate to the web page
         setSelectedCategory("Pipelines");
     }
 

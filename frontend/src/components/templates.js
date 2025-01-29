@@ -9,7 +9,7 @@ import styles from './templates.module.css';
 // import { templateNodes } from './templateNodes';
 import { useStore } from '../store';
 import { shallow } from 'zustand/shallow';
-import { logoutUser } from '../auth';
+import { logoutUser } from '../logic/auth';
 
 const selector = (state) => ({
     loadTemplate: state.loadTemplate,

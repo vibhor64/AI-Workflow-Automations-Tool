@@ -1,0 +1,52 @@
+from pydantic import BaseModel
+from typing import List, Dict
+
+# Pipeline models
+class Node(BaseModel):
+    id: str
+    name: str
+    rightHandles: int
+    leftHandles: int
+    sources: List[str] = []
+    targets: List[str] = []
+    fieldValue1: str = ''
+    fieldValue2: str = ''
+
+class Edge(BaseModel):
+    id: str
+    source: str
+    target: str
+    sourceHandle: str
+    targetHandle: str
+
+class Pipeline(BaseModel):
+    formattedNodes: List[Node]
+    formattedEdges: List[Edge]
+
+class PipelineInputs(BaseModel):
+    inputValues: Dict[str, str]
+
+# Mock user database
+class User(BaseModel):
+    username: str
+    hashed_password: str
+    disabled: bool = False
+
+class Epic_DB(BaseModel):
+    _id: str
+    username: str
+    hashed_password: str
+    templates: List
+
+class UserCreate(BaseModel):
+    username: str
+    password: str
+
+class UserLogin(BaseModel):
+    username: str
+    password: str
+
+class Token(BaseModel):
+    access_token: str
+    # refresh_token: str
+    token_type: str

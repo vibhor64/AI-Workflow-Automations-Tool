@@ -1,10 +1,11 @@
-from pydantic import BaseModel
 from datetime import datetime, timedelta, timezone
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 from fastapi import HTTPException
 import os
 from dotenv import load_dotenv
+from models import User
+from utils.database import find_user
 
 # Settings
 load_dotenv()
@@ -14,32 +15,15 @@ ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
 REFRESH_TOKEN_EXPIRE_DAYS = int(os.getenv("REFRESH_TOKEN_EXPIRE_DAYS"))
 GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
 GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
-
-# Mock user database for demo
-class User(BaseModel):
-    username: str
-    hashed_password: str
-    disabled: bool = False
-
-class UserCreate(BaseModel):
-    username: str
-    password: str
-
-class UserLogin(BaseModel):
-    username: str
-    password: str
-
-class Token(BaseModel):
-    access_token: str
-    # refresh_token: str
-    token_type: str
+MONGODB_USERNAME = os.getenv("MONGODB_USERNAME")
+MONGODB_PASS = os.getenv("MONGODB_PASS")
 
 # Password hashing context
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 # Mock user database
 fake_users_db = {
-    "aa": User(username="aa", hashed_password=pwd_context.hash("bb"))
+    "a@m.com": User(username="a@m.com", hashed_password=pwd_context.hash("bbbb"))
 }
 
 # Helper functions
@@ -49,12 +33,12 @@ def verify_password(plain_password, hashed_password):
 def get_password_hash(password):
     return pwd_context.hash(password)
 
-def authenticate_user(username: str, password: str):
-    user = fake_users_db.get(username)
-    if not user or not verify_password(password, user.hashed_password):
+async def authenticate_user(username: str, password: str):
+    # user = fake_users_db.get(username)
+    user = await find_user(username)
+    if not user or not verify_password(password, user["password"]):
         print('No user found')
         return None
-    print(user)
     return user
 
 def create_access_token(data: dict, expires_delta: timedelta | None = None):

@@ -1,14 +1,17 @@
 from fastapi import FastAPI, Depends, HTTPException, status, Response, Request
 from fastapi.responses import RedirectResponse
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-import auth
+import utils.auth as auth
 from pydantic import BaseModel
 from typing import List, Dict
 from fastapi.middleware.cors import CORSMiddleware
-from deployment import execute_pipeline
+from utils.deployment import execute_pipeline
 from authlib.integrations.starlette_client import OAuth
 from starlette.config import Config
 from starlette.middleware.sessions import SessionMiddleware
+from utils.validate import checkDAG, isConnected, countIONodes
+from models import Node, Edge, Pipeline, PipelineInputs, UserCreate, Token, Epic_DB
+from utils.database import find_user, register_user, update_user, delete_user, add_template
 
 app = FastAPI()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
@@ -34,99 +37,8 @@ oauth.register(
     client_kwargs={"scope": "openid email profile"},
 )
 
-# Define models
-class Node(BaseModel):
-    id: str
-    name: str
-    rightHandles: int
-    leftHandles: int
-    sources: List[str] = []
-    targets: List[str] = []
-    fieldValue1: str = ''
-    fieldValue2: str = ''
-
-class Edge(BaseModel):
-    id: str
-    source: str
-    target: str
-    sourceHandle: str
-    targetHandle: str
-
-class Pipeline(BaseModel):
-    formattedNodes: List[Node]
-    formattedEdges: List[Edge]
-
-class PipelineInputs(BaseModel):
-    inputValues: Dict[str, str]
-
-# Verification functions
-def checkDAG(nodes, edges):
-    graph = {node.id: [] for node in nodes}
-    for edge in edges:
-        graph[edge.source].append(edge.target)
-    
-    visited = set()
-    cycle = set()
-
-    def dfs(node):
-        if node in cycle:  # Cycle detected
-            return False
-        if node in visited:  # Already processed
-            return True
-        
-        visited.add(node)
-        cycle.add(node)
-        for neighbor in graph[node]:
-            if not dfs(neighbor):
-                return False
-        cycle.remove(node)
-        return True
-
-    for node in graph:
-        if node not in visited:
-            if not dfs(node):
-                return False
-
-    return True
-
-def isConnected(nodes, edges):
-    if not nodes:
-        return True
-    
-    adjacency_list = {node.id: [] for node in nodes}
-    for edge in edges:
-        adjacency_list[edge.source].append(edge.target)
-        adjacency_list[edge.target].append(edge.source)
-
-    start_node = nodes[0].id
-    visited = set()
-    queue = [start_node]
-
-    while queue:
-        current = queue.pop(0)
-        if current not in visited:
-            visited.add(current)
-            queue.extend(neighbor for neighbor in adjacency_list[current] if neighbor not in visited)
-
-    return len(visited) == len(nodes)
-
-def countIONodes(nodes):
-    input = []
-    output = []
-    integration = []
-    
-    for node in nodes:
-        if node.name == "Input":
-            input.append(node.fieldValue1)
-        elif node.name == "Output":
-            output.append(node.fieldValue1)
-        elif node.name == "Coming Soon":
-            integration.append(node.name)
-    
-    return input, output, integration
-
 # Dependency to get the current user
-def get_current_user(token: str = Depends(oauth2_scheme)):
+async def get_current_user(token: str = Depends(oauth2_scheme)):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -139,14 +51,10 @@ def get_current_user(token: str = Depends(oauth2_scheme)):
             raise credentials_exception
     except auth.JWTError:
         raise credentials_exception
-    user = auth.fake_users_db.get(username)
-    if user is None:
+    user = await find_user(username)
+    if not user:
         raise credentials_exception
     return user
-
-@app.get('/')
-def read_root():
-    return {'Bing': 'Bong'}
 
 @app.post('/pipelines/parse')
 def parse_pipeline(pipeline: Pipeline):
@@ -159,18 +67,11 @@ def parse_pipeline(pipeline: Pipeline):
     if not is_dag or not is_con:
         return {"num_nodes": num_nodes, "num_edges": num_edges, "is_dag": is_dag, "is_con": is_con, "inp": inp, "out": out, "output": 'NONE'}
     
-    # file_path = f"pipeline.json"
-    # with open(file_path, "w") as file:
-    #     json.dump(pipeline.dict(), file, indent=4)
-    
     output = 'Deployed'
     return {"num_nodes": num_nodes, "num_edges": num_edges, "is_dag": is_dag, "is_con": is_con, "inp": inp, "out": out,"integration" : integration, "output": output}
 
 @app.post('/deployment/parse')
 def parse_deployment(pipeline: Pipeline):
-    # print("Deployment")
-    # with open("pipeline.json", "r") as file:
-    #     pipeline = json.load(file)
     is_dag = checkDAG(pipeline.formattedNodes, pipeline.formattedEdges)
     is_con = isConnected(pipeline.formattedNodes, pipeline.formattedEdges)
     if not is_dag or not is_con:
@@ -179,12 +80,18 @@ def parse_deployment(pipeline: Pipeline):
     return {"pipelineOutput": pipelineOutput}
 
 # Authorization
-@app.post("/register", response_model=auth.Token)
-def register(user: auth.UserCreate, response: Response):
-    if user.username in auth.fake_users_db:
+@app.post("/register", response_model=Token)
+async def register(user: UserCreate, response: Response):
+    check_user = await find_user(user.username)
+    if check_user is not None:
+        print("User: ", check_user)
         raise HTTPException(status_code=400, detail="User already exists")
     hashed_password = auth.get_password_hash(user.password)
-    auth.fake_users_db[user.username] = auth.User(username=user.username, hashed_password=hashed_password)
+    # auth.fake_users_db[user.username] = auth.User(username=user.username, hashed_password=hashed_password)
+    result = await register_user(user.username, hashed_password)
+    if result["status"] != "success":
+        raise HTTPException(status_code=400, detail=result["message"])
+    
     access_token = auth.create_access_token(data={"sub": user.username})
     refresh_token = auth.create_refresh_token(data={"sub": user.username})
     # Set the refresh token as an HTTP-only cookie
@@ -198,29 +105,33 @@ def register(user: auth.UserCreate, response: Response):
     )
     return {"access_token": access_token, "token_type": "bearer"}
 
-@app.post("/token", response_model=auth.Token)
-def login(form_data: OAuth2PasswordRequestForm = Depends(), response: Response = None):
-    print(form_data.username, form_data.password)
-    user = auth.authenticate_user(form_data.username, form_data.password)
-    if not user:
-        raise HTTPException(status_code=400, detail="Incorrect username or password")
-    access_token = auth.create_access_token(data={"sub": user.username})
-    refresh_token = auth.create_refresh_token(data={"sub": user.username})
-    # Set the refresh token as an HTTP-only cookie
-    response.set_cookie(
-        key="refresh_token",
-        value=refresh_token,
-        httponly=True,
-        max_age=auth.REFRESH_TOKEN_EXPIRE_DAYS * 24 * 60 * 60, 
-        secure=True,  # Use only for HTTPS
-    )
-    return {"access_token": access_token, "token_type": "bearer"}
+@app.post("/token", response_model=Token)
+async def login(form_data: OAuth2PasswordRequestForm = Depends(), response: Response = None):
+    try:
+        user = await auth.authenticate_user(form_data.username, form_data.password)
+        if user is None:
+            raise HTTPException(status_code=400, detail="Incorrect username or password")
+        access_token = auth.create_access_token(data={"sub": user["_id"]})
+        refresh_token = auth.create_refresh_token(data={"sub": user["_id"]})
+        # Set the refresh token as an HTTP-only cookie
+        response.set_cookie(
+            key="refresh_token",
+            value=refresh_token,
+            httponly=True,
+            max_age=auth.REFRESH_TOKEN_EXPIRE_DAYS * 24 * 60 * 60, 
+            secure=True,  # Use only for HTTPS
+        )
+        return {"access_token": access_token, "token_type": "bearer"}
+    except Exception as e:
+        print(f"Error in /token endpoint: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error")
 
+# Get All User Data
 @app.get("/users/me")
-def read_users_me(current_user: auth.User = Depends(get_current_user)):
+def read_users_me(current_user: Epic_DB = Depends(get_current_user)):
     return current_user
 
-@app.post("/refresh", response_model=auth.Token)
+@app.post("/refresh", response_model=Token)
 def refresh(response: Response, refresh_token: str = Depends(oauth2_scheme)):
     """
     Checks if the user has a valid refresh token for seamless login.
@@ -262,10 +173,15 @@ async def google_callback(request: Request, response: Response):
 
     # Check if the user exists in your fake_users_db or create a new user
     username = user_info["email"]
-    if username not in auth.fake_users_db:
+    check_user = await find_user(username)
+    # if username not in auth.fake_users_db:
+    if check_user is None:
         # Create a new user in your fake_users_db
         hashed_password = auth.get_password_hash("google")  # Use a dummy password or handle separately
-        auth.fake_users_db[username] = auth.User(username=username, hashed_password=hashed_password)
+        # auth.fake_users_db[username] = auth.User(username=username, hashed_password=hashed_password)
+        result = await register_user(username, hashed_password)
+        # if result["status"] != "success":
+        #     raise HTTPException(status_code=400, detail=result["message"])
 
     # Generate tokens
     access_token = auth.create_access_token(data={"sub": username})
@@ -284,3 +200,51 @@ async def google_callback(request: Request, response: Response):
     # Redirect to the frontend after setting cookies
     redirect_url = f"http://localhost:3000?access_token={access_token}"
     return RedirectResponse(redirect_url)
+
+# Database operations
+# Fetch user data
+# @app.get('/database/fetch_user_data')
+# async def fetch_user_data(username: str):
+#     user = await find_user(username)
+#     if user:
+#         return user
+#     else:
+#         raise HTTPException(status_code=404, detail="User not found")
+
+# # Register user
+# @app.post('/database/register_user')
+# async def call_register_user(username: str, password: str):
+#     result = await register_user(username, password)
+#     if result["status"] == "success":
+#         return result
+#     else:
+#         raise HTTPException(status_code=400, detail=result["message"])
+    
+# # Update user
+# @app.put('/database/update_user')
+# async def call_update_user(username: str, password: str):
+#     result = await update_user(username, password)
+#     if result["status"] == "success":
+#         return result
+#     else:
+#         raise HTTPException(status_code=400, detail=result["message"])
+
+# # Delete user
+# @app.delete('/database/delete_user')
+# async def call_delete_user(username: str):
+#     result = await delete_user(username)
+#     if result["status"] == "success":
+#         return result
+#     else:
+#         raise HTTPException(status_code=400, detail=result["message"])
+
+# Template operations
+
+# Add template
+@app.post('/database/add_template')
+async def call_add_template(template_data: dict, current_user: auth.User = Depends(get_current_user)):
+    result = await add_template(current_user.username, template_data)
+    if result["status"] == "success":
+        return result
+    else:
+        raise HTTPException(status_code=400, detail=result["message"])
