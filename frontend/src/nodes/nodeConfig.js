@@ -446,7 +446,7 @@ const newNodesConfig = [
     },
   },
   {
-    id: 'newNode-12',
+    id: 'newNode-1',
     type: 'NodeNode',
     data: {
       name: 'Coming Soon',
@@ -455,10 +455,81 @@ const newNodesConfig = [
       bgcolor: '#e76f51',
       rightHandles: 0,
       leftHandles: 0,
-      img: s3,
-      category: 'Integrations',
+      img: discord,
+      category: 'Triggers',
     },
   },
+  {
+    id: 'newNode-2',
+    type: 'NodeNode',
+    data: {
+      name: 'Coming Soon',
+      isInput: false,
+      isType: false,
+      bgcolor: '#e76f51',
+      rightHandles: 1,
+      leftHandles: 1,
+      img: aws,
+      category: 'Triggers',
+    },
+  },
+  {
+    id: 'newNode-8',
+    type: 'NodeNode',
+    data: {
+      name: 'Coming Soon',
+      isInput: false,
+      isType: false,
+      bgcolor: '#e76f51',
+      rightHandles: 0,
+      leftHandles: 0,
+      img: notion,
+      category: 'Triggers',
+    },
+  },
+  {
+    id: 'newNode-5',
+    type: 'NodeNode',
+    data: {
+      name: 'Coming Soon',
+      isInput: false,
+      isType: false,
+      bgcolor: '#e76f51',
+      rightHandles: 0,
+      leftHandles: 0,
+      img: gdrive,
+      category: 'Triggers',
+    },
+  },
+  {
+    id: 'newNode-6',
+    type: 'NodeNode',
+    data: {
+      name: 'Coming Soon',
+      isInput: false,
+      isType: false,
+      bgcolor: '#e76f51',
+      rightHandles: 0,
+      leftHandles: 0,
+      img: gmail,
+      category: 'Triggers',
+    },
+  },
+  {
+    id: 'newNode-4',
+    type: 'NodeNode',
+    data: {
+      name: 'Coming Soon',
+      isInput: false,
+      isType: false,
+      bgcolor: '#e76f51',
+      rightHandles: 0,
+      leftHandles: 0,
+      img: gdocs,
+      category: 'Triggers',
+    },
+  },
+  
 ];
 
 export { newNodesConfig };

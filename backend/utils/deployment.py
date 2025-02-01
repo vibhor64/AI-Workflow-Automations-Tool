@@ -4,11 +4,23 @@ import markdown
 import PIL.Image
 import os
 from dotenv import load_dotenv
+import base64
+from email.mime.text import MIMEText
+from google.auth.transport.requests import Request
+from google.oauth2.credentials import Credentials
+from google_auth_oauthlib.flow import InstalledAppFlow
+from googleapiclient.discovery import build
+from googleapiclient.errors import HttpError
+from integrations.gmail import create_message, send_message, create_draft
 
+# Load environment variables
 load_dotenv()
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 genai.configure(api_key=GOOGLE_API_KEY)
 model = genai.GenerativeModel('gemini-1.5-flash')
+
+# Scopes required for Gmail API
+SCOPES = ['https://www.googleapis.com/auth/gmail.compose']
 
 def execute_pipeline(pipeline):
     # Create the graph
@@ -108,3 +120,37 @@ def handle_output(id):
     output = resMap[handleMap[str(id + '-left-handle-0')]]
     resMap[id] = output
     return output
+
+def handle_gmail_output(node_id, node_data):
+    """Handle Gmail output node to send or draft an email."""
+    user_id = node_data.get("user_id")  # Assuming you store the user ID in the node
+    creds_dict = node_data.get("creds")  # Assuming you store the credentials in the node
+    to = node_data.get("to")
+    sender = node_data.get("from")
+    message_text = resMap[handleMap[str(node_id + '-left-handle-0')]]  # Get the AI-generated output
+    draft = node_data.get("draft", False)  # Default to sending the email
+
+    if not creds_dict:
+        print("No credentials found for the user.")
+        return
+
+    creds = Credentials.from_authorized_user_info(creds_dict, SCOPES)
+
+    if not creds or not creds.valid:
+        if creds and creds.expired and creds.refresh_token:
+            creds.refresh(Request())
+        else:
+            print("Invalid or expired credentials.")
+            return
+
+    try:
+        service = build('gmail', 'v1', credentials=creds)
+        message = create_message(sender, to, message_text)
+
+        if draft:
+            create_draft(service, user_id, message)
+        else:
+            send_message(service, user_id, message)
+
+    except HttpError as error:
+        print(f"An error occurred: {error}")

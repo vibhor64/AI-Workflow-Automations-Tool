@@ -5,6 +5,7 @@ import google from "./assets/google.png"
 import queryString from "query-string";
 import { useStore } from "./store";
 import { shallow } from 'zustand/shallow';
+import "./index.css"
 
 const selector = (state) => ({
     loadTemplate: state.loadTemplate,
@@ -36,7 +37,7 @@ export const LoginWindow = ({ setSelectedCategory }) => {
                     addTemplate(data["templates"][i]["template"]);
                 }
             }
-            
+
             if (Array.isArray(data["books"]) && data["books"].length > 0) {
                 addBooks(data["books"]);
             }
@@ -169,27 +170,27 @@ export const LoginWindow = ({ setSelectedCategory }) => {
     }
 
     return (
-        <div style={{ display: 'flex', height: '100vh', width: '100vw', backgroundColor: '#383838', border: '3px solid #2d4ecf', borderRadius: '10px', zIndex: 10, flexDirection: 'column', justifyContent: 'center', alignItems: 'center', position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', color: '#fff', flexDirection: 'column' }}>
+        <div className="login-bg" style={{ display: 'flex', height: '102vh', width: '102vw', backgroundColor: '#383838', border: '3px solid #2d4ecf', borderRadius: '10px', zIndex: 10, flexDirection: 'column', justifyContent: 'center', alignItems: 'center', position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', overflow: 'hidden' }}>
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', color: '#fff', flexDirection: 'row' }}>
 
                 {/* Login Box */}
-                <div style={{ height: '62vh', width: '30vw', backgroundColor: '#0a0a0a', display: 'flex', flexDirection: 'column', borderRadius: '16px', alignItems: 'center', boxShadow: ' rgba(0, 0, 0, 0.35) 0px 5px 15px' }}>
+                <div style={{ height: '32rem', width: '24rem', backgroundColor: '#0a0a0a', display: 'flex', flexDirection: 'column', borderRadius: '16px', alignItems: 'center', boxShadow: ' rgba(0, 0, 0, 0.35) 0px 5px 15px', justifyContent: 'center' }}>
 
                     {/* Welcome */}
-                    <div style={{ fontSize: '26px', fontWeight: 700, marginTop: '3vh', }}>Welcome To Future</div>
+                    <div style={{ fontSize: '26px', fontWeight: 700, marginTop: '0vh', }}>Welcome To Weavebot</div>
                     <div style={{ color: '#96969F', fontSize: '12px', marginTop: '1vh', marginBottom: '2vh' }}>Login with your Guest or Google account</div>
 
                     {/* Google and Guest Login */}
                     <button style={hover === 1 ? { ...styles.autoButton, backgroundColor: '#454545' } : styles.autoButton} onMouseEnter={() => setHover(1)} onMouseLeave={() => setHover(0)}
                         onClick={() => handleGoogleLogin()}
                     >
-                        <img src={google} alt="Google" style={{ height: '2vh', marginRight: '1vh' }}
+                        <img src={google} alt="Google" style={{ height: '1em', marginRight: '1vh' }}
                         />
                         Login with Google</button>
                     <button style={hover === 2 ? { ...styles.autoButton, backgroundColor: '#454545' } : styles.autoButton} onMouseEnter={() => setHover(2)} onMouseLeave={() => setHover(0)}
                         onClick={() => gotoWeb()}
                     >
-                        <img src={guest} alt="Google" style={{ height: '2vh', marginRight: '1vh' }} />
+                        <img src={guest} alt="Google" style={{ height: '1em', marginRight: '1vh' }} />
                         Continue as Guest</button>
 
                     {/* Continue with */}
@@ -241,8 +242,9 @@ export const LoginWindow = ({ setSelectedCategory }) => {
                         onClick={() => fetchData()}>fetch data</button> */}
                 </div>
 
+
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '2vh', width: '30vw', flexDirection: 'column', fontSize: '12px', position: 'absolute', bottom: '12vh', color: '#ababab' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center',  width: '20rem', flexDirection: 'column', fontSize: '12px', position: 'absolute', bottom: '24px', color: '#d1d1d1' }}>
                 By clicking continue, you agree to our
                 <div>
                     <button style={styles.tos}>Terms of Service</button>and<button style={styles.tos}>Privacy Policy.</button>
@@ -257,8 +259,8 @@ const styles = {
         backgroundColor: 'transparent',
         cursor: 'pointer',
         borderWidth: '0',
-        color: '#ababab',
-        fontSize: '12px',
+        color: '#d1d1d1',
+        fontSize: '11px',
         fontWeight: 'bold',
         textDecoration: 'underline',
         listStyle: 'none',
@@ -278,7 +280,7 @@ const styles = {
         fontSize: '10px',
         marginTop: '0.9em',
         fontWeight: 600,
-        marginLeft: '4.6vw',
+        marginLeft: '3rem',
         alignSelf: 'flex-start',
     },
     text2: {
@@ -287,7 +289,7 @@ const styles = {
         fontSize: '14px',
         marginTop: '0.9em',
         fontWeight: 600,
-        marginLeft: '4.6vw',
+        marginLeft: '3rem',
     },
     submitButton: {
         backgroundColor: '#fff',
@@ -301,7 +303,7 @@ const styles = {
         fontWeight: 600,
         marginTop: '3vh',
         padding: '10px 2px',
-        width: '21vw',
+        width: '18rem',
         textAlign: 'center',
         transition: 'all 200ms',
         listStyle: 'none',
@@ -327,7 +329,7 @@ const styles = {
         listStyle: 'none',
         marginTop: '1vh',
         padding: '10px 28px',
-        width: '21vw',
+        width: '18rem',
         textAlign: 'center',
         transition: 'all 200ms',
         verticalAlign: 'baseline',
@@ -346,22 +348,24 @@ const styles = {
         cursor: 'pointer',
         display: 'flex',
         border: '1px solid #454545',
-        // fontFamily: 'Poppins',
         fontSize: '13px',
         fontWeight: 600,
         listStyle: 'none',
         marginTop: '1vh',
         padding: '8px 28px',
-        width: '20vw',
+        width: '18rem',
         textAlign: 'center',
         transition: 'all 200ms',
-        verticalAlign: 'baseline',
-        whiteSpace: 'nowrap',
-        userSelect: 'none',
-        WebkitUserSelect: 'none',
-        touchAction: 'manipulation',
         justifyContent: 'center',
         alignItems: 'center',
+        WebkitFontSmoothing: 'antialiased',
+        MozOsxFontSmoothing: 'grayscale',
+
+        // verticalAlign: 'baseline',
+        // whiteSpace: 'nowrap',
+        // userSelect: 'none',
+        // WebkitUserSelect: 'none',
+        // touchAction: 'manipulation',
     },
     textInput: {
         fontFamily: 'Inter',
@@ -372,7 +376,7 @@ const styles = {
         fontSize: '14px',
         marginTop: '0.5em',
         fontWeight: 'medium',
-        width: '20vw',
+        width: '17rem',
         // height: '14px',
         padding: '8px 8px',
         transition: 'all 0.2s',

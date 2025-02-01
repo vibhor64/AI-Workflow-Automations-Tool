@@ -158,7 +158,7 @@ export const PipelineUI = ({setSelectedCategory}) => {
 
   return (
     <>
-      <div ref={reactFlowWrapper} style={{ width: '100wv', height: '82vh', backgroundColor: '#ffffff', borderRadius: '10px' }} className='big-man'>
+      <div ref={reactFlowWrapper} style={{ height: '82vh', backgroundColor: '#ffffff', borderRadius: '10px', display: 'flex', width: '99vw' }} className='big-man'>
         <ReactFlow
           nodes={nodes}
           edges={edges}
@@ -178,6 +178,7 @@ export const PipelineUI = ({setSelectedCategory}) => {
           <MiniMap />
         </ReactFlow>
 
+      {/* Run 🚀 */}
         <div style={{ display: 'flex', position: 'absolute', bottom: '10px', height: '10vh', alignItems: 'center', justifyContent: 'center', transform: 'translate(-50%, -10%)', left: '50%' }}>
           <button
             style={{
@@ -210,8 +211,8 @@ export const PipelineUI = ({setSelectedCategory}) => {
           </button>
         </div>
 
-
-        <div style={{ display: 'flex',flexDirection: 'column', position: 'absolute', bottom: '3px', height: '10vh', alignItems: 'center', justifyContent: 'center', right: '15%' }}>
+        {/* Reset 🔄 */}
+        <div style={{ display: 'flex',flexDirection: 'column', position: 'absolute', bottom: '3px', height: '10vh', alignItems: 'center', justifyContent: 'center', right: '17%' }}>
           <button
             style={{
               backgroundColor: '#d1d1d1',
@@ -239,7 +240,7 @@ export const PipelineUI = ({setSelectedCategory}) => {
               boxShadow: ' rgba(100, 100, 111, 0.2) 0px 7px 29px 0px',
             }}
             onClick={clearCanvas}
-            type="submit"><img src={Reset} style={{ width: '20px', height: '20px', }} />
+            type="submit"><img src={Reset} alt="Reset" style={{ width: '20px', height: '20px', }} />
           </button>
           <p style={{ fontSize: '12px', color: '#d1d1d1', marginTop: '2px', fontWeight: 500 }}>Reset</p>
         </div>

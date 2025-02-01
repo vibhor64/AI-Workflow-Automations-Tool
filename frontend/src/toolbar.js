@@ -8,7 +8,7 @@ export const PipelineToolbar = () => {
 
     const [selectedCategory, setSelectedCategory] = useState('General');
     const [hoveredCategory, setHoveredCategory] = useState(null);
-    const categories = ['General', 'LLMs', 'Knowledge Base', 'Multi-Modal', 'Integrations'];
+    const categories = ['General', 'LLMs', 'Knowledge Base', 'Multi-Modal','Triggers', 'Integrations'];
 
     return (
         // <div style={{ padding: '10px', backgroundColor: '#e0e0e0' }}>

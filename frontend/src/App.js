@@ -11,7 +11,8 @@ function App() {
   const [hover, setHover] = useState(false);
 
   return (
-    <div style={{ padding: '7px', backgroundColor: '#6B87E3', }}>
+    <div style={{ padding: '7px', backgroundColor: '#6B87E3', overflow: 'hidden', height: '100vh', width: '100vw', position: 'fixed', // Fix the parent to the viewport
+      top: 0, left: 0,}}>
       {/* Category Selector */}
       <div style={{ display: 'flex', gap: '10px', marginBottom: '10px', marginLeft: '15px' }}>
         <select value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)}

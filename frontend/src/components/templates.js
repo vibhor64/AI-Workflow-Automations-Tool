@@ -10,6 +10,7 @@ import styles from './templates.module.css';
 import { useStore } from '../store';
 import { shallow } from 'zustand/shallow';
 import { logoutUser, pushTemplate } from '../logic/auth';
+import arrowDown from '../assets/arrow-down.svg';
 
 const selector = (state) => ({
     loadTemplate: state.loadTemplate,
@@ -234,6 +235,10 @@ export const Templates = ({setSelectedCategory}) => {
 
                     <div style={{ height: '100%', width: '22%', display: 'flex', flexDirection: 'column', backgroundColor: '#D9D9D9', borderTopLeftRadius: '4px', borderBottomLeftRadius: '4px', }}>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '0px', marginTop: '70px', marginLeft: '30px' }}>
+                        <div style={{ marginBottom: '10px', fontSize: '24px', fontWeight: 700, color: '#121212', alignItems: 'center', display: 'flex'}}> 
+                            Discover
+                            <img src={arrowDown} alt="Logo" style={{ width: '32px', height: '32px', }} />
+                            </div>
                             <button onClick={() => setContent('All Templates')} className={styles.buttons}>All Templates</button>
                             <button onClick={() => setContent('Gmail')} className={styles.buttons}>Gmail</button>
                             <button onClick={() => setContent('Gen AI')} className={styles.buttons}>Gen AI</button>
@@ -245,9 +250,11 @@ export const Templates = ({setSelectedCategory}) => {
                     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', width: '78%', overflowY: 'auto'}}>
 
 
-                        <p style={{ marginLeft: '30px', marginTop: '20px', fontSize: '48px', fontWeight: 'bold' }}>Templates</p>
+                        <div style={{ marginLeft: '30px', marginTop: '20px', fontSize: '48px', fontWeight: 'bold' }}>Browse Templates</div>
 
-                        <div style={{ display: 'flex', marginTop: '0px', marginLeft: '30px', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'flex-start', alignItems: 'flex-start' }}>
+                        <p style={{ marginLeft: '30px', marginTop: '8px', fontSize: '15px', fontWeight: 'bold', color: '#ababab' }}>Discover templates for your needs and get started with automation—no coding required.</p>
+
+                        <div style={{ display: 'flex', marginTop: '5px', marginLeft: '30px', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'flex-start', alignItems: 'flex-start' }}>
 
                             {templateWorkflows
                             .filter((template) => content === "All Templates" || template?.tags.includes(content))
