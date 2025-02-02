@@ -61,6 +61,10 @@ export async function refreshToken() {
     try {
         const response = await fetch(`${BASE_URL}/refresh`, {
             method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${getAccessToken()}`,
+            },
             credentials: "include", // Important for sending/receiving cookies
         });
 
@@ -259,6 +263,38 @@ export async function modifyBook(bookId, newData) {
         console.log("Response from modify book: ", data);
     } catch (error) {
         console.error("Error during modify book:", error.message);
+        throw error; // Re-throw the error for higher-level handling
+    }
+}
+
+export async function save_google_creds(creds_dict) {
+    try {
+        let token = getAccessToken();
+
+        if (!token) {
+            await refreshToken(); // Get a new token if none exists
+            token = getAccessToken();
+        }
+
+        const response = await fetch(`${BASE_URL}/database/add_google_creds`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(creds_dict),
+            credentials: "include", // Include cookies in requests
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json(); // Parse error details from the server
+            throw new Error(errorData.detail || "Failed to save google creds");
+        }
+
+        const data = await response.json();
+        console.log("Response from save google creds: ", data);
+    } catch (error) {
+        console.error("Error during saving google creds:", error.message);
         throw error; // Re-throw the error for higher-level handling
     }
 }

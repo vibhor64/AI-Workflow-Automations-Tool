@@ -1,11 +1,12 @@
 import { useEffect, useState, useRef } from "react";
-import { loginUser, registerUser, requestWithAuth, refreshToken, } from "./logic/auth";
+import { loginUser, registerUser, requestWithAuth, refreshToken, save_google_creds, } from "./logic/auth";
 import guest from "./assets/guest.png"
 import google from "./assets/google.png"
 import queryString from "query-string";
 import { useStore } from "./store";
 import { shallow } from 'zustand/shallow';
 import "./index.css"
+import { useNavigate } from 'react-router-dom';
 
 const selector = (state) => ({
     loadTemplate: state.loadTemplate,
@@ -16,12 +17,13 @@ const selector = (state) => ({
     addBooks: state.addBooks,
 });
 
-export const LoginWindow = ({ setSelectedCategory }) => {
+export const LoginWindow = () => {
     const [username, setUsername] = useState("");
     const [pass, setPass] = useState("");
     const [hover, setHover] = useState(0);
     const [focus, setFocus] = useState(0);
     const [incorrect, setIncorrect] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const {
         addTemplate,
@@ -31,6 +33,7 @@ export const LoginWindow = ({ setSelectedCategory }) => {
     async function fetchData() {
         try {
             const data = await requestWithAuth("/users/me");
+            console.log(data);
 
             if (Array.isArray(data["templates"]) && data["templates"].length > 0) {
                 for (let i = 0; i < data["templates"].length; i++) {
@@ -65,6 +68,7 @@ export const LoginWindow = ({ setSelectedCategory }) => {
             const parsed = queryString.parse(window.location.search);
             const queryAccessToken = parsed.access_token;
             if (queryAccessToken) {
+                setLoading(true);
                 sessionStorage.setItem("access_token", queryAccessToken);
                 accessToken = queryAccessToken;
                 // console.log("Access token found in query parameters");
@@ -72,9 +76,10 @@ export const LoginWindow = ({ setSelectedCategory }) => {
                 const newUrl = window.location.origin + window.location.pathname;
                 window.history.replaceState({}, document.title, newUrl);
             }
+            setLoading(false)
         }
         try {
-
+            setLoading(true);
             if (!accessToken) {
                 // No access token, try seamless login
                 console.log("No access token, trying seamless login")
@@ -83,30 +88,53 @@ export const LoginWindow = ({ setSelectedCategory }) => {
                     // Redirect user to login page or show login prompt
                     console.log("User needs to log in manually");
                 }
+                setLoading(false);
             } else if (accessToken) {
                 console.log("User is already logged in");
                 await fetchData();
+                const parsed = queryString.parse(window.location.search);
+                const queryCreds_dict = parsed.creds_dict;
+                if (queryCreds_dict) {
+                    // Parse the JSON string
+                    console.log("Credentials found in query parameters");
+                    const parsedCreds = JSON.parse(queryCreds_dict);
+                    console.log("Parsed credentials:", parsedCreds);
+
+                    // Remove the query parameters from the URL
+                    const newUrl = window.location.origin + window.location.pathname;
+                    window.history.replaceState({}, document.title, newUrl);
+
+                    await save_google_creds(parsedCreds);
+                    setLoading(false);
+                    navigate('/deployment');
+                } else {
+                    console.log("No creds_dict found in query parameters");
+                }
+                setLoading(false);
                 gotoWeb();
             }
         } catch (e) {
             console.log("Error is fetching token: ", e)
         }
-
+        setLoading(false)
     }
 
     async function handleLogin(username, password) {
         // console.log(username, password);
+        setLoading(true)
         try {
             await loginUser(username, password);
             console.log("Logged in!");
             const userData = await fetchData();
             // console.log("User Data:", userData);
+            setLoading(false)
             if (userData) {
                 gotoWeb();
             }
         } catch (error) {
             console.error("Error:", error.message);
             setIncorrect("Incorrect username or password");
+            setLoading(false)
         }
     }
 
@@ -121,6 +149,7 @@ export const LoginWindow = ({ setSelectedCategory }) => {
             return
         }
 
+        setLoading(true)
         try {
             await registerUser(username, password);
             console.log("Logged in!");
@@ -128,13 +157,14 @@ export const LoginWindow = ({ setSelectedCategory }) => {
         } catch (error) {
             console.error("Error:", error.message);
             setIncorrect("Username already exists");
+            setLoading(false)
             return
         }
+        setLoading(false)
         gotoWeb();
     }
 
     async function handleGoogleLogin() {
-
         try {
             console.log("Logging in with Google...");
             window.location.href = "http://127.0.0.1:8000/auth/google";
@@ -142,6 +172,7 @@ export const LoginWindow = ({ setSelectedCategory }) => {
         } catch (error) {
             console.error("Error:", error.message);
             setIncorrect("Some error has occured");
+            setLoading(false)
         }
     }
 
@@ -164,17 +195,20 @@ export const LoginWindow = ({ setSelectedCategory }) => {
     //     }
     // }
 
+    const navigate = useNavigate();
     const gotoWeb = () => {
         // Successfully logs in user, navigate to the web page
-        setSelectedCategory("Pipelines");
+        setLoading(false);
+        navigate('/pipelines');
     }
 
     return (
-        <div className="login-bg" style={{ display: 'flex', height: '102vh', width: '102vw', backgroundColor: '#383838', border: '3px solid #2d4ecf', borderRadius: '10px', zIndex: 10, flexDirection: 'column', justifyContent: 'center', alignItems: 'center', position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', overflow: 'hidden' }}>
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', color: '#fff', flexDirection: 'row' }}>
+        <div className="login-bg" style={{ display: 'flex', height: '102vh', width: '102vw', backgroundColor: loading ? '#2e2e2e' : '#1c1c1c', border: '3px solid #2d4ecf', borderRadius: '10px', zIndex: 10, flexDirection: 'column', justifyContent: 'center', alignItems: 'center', position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', overflow: 'hidden' }}>
+
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', color: '#fff', flexDirection: 'row', }}>
 
                 {/* Login Box */}
-                <div style={{ height: '32rem', width: '24rem', backgroundColor: '#0a0a0a', display: 'flex', flexDirection: 'column', borderRadius: '16px', alignItems: 'center', boxShadow: ' rgba(0, 0, 0, 0.35) 0px 5px 15px', justifyContent: 'center' }}>
+                <div style={{ height: '32rem', width: '24rem', backgroundColor: '#0a0a0a', display: 'flex', flexDirection: 'column', borderRadius: '16px', alignItems: 'center', boxShadow: ' rgba(0, 0, 0, 0.35) 0px 5px 15px', justifyContent: 'center', opacity: loading ? 0.8 : 1 }}>
 
                     {/* Welcome */}
                     <div style={{ fontSize: '26px', fontWeight: 700, marginTop: '0vh', }}>Welcome To Weavebot</div>
@@ -244,7 +278,7 @@ export const LoginWindow = ({ setSelectedCategory }) => {
 
 
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center',  width: '20rem', flexDirection: 'column', fontSize: '12px', position: 'absolute', bottom: '24px', color: '#d1d1d1' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '20rem', flexDirection: 'column', fontSize: '12px', position: 'absolute', bottom: '24px', color: '#d1d1d1' }}>
                 By clicking continue, you agree to our
                 <div>
                     <button style={styles.tos}>Terms of Service</button>and<button style={styles.tos}>Privacy Policy.</button>

@@ -61,8 +61,11 @@ def verify_refresh_token(token: str):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         username: str = payload.get("sub")
+        print("Username: ", username)
         if username is None:
+            print('No username found')
             raise JWTError()
         return username
     except JWTError:
+        print('Invalid refresh token')
         raise HTTPException(status_code=401, detail="Invalid refresh token")

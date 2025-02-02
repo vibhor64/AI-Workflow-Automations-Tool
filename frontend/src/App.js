@@ -4,18 +4,27 @@ import { LoginWindow } from './loginWindow';
 import { PipelineToolbar } from './toolbar';
 import { PipelineUI } from './ui';
 import { useState } from 'react';
+import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 
 function App() {
 
-  const [selectedCategory, setSelectedCategory] = useState('Login');
+  // const [selectedCategory, setSelectedCategory] = useState('Login');
   const [hover, setHover] = useState(false);
+  const navigate = useNavigate();
+
+  const changePage = (page) => {
+    // setSelectedCategory('Login');
+    navigate(`/${page}`);
+  }
 
   return (
-    <div style={{ padding: '7px', backgroundColor: '#6B87E3', overflow: 'hidden', height: '100vh', width: '100vw', position: 'fixed', // Fix the parent to the viewport
-      top: 0, left: 0,}}>
+    <div style={{
+      padding: '7px', backgroundColor: '#6B87E3', overflow: 'hidden', height: '100vh', width: '100vw', position: 'fixed', // Fix the parent to the viewport
+      top: 0, left: 0,
+    }}>
       {/* Category Selector */}
       <div style={{ display: 'flex', gap: '10px', marginBottom: '10px', marginLeft: '15px' }}>
-        <select value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)}
+        <select defaultValue={'pipelines'} onChange={(e) => changePage(e.target.value)}
           onMouseEnter={() => setHover(true)}
           onMouseLeave={() => setHover(false)}
           style={{
@@ -32,19 +41,19 @@ function App() {
             transition: 'all 0.2s ease',
             fontFamily: 'Roboto',
           }}>
-          <option value="Knowledge"
+          <option value="knowledge"
             style={{ fontWeight: 600, color: '#000' }}
           >Knowledge</option>
-          <option value="Pipelines"
+          <option value="pipelines"
             style={{ fontWeight: 600, color: '#000' }}
           >Pipelines</option>
-          <option value="Deployment"
+          <option value="deployment"
             style={{ fontWeight: 600, color: '#000' }}
           >Deployment</option>
         </select>
       </div>
 
-      {selectedCategory === 'Login' &&
+      {/* {selectedCategory === 'Login' &&
         <>
           <LoginWindow setSelectedCategory={setSelectedCategory} />
         </>
@@ -64,7 +73,22 @@ function App() {
         <>
           <DatabaseScreen />
         </>
-      }
+      } */}
+      
+        
+        <Routes>
+          <Route path="/" element={<Navigate to="/login" replace />} />
+          <Route path="/login" element={<LoginWindow />} />
+          <Route path="/pipelines" element={
+            <>
+              <PipelineToolbar />
+              <PipelineUI />
+            </>
+          } />
+          <Route path="/deployment" element={<DepScreen />} />
+          <Route path="/knowledge" element={<DatabaseScreen />} />
+        </Routes>
+      {/* </Router> */}
     </div>
   );
 }

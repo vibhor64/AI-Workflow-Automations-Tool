@@ -1,3 +1,4 @@
+import json
 from fastapi import FastAPI, Depends, HTTPException, status, Response, Request
 from fastapi.responses import RedirectResponse
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
@@ -7,9 +8,20 @@ from utils.deployment import execute_pipeline
 from authlib.integrations.starlette_client import OAuth
 from starlette.config import Config
 from starlette.middleware.sessions import SessionMiddleware
+from google.oauth2.credentials import Credentials
+from google_auth_oauthlib.flow import Flow
+from google.auth.transport.requests import Request as GoogleRequest
+from googleapiclient.discovery import build
 from utils.validate import checkDAG, isConnected, countIONodes
 from models import Node, Edge, Pipeline, PipelineInputs, UserCreate, Token, Epic_DB, BookName, ModifyBook
-from utils.database import find_user, register_user, add_template, add_book, modify_book, remove_book
+from utils.database import find_user, register_user, add_template, add_book, modify_book, remove_book, fetch_google_creds, save_google_creds
+
+import base64
+from email.message import EmailMessage
+
+from googleapiclient.discovery import build
+from googleapiclient.errors import HttpError
+
 
 app = FastAPI()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
@@ -24,6 +36,20 @@ app.add_middleware(
 
 app.add_middleware(SessionMiddleware, secret_key=auth.GOOGLE_CLIENT_SECRET)
 
+SCOPES = [
+    "https://www.googleapis.com/auth/userinfo.email",
+    "https://www.googleapis.com/auth/userinfo.profile",
+    "https://www.googleapis.com/auth/gmail.send",
+    "https://www.googleapis.com/auth/gmail.readonly",
+    "https://www.googleapis.com/auth/youtube",
+    "https://www.googleapis.com/auth/drive",
+    "https://www.googleapis.com/auth/documents",
+    "https://www.googleapis.com/auth/spreadsheets",
+    "openid"
+]
+# create new route for google integration to seperate code for auth and inte
+# 
+
 # OAuth Configuration
 config = Config(environ={"GOOGLE_CLIENT_ID": auth.GOOGLE_CLIENT_ID, "GOOGLE_CLIENT_SECRET": auth.GOOGLE_CLIENT_SECRET})
 oauth = OAuth(config)
@@ -32,7 +58,12 @@ oauth.register(
     client_id=config("GOOGLE_CLIENT_ID"),
     client_secret=config("GOOGLE_CLIENT_SECRET"),
     server_metadata_url="https://accounts.google.com/.well-known/openid-configuration",
-    client_kwargs={"scope": "openid email profile"},
+    # client_kwargs={"scope": "openid email profile"},
+    # client_kwargs={"scope": " ".join(SCOPES)},
+    # client_kwargs={
+    #     "scope": " ".join(SCOPES),
+    #     "prompt": "consent",  # Force consent screen to ensure refresh token
+    # }
 )
 
 # Dependency to get the current user
@@ -135,7 +166,9 @@ def refresh(response: Response, refresh_token: str = Depends(oauth2_scheme)):
     """
     Checks if the user has a valid refresh token for seamless login.
     """
+    print("Refresh Token: ", refresh_token)
     try:
+        print("Stage 2")
         username = auth.verify_refresh_token(refresh_token)
     except HTTPException as e:
         raise HTTPException(status_code=401, detail="Invalid or expired refresh token")
@@ -159,11 +192,13 @@ def refresh(response: Response, refresh_token: str = Depends(oauth2_scheme)):
 # Google Authentication
 @app.get("/auth/google")
 async def google_login(request: Request):
+    """Handles Google login for authentication purposes (not integrations)."""
     redirect_uri = request.url_for("google_callback")
-    return await oauth.google.authorize_redirect(request, redirect_uri)
+    return await oauth.google.authorize_redirect(request, redirect_uri, scope="openid email profile")
 
 @app.get("/auth/google/callback")
 async def google_callback(request: Request, response: Response):
+    """Processes Google authentication and logs in the user."""
     token = await oauth.google.authorize_access_token(request)
     user_info = token.get("userinfo")
 
@@ -197,46 +232,118 @@ async def google_callback(request: Request, response: Response):
     )
 
     # Redirect to the frontend after setting cookies
-    redirect_url = f"http://localhost:3000?access_token={access_token}"
+    redirect_url = f"http://localhost:3000/login?access_token={access_token}"
     return RedirectResponse(redirect_url)
 
-# Database operations
-# Fetch user data
-# @app.get('/database/fetch_user_data')
-# async def fetch_user_data(username: str):
-#     user = await find_user(username)
-#     if user:
-#         return user
-#     else:
-#         raise HTTPException(status_code=404, detail="User not found")
+# Google Integrations Auth
+@app.get("/auth/google/integration")
+async def google_integration_login(request: Request):
+    """Starts Google OAuth for API integrations."""
 
-# # Register user
-# @app.post('/database/register_user')
-# async def call_register_user(username: str, password: str):
-#     result = await register_user(username, password)
-#     if result["status"] == "success":
-#         return result
-#     else:
-#         raise HTTPException(status_code=400, detail=result["message"])
-    
-# # Update user
-# @app.put('/database/update_user')
-# async def call_update_user(username: str, password: str):
-#     result = await update_user(username, password)
-#     if result["status"] == "success":
-#         return result
-#     else:
-#         raise HTTPException(status_code=400, detail=result["message"])
+    try:
+        redirect_uri = "http://127.0.0.1:8000/auth/google/integration/callback"  # Explicitly set redirect URI
+        print(f"Redirect URI: {redirect_uri}")
+        return await oauth.google.authorize_redirect(request, redirect_uri, scope=SCOPES)
+    except Exception as e:
+        print(f"Authorization error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to initiate OAuth: {str(e)}")
 
-# # Delete user
-# @app.delete('/database/delete_user')
-# async def call_delete_user(username: str):
-#     result = await delete_user(username)
-#     if result["status"] == "success":
-#         return result
-#     else:
-#         raise HTTPException(status_code=400, detail=result["message"])
+@app.get("/auth/google/integration/callback")
+async def google_integration_callback(request: Request):
+    """Handles OAuth callback for Google API integrations."""
+    print("OAuth Callback Query Params:", request.query_params)  # Debugging log
 
+    token = await oauth.google.authorize_access_token(request)
+    print("OAuth Token Response:", token)  # Debugging log
+    print("OAuth Token Response:", type(token))  # Debugging log
+    user_info = token.get("userinfo")
+
+    if not user_info:
+        raise HTTPException(status_code=400, detail="Google login failed")
+
+    # Store Google OAuth credentials securely
+    creds_dict = {
+        "token": token["access_token"],
+        "refresh_token": token.get("refresh_token"),
+        "token_uri": "https://oauth2.googleapis.com/token",
+        "client_id": auth.GOOGLE_CLIENT_ID,
+        "client_secret": auth.GOOGLE_CLIENT_SECRET,
+        "scopes": token.get("scope", "").split(),
+    }
+
+    creds_json = json.dumps(creds_dict)
+
+    # await save_google_creds(username, creds_dict)  # Store in DB securely
+
+    # Redirect user to frontend with access token
+    redirect_url = f"http://localhost:3000/login?creds_dict={creds_json}"
+    return RedirectResponse(redirect_url)
+
+@app.post('/database/add_google_creds')
+async def call_save_google_creds(creds_dict: dict, current_user = Depends(get_current_user)):
+    print("creds_dict: ", creds_dict)
+    result = await save_google_creds(current_user["username"], creds_dict)
+    if result["status"] == "success":
+        return result
+    else:
+        raise HTTPException(status_code=400, detail=result["message"])
+
+@app.get('/database/get_google_service')
+async def call_fetch_google_creds(api_name: str, api_version: str, current_user = Depends(get_current_user)):
+    username = current_user["username"]
+    creds_dict = await fetch_google_creds(username)  # Fetch from DB
+
+    if not creds_dict:
+        raise HTTPException(status_code=401, detail="No Google credentials found.")
+
+    creds = Credentials(
+        token=creds_dict["token"],
+        refresh_token=creds_dict.get("refresh_token"),
+        token_uri=creds_dict["token_uri"],
+        client_id=creds_dict["client_id"],
+        client_secret=creds_dict["client_secret"],
+        scopes=creds_dict["scopes"],
+    )
+
+    if creds.expired and creds.refresh_token:
+        creds.refresh(Request())
+        await save_google_creds(username, creds.to_json())  # Update refreshed creds in DB
+
+    return build(api_name, api_version, credentials=creds)
+
+@app.get('/integrations/send_draft')
+async def send_draft(api_name: str, api_version: str, current_user = Depends(get_current_user)):
+    username = current_user["username"]
+    creds = await fetch_google_creds(api_name, api_version, username)  # Fetch from DB
+    try:
+    # create gmail api client
+        service = build("gmail", "v1", credentials=creds)
+
+        message = EmailMessage()
+
+        message.set_content("This is automated draft mail")
+
+        message["To"] = "vibhor05sharma@gmail.com"
+        message["From"] = "wimpystilton@gmail.com"
+        message["Subject"] = "Automated draft"
+
+        # encoded message
+        encoded_message = base64.urlsafe_b64encode(message.as_bytes()).decode()
+
+        create_message = {"message": {"raw": encoded_message}}
+        # pylint: disable=E1101
+        draft = (
+            service.users()
+            .drafts()
+            .create(userId="me", body=create_message)
+            .execute()
+        )
+
+        print(f'Draft id: {draft["id"]}\nDraft message: {draft["message"]}')
+
+    except HttpError as error:
+        print(f"An error occurred: {error}")
+        draft = None
 # Template operations
 # Add template
 @app.post('/database/add_template')

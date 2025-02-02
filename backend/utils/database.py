@@ -43,8 +43,7 @@ async def add_template(username: str, template_data: dict):
     try:
         result = collection_name.update_one(
             {"_id": username},  
-            {"$push": {"templates": template_data}},  
-            upsert=True  # If user doesn't exist, create one with this field
+            {"$push": {"templates": template_data}},
         )
         if result.matched_count == 0:
             return {"status": "error", "message": "User not found"}
@@ -104,4 +103,21 @@ async def modify_book(username: str, book_id: str, new_data: dict):
         return {"status": "success", "message": "Book modified successfully"}
     except Exception as e:
         return {"status": "error", "message": str(e)}
-    
+
+# Google Integration operations
+async def save_google_creds(username: str, creds_dict: dict):
+    try:
+        collection_name.update_one({"_id": username}, {"$set": {"google_creds": creds_dict}})
+        return {"status": "success", "message": "Google credentials saved successfully"}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
+async def fetch_google_creds(username: str):
+    try:
+        user = collection_name.find_one({"_id": username})
+        if user:
+            return user["google_creds"]
+        else:
+            return None
+    except Exception as e:
+        return {"status": "error", "message": str(e)}

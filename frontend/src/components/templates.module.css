@@ -19,24 +19,26 @@
 }
 
 .buttons:hover{
-    color: #2d4ecf;
+    color: #ababab;
 }
 
 .cons{
     transition: all 0.2s ease;
+    opacity: 1;
 }
 
 .cons:hover {
     box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+    opacity: 0.8;
 }
 
 .save{
     display: flex; 
     position: absolute; 
-    top: 40%; 
+    top: 45%; 
     left: 50%; 
-    height: 18vh; 
-    width: 20vw; 
+    height: 9rem; 
+    width: 20rem; 
     /* align-items: center;  */
     /* justify-content: center; */
     transform: translate(-50%, -50%);
@@ -106,3 +108,10 @@
 .saveButton:hover{
     background-color: #3b59d1;
 }
+rotate-on-hover {
+    transition: transform 0.5s ease; /* Smooth transition for the rotation */
+  }
+  
+  .rotate-on-hover:hover {
+    transform: rotate(360deg); /* Rotate 360 degrees on hover */
+  }

@@ -2,9 +2,11 @@ import { useEffect, useState } from "react";
 import { FourSquare } from "react-loading-indicators";
 import axios from 'axios';
 import './deploy.css'
+import AutomationWindow from "./automationWindow";
+import queryString from "query-string";
+import { save_google_creds } from "../logic/auth";
 
 export const Deployment = (props) => {
-    // console.log(inputs, outputs)
     const { inputs, outputs, integrations, nodes, edges } = props;
     const [inputValues, setInputValues] = useState({});
     const [hoverInput, setHoverInput] = useState(null);
@@ -13,14 +15,9 @@ export const Deployment = (props) => {
     const [focusInput, setFocusInput] = useState(null);
     const [pipelineOutput, setPipelineOutput] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
-    // console.log(inputs, outputs, integrations)
     const [isVisible, setIsVisible] = useState(false);
-
-    // useEffect(() => {
-    //     if (pipelineOutput) {
-    //         setIsVisible(true);
-    //     }
-    // }, [pipelineOutput]);
+    const [automationWindow, setAutomationWindow] = useState(false);
+    const [creds_dict, setCreds_dict] = useState(null);
 
     useEffect(() => {
         if (pipelineOutput) {
@@ -34,6 +31,15 @@ export const Deployment = (props) => {
         }
     }, [pipelineOutput]);
 
+    // useEffect(() => {
+    //     try {
+    //         // Fetch required credentials
+            
+    //     } catch (error) {
+    //         console.error("Error processing query parameters:", error);
+    //     }
+    // }, []);
+// 
 
     const handleInputChange = (index, value) => {
         setInputValues(prev => ({ ...prev, [index]: value }));
@@ -153,8 +159,18 @@ export const Deployment = (props) => {
             <div style={{ marginTop: '1.5vh', width: '30vw', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                 <h1 style={{ fontSize: '55px', fontWeight: 'bold', color: '#2D4ECF' }}>Automation</h1>
                 <span style={{ fontSize: '18px', fontWeight: 'bold', marginTop: '5vh', maxWidth: '90%', textAlign: 'center', color: '#5B5B5B' }}> {integrations && integrations.length > 0 ? 'Your current workflow can be completely automated using 3rd party integrations. Click the button below to never bother doing this task again by yourself!' : 'Your current workflow is already full automated. If you utilize third party integrations, you will need to perform this step.'}</span>
-                <button style={hoverButton && integrations && integrations.length > 0 ? { ...styles.autoButton, backgroundColor: '#2744B3' } : integrations && integrations.length > 0 ? styles.autoButton : { ...styles.autoButton, backgroundColor: '#8AA1FF' }} onMouseEnter={() => setHoverButton(true)} onMouseLeave={() => setHoverButton(false)}> {integrations && integrations.length > 0 ? 'Automate this ✨' : 'Automated ✅'}</button>
+
+                <button
+                    style={hoverButton && integrations && integrations.length > 0 ? { ...styles.autoButton, backgroundColor: '#2744B3' } : integrations && integrations.length > 0 ? styles.autoButton : { ...styles.autoButton, backgroundColor: '#8AA1FF' }}
+                    onClick={() => setAutomationWindow(true)}
+                    onMouseEnter={() => setHoverButton(true)}
+                    onMouseLeave={() => setHoverButton(false)}>
+                    {integrations && integrations.length > 0 ? 'Automate this ✨' : 'Automated ✅'}
+                </button>
             </div>
+
+            {/* Automation Window */}
+            {automationWindow && <AutomationWindow setAutomationWindow={setAutomationWindow} creds_dict={creds_dict} />}
         </div>
     )
 }

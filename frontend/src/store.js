@@ -104,7 +104,10 @@ export const useStore = create((set, get) => ({
       set({
         database: [...get().database, ...newBook],
       });
-      pushBook(newBook[0]);
+      let accessToken = sessionStorage.getItem("access_token");
+      if (accessToken) {
+        pushBook(newBook[0]);
+      }
     }
     else {
       set({
@@ -124,7 +127,10 @@ export const useStore = create((set, get) => ({
           b.id === book.id ? { ...b, ...book } : b
         ),
       });
-      editBook(book.id, book);
+      let accessToken = sessionStorage.getItem("access_token");
+      if (accessToken) {
+        editBook(book.id, book);
+      }
     } else {
       console.warn(`Book with name "${book.name}" does not exist.`);
     }

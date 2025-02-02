@@ -2,7 +2,7 @@ import { useState } from "react";
 import Close from '../assets/close.png';
 import Delete from '../assets/delete.png';
 import info from '../assets/info.png';
-import { pushBook, deleteBook as removeBook, modifyBook as editBook} from '../logic/auth';
+import { pushBook, deleteBook as removeBook, modifyBook as editBook } from '../logic/auth';
 
 export const CreateDatabase = ({ onClose, type, id, name, text, urls, addBooks, modifyBook, deleteBook }) => {
     const [hoverClose, setHoverClose] = useState(false);
@@ -37,23 +37,27 @@ export const CreateDatabase = ({ onClose, type, id, name, text, urls, addBooks, 
         setBookUrl((prevUrls) => [...prevUrls, '']);
     };
 
+    let accessToken = sessionStorage.getItem("access_token");
+
     const saveBook = (e) => {
-        if (type === 'create' && bookName !== ''){
+        if (type === 'create' && bookName !== '') {
             // pushBook({"id": id, "name": bookName, "text": bookText, "urls": bookUrl });
-            addBooks([{"id": id, "name": bookName, "text": bookText, "urls": bookUrl }]);
-            console.log("Created book with id: ",id);
+            addBooks([{ "id": id, "name": bookName, "text": bookText, "urls": bookUrl }]);
+            console.log("Created book with id: ", id);
             handleButtonClick(e);
         }
-        else if (bookName !== ''){
+        else if (bookName !== '') {
             // editBook(bookName, {"id": id, "name": bookName, "text": bookText, "urls": bookUrl });
-            modifyBook({"id": id, "name": bookName, "text": bookText, "urls": bookUrl });
+            modifyBook({ "id": id, "name": bookName, "text": bookText, "urls": bookUrl });
             handleButtonClick(e);
         }
     }
 
     const DeleteBook = async (e) => {
-        await deleteBook({"id": id, "name": bookName, "text": bookText, "urls": bookUrl });
-        await removeBook(bookName);
+        if (accessToken) {
+            await removeBook(bookName);
+        }
+        await deleteBook({ "id": id, "name": bookName, "text": bookText, "urls": bookUrl });
         handleButtonClick(e);
     }
 
@@ -62,17 +66,48 @@ export const CreateDatabase = ({ onClose, type, id, name, text, urls, addBooks, 
         <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', height: '55vh', width: '60vw', borderRadius: '12px', border: '3px solid #2D4ECF', backgroundColor: '#fff', zIndex: '100', cursor: 'default', overflowY: 'auto' }}>
 
             <button onMouseEnter={() => setHoverClose(true)} onMouseLeave={() => setHoverClose(false)}
-                style={{ backgroundColor: hoverClose ? '#d1d1d1' : '#fff', height: hoverClose ? '30px' : '24px', width: hoverClose ? '30px' : '24px', position: 'absolute', top: '10px', right: '10px', border: 'none', cursor: 'pointer', alignItems: 'center', justifyContent: 'center', display: 'flex', borderRadius: '50%', transition: 'all 0.2s ease' }}
+                style={{
+                    backgroundColor: hoverClose ? '#d1d1d1' : '#fff',
+                    height: '30px', // Fixed size to match the container
+                    width: '30px', // Fixed size to match the container
+                    position: 'absolute',
+                    top: '5%', // Center vertically
+                    left: '97%', // Center horizontally
+                    transform: 'translate(-50%, -50%)', // Adjust for exact centering
+                    border: 'none',
+                    cursor: 'pointer',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    display: 'flex',
+                    borderRadius: '50%',
+                    transition: 'background-color 0.2s ease', // Only animate background color
+                  }}
                 onClick={handleButtonClick}><img src={Close} alt="Close" style={{ width: '22px', height: '22px' }} /></button>
 
-            {type != 'create' ? (
+            {type !== 'create' ? (
 
-                <button onMouseEnter={() =>setHoverDelete(true)} onMouseLeave={() =>setHoverDelete(false)}
-                style={{ backgroundColor: hoverDelete ? '#d1d1d1' : '#fff', height: hoverDelete ? '30px' : '24px', width: hoverDelete ? '30px' : '24px', position: 'absolute', top: '10px', right: '50px', border: 'none', cursor: 'pointer', alignItems: 'center', justifyContent: 'center', display: 'flex', borderRadius: '50%', transition: 'all 0.2s ease' }}
-                onClick={DeleteBook}><img src={Delete} alt="Close" style={{ width: '22px', height: '22px' }} /></button>
+                <button onMouseEnter={() => setHoverDelete(true)} onMouseLeave={() => setHoverDelete(false)}
+                    // style={{ backgroundColor: hoverDelete ? '#d1d1d1' : '#fff', height: hoverDelete ? '30px' : '24px', width: hoverDelete ? '30px' : '24px', position: 'absolute', top: '10px', right: '50px', border: 'none', cursor: 'pointer', alignItems: 'center', justifyContent: 'center', display: 'flex', borderRadius: '50%', transition: 'all 0.2s ease' }}
+                    style={{
+                        backgroundColor: hoverDelete ? '#d1d1d1' : '#fff',
+                        height: '30px', // Fixed size to match the container
+                        width: '30px', // Fixed size to match the container
+                        position: 'absolute',
+                        top: '5%', // Center vertically
+                        left: '93%', // Center horizontally
+                        transform: 'translate(-50%, -50%)', // Adjust for exact centering
+                        border: 'none',
+                        cursor: 'pointer',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        display: 'flex',
+                        borderRadius: '50%',
+                        transition: 'background-color 0.2s ease', // Only animate background color
+                      }}
+                    onClick={DeleteBook}><img src={Delete} alt="Close" style={{ width: '22px', height: '22px' }} /></button>
             ) : null}
             <button onMouseEnter={() => setHoverInput5(true)} onMouseLeave={() => setHoverInput5(false)}
-                style={{ backgroundColor: hoverInput5 ? '#d1d1d1' : '#2D4ECF', height: '26px', width: '50px', position: 'absolute', bottom: '10px', right: '20px', border: 'none', cursor: 'pointer', alignItems: 'center', justifyContent: 'center', display: 'flex', borderRadius: '6px', transition: 'all 0.2s ease', color: '#fff', fontWeight: 'bold' }}
+                style={{ backgroundColor: hoverInput5 ? '#526bd1' : '#2D4ECF', height: '26px', width: '50px', position: 'absolute', bottom: '10px', right: '20px', border: 'none', cursor: 'pointer', alignItems: 'center', justifyContent: 'center', display: 'flex', borderRadius: '6px', transition: 'all 0.2s ease', color: '#fff', fontWeight: 'bold' }}
                 onClick={saveBook}>Save</button>
             <h1 style={{ marginLeft: '40px', color: '#2D4ECF' }}>{type === 'create' ? 'Create Database' : 'Modify Database'}</h1>
 
@@ -109,26 +144,26 @@ export const CreateDatabase = ({ onClose, type, id, name, text, urls, addBooks, 
                 </div>
 
                 {/* Column 2 */}
-                <div style={{marginLeft: '20px', width: '37%',  }}>
-                    <div style={{ color: '#000', fontSize: '20px', fontWeight: 'bold',}}>
+                <div style={{ marginLeft: '20px', width: '37%', }}>
+                    <div style={{ color: '#000', fontSize: '20px', fontWeight: 'bold', }}>
                         Add Links
                     </div>
 
-                    <div style={{ display: 'flex', flexDirection: 'row', fontSize: '10px', marginTop: '7px', fontWeight: 'regular', color: '#787878',  marginBottom: '10px' }}>
-                        <img src={info} alt="info" style={{ height: '12px', marginRight: '4px',}} />
+                    <div style={{ display: 'flex', flexDirection: 'row', fontSize: '10px', marginTop: '7px', fontWeight: 'regular', color: '#787878', marginBottom: '10px' }}>
+                        <img src={info} alt="info" style={{ height: '12px', marginRight: '4px', }} />
                         Textual data from web pages are extracted and added to the knowledge base
                     </div>
 
-                    { bookUrl.map((url, index) => (
-                        <input key={index} value={bookUrl[index]} onChange={(e) => handleUrlChange(e, index)} style={ hoverInput3 === index ? { ...styles.urlInput, backgroundColor: '#C6C6C6', } : styles.urlInput} placeholder="URL..." 
-                        onMouseEnter={() => setHoverInput3(index)}
-                        onMouseLeave={() => setHoverInput3(null)}
+                    {bookUrl.map((url, index) => (
+                        <input key={index} value={bookUrl[index]} onChange={(e) => handleUrlChange(e, index)} style={hoverInput3 === index ? { ...styles.urlInput, backgroundColor: '#C6C6C6', } : styles.urlInput} placeholder="URL..."
+                            onMouseEnter={() => setHoverInput3(index)}
+                            onMouseLeave={() => setHoverInput3(null)}
                         />
                     ))}
-                    <button style={ hoverInput4 ? { ...styles.addLink, backgroundColor: '#C6C6C6', } : styles.addLink}
-                    onMouseEnter={() => setHoverInput4(true)}
-                    onMouseLeave={() => setHoverInput4(false)}
-                    onClick={handleAddLink}
+                    <button style={hoverInput4 ? { ...styles.addLink, backgroundColor: '#C6C6C6', } : styles.addLink}
+                        onMouseEnter={() => setHoverInput4(true)}
+                        onMouseLeave={() => setHoverInput4(false)}
+                        onClick={handleAddLink}
                     >+ Link</button>
                     <div style={{ height: '10px' }}></div>
                 </div>
@@ -174,7 +209,7 @@ const styles = {
         transition: 'all 0.2s',
         lineHeight: '1',
         outline: 'none',
-        overflow: "hidden",
+        // overflow: "hidden",
         resize: "none",
     },
     urlInput: {

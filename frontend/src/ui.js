@@ -12,6 +12,7 @@ import RocketImg from './assets/rocket.png';
 import Reset from './assets/reset.png';
 import axios from 'axios';
 import { Templates } from './components/templates';
+import { useNavigate } from 'react-router-dom';
 // import './CreateDatabase.css';
 
 import 'reactflow/dist/style.css';
@@ -34,7 +35,7 @@ const selector = (state) => ({
   createDeployment: state.createDeployment,
 });
 
-export const PipelineUI = ({setSelectedCategory}) => {
+export const PipelineUI = () => {
   const reactFlowWrapper = useRef(null);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
   const {
@@ -48,6 +49,12 @@ export const PipelineUI = ({setSelectedCategory}) => {
     clearCanvas,
     createDeployment,
   } = useStore(selector, shallow);
+
+  const navigate = useNavigate();
+  let accessToken = sessionStorage.getItem("access_token");
+  if (!accessToken) {
+    navigate('/login');
+  }
 
   const onDrop = useCallback(
     (event) => {
@@ -244,7 +251,7 @@ export const PipelineUI = ({setSelectedCategory}) => {
           </button>
           <p style={{ fontSize: '12px', color: '#d1d1d1', marginTop: '2px', fontWeight: 500 }}>Reset</p>
         </div>
-        <Templates setSelectedCategory={setSelectedCategory}/>
+        <Templates/>
       </div>
     </>
   )
