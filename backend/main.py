@@ -1,5 +1,5 @@
 import json
-from fastapi import FastAPI, Depends, HTTPException, status, Response, Request
+from fastapi import FastAPI, Depends, HTTPException, status, Response, Request, Query
 from fastapi.responses import RedirectResponse
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 import utils.auth as auth
@@ -13,14 +13,20 @@ from google_auth_oauthlib.flow import Flow
 from google.auth.transport.requests import Request as GoogleRequest
 from googleapiclient.discovery import build
 from utils.validate import checkDAG, isConnected, countIONodes
-from models import Node, Edge, Pipeline, PipelineInputs, UserCreate, Token, Epic_DB, BookName, ModifyBook
+from models import Node, Edge, Pipeline, PipelineInputs, UserCreate, Token, Epic_DB, BookName, ModifyBook, DocumentCreate
 from utils.database import find_user, register_user, add_template, add_book, modify_book, remove_book, fetch_google_creds, save_google_creds
-
 import base64
 from email.message import EmailMessage
-
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
+from email import message_from_bytes
+
+
+'''
+# 1. Form routes for cleaner code
+# 2. Test integration for all google services
+# 3. Create nodes for all google services
+'''
 
 
 app = FastAPI()
@@ -38,10 +44,11 @@ app.add_middleware(SessionMiddleware, secret_key=auth.GOOGLE_CLIENT_SECRET)
 
 SCOPES = [
     "https://www.googleapis.com/auth/userinfo.email",
+    "https://www.googleapis.com/auth/gmail.compose",
     "https://www.googleapis.com/auth/userinfo.profile",
     "https://www.googleapis.com/auth/gmail.send",
     "https://www.googleapis.com/auth/gmail.readonly",
-    "https://www.googleapis.com/auth/youtube",
+    # "https://www.googleapis.com/auth/youtube",
     "https://www.googleapis.com/auth/drive",
     "https://www.googleapis.com/auth/documents",
     "https://www.googleapis.com/auth/spreadsheets",
@@ -260,9 +267,14 @@ async def google_integration_callback(request: Request):
 
     if not user_info:
         raise HTTPException(status_code=400, detail="Google login failed")
+    
+    user_email = user_info.get("email")
+    if not user_email:
+        raise HTTPException(status_code=400, detail="Email not found in Google user info")
 
     # Store Google OAuth credentials securely
     creds_dict = {
+        "user_email": user_email,
         "token": token["access_token"],
         "refresh_token": token.get("refresh_token"),
         "token_uri": "https://oauth2.googleapis.com/token",
@@ -289,7 +301,7 @@ async def call_save_google_creds(creds_dict: dict, current_user = Depends(get_cu
         raise HTTPException(status_code=400, detail=result["message"])
 
 @app.get('/database/get_google_service')
-async def call_fetch_google_creds(api_name: str, api_version: str, current_user = Depends(get_current_user)):
+async def call_fetch_google_creds(current_user = Depends(get_current_user)):
     username = current_user["username"]
     creds_dict = await fetch_google_creds(username)  # Fetch from DB
 
@@ -309,41 +321,273 @@ async def call_fetch_google_creds(api_name: str, api_version: str, current_user 
         creds.refresh(Request())
         await save_google_creds(username, creds.to_json())  # Update refreshed creds in DB
 
-    return build(api_name, api_version, credentials=creds)
+    return creds
+
 
 @app.get('/integrations/send_draft')
-async def send_draft(api_name: str, api_version: str, current_user = Depends(get_current_user)):
+async def send_draft(isDraft: bool = Query(True, description="Whether to send as a draft"), current_user = Depends(get_current_user)):
     username = current_user["username"]
-    creds = await fetch_google_creds(api_name, api_version, username)  # Fetch from DB
+    creds_dict = await fetch_google_creds(username)  # Fetch from DB
+    user_email = creds_dict["user_email"]
+    creds = Credentials(
+        token=creds_dict["token"],
+        refresh_token=creds_dict.get("refresh_token"),
+        token_uri=creds_dict["token_uri"],
+        client_id=creds_dict["client_id"],
+        client_secret=creds_dict["client_secret"],
+        scopes=creds_dict["scopes"],
+    )
+
     try:
-    # create gmail api client
+        # Check if the credentials are expired and refresh them if necessary
+        if creds.expired and creds.refresh_token:
+            creds.refresh(Request())
+            await save_google_creds(username, creds.to_json())  # Update refreshed creds in DB
+        elif (creds.expired) and not creds.refresh_token:
+            raise HTTPException(status_code=401, detail="No refresh token found. User needs to authorize again.")
+        
+        # create gmail api client
         service = build("gmail", "v1", credentials=creds)
 
         message = EmailMessage()
 
-        message.set_content("This is automated draft mail")
+        message.set_content("This is automated draft mail 2")
 
         message["To"] = "vibhor05sharma@gmail.com"
-        message["From"] = "wimpystilton@gmail.com"
+        message["From"] = str(user_email)
         message["Subject"] = "Automated draft"
 
         # encoded message
         encoded_message = base64.urlsafe_b64encode(message.as_bytes()).decode()
 
-        create_message = {"message": {"raw": encoded_message}}
         # pylint: disable=E1101
-        draft = (
-            service.users()
-            .drafts()
-            .create(userId="me", body=create_message)
-            .execute()
-        )
 
-        print(f'Draft id: {draft["id"]}\nDraft message: {draft["message"]}')
+        if isDraft:
+            create_message = {"message": {"raw": encoded_message}}
+            draft = (
+                service.users()
+                .drafts()
+                .create(userId="me", body=create_message)
+                .execute()
+            )
+            # print(f'Draft id: {draft["id"]}\nDraft message: {draft["message"]}')
+        else:
+            create_message = {"raw": encoded_message}
+            send_message = (
+                service.users()
+                .messages()
+                .send(userId="me", body=create_message)
+                .execute()
+            )
+            # print(f'Message Id: {send_message["id"]}')
+
 
     except HttpError as error:
         print(f"An error occurred: {error}")
         draft = None
+
+@app.get('/integrations/read_emails')
+async def read_emails(max_results: int = Query(10, description="Maximum number of unread emails to fetch"), labels: str = Query("INBOX", description="Comma-separated list of labels"), current_user = Depends(get_current_user)):
+    username = current_user["username"]
+    creds_dict = await fetch_google_creds(username)
+
+    creds = Credentials(
+        token=creds_dict["token"],
+        refresh_token=creds_dict.get("refresh_token"),
+        token_uri=creds_dict["token_uri"],
+        client_id=creds_dict["client_id"],
+        client_secret=creds_dict["client_secret"],
+        scopes=creds_dict["scopes"],
+    )
+
+    try:
+        if creds.expired and creds.refresh_token:
+            creds.refresh(Request())
+            await save_google_creds(username, creds.to_json())
+        elif creds.expired and not creds.refresh_token:
+            raise HTTPException(status_code=401, detail="No refresh token found. User needs to authorize again.")
+
+        service = build("gmail", "v1", credentials=creds)
+
+        label_list = [label.strip().upper() for label in labels.split(",") if label.strip()]
+
+        # Convert standard labels to Gmail API format
+        gmail_labels = []
+        special_mappings = {
+            "UNREAD": "is:unread",
+            "READ": "is:read",
+            "STARRED": "is:starred",
+            "DRAFT": "label:DRAFT",
+            "SENT": "label:SENT",
+            "SPAM": "label:SPAM",
+            "TRASH": "label:TRASH"
+        }
+    
+        for label in label_list:
+            if label in special_mappings:
+                gmail_labels.append(special_mappings[label])
+            else:
+                gmail_labels.append(f"label:{label}")  # Default format for custom labels
+    
+        query = " ".join(gmail_labels)
+
+        results = (
+            service.users()
+            .messages()
+            .list(userId="me", q=query, maxResults=max_results)
+            .execute()
+        )
+
+        messages = results.get("messages", [])
+        email_data = []
+
+        for message in messages:
+            msg = service.users().messages().get(userId="me", id=message["id"]).execute()
+            snippet = msg.get("snippet", "No snippet available")
+            headers = {h["name"]: h["value"] for h in msg["payload"]["headers"]}
+            email_data.append({
+                "id": message["id"],
+                "snippet": snippet,
+                "from": headers.get("From", "Unknown"),
+                "subject": headers.get("Subject", "No Subject"),
+                "date": headers.get("Date", "Unknown"),
+            })
+
+        print(email_data)
+        return {"emails": email_data}
+
+    except Exception as error:
+        raise HTTPException(status_code=500, detail=f"An error occurred: {error}")
+
+
+@app.post('/integrations/create_document')
+async def create_document(content: DocumentCreate, current_user=Depends(get_current_user)):
+    username = current_user["username"]
+    creds_dict = await fetch_google_creds(username)  # Fetch from DB
+    creds = Credentials(
+        token=creds_dict["token"],
+        refresh_token=creds_dict.get("refresh_token"),
+        token_uri=creds_dict["token_uri"],
+        client_id=creds_dict["client_id"],
+        client_secret=creds_dict["client_secret"],
+        scopes=creds_dict["scopes"],
+    )
+
+    title = content.title
+    text = content.text
+    if not text:
+        text = json.dumps(content)
+    if not title:
+        title = "Automated doc"
+    
+    try:
+        # Check if the credentials are expired and refresh them if necessary
+        if creds.expired and creds.refresh_token:
+            creds.refresh(Request())
+            await save_google_creds(username, creds.to_json())  # Update refreshed creds in DB
+        elif creds.expired and not creds.refresh_token:
+            raise HTTPException(status_code=401, detail="No refresh token found. User needs to authorize again.")
+        
+        # Create Google Docs API client
+        service = build("docs", "v1", credentials=creds)
+        
+        # Create a new document
+        document = service.documents().create(body={"title": title}).execute()
+        document_id = document["documentId"]
+        
+        # Insert content into the document
+        requests = [
+            {
+                "insertText": {
+                    "location": {
+                        "index": 1
+                    },
+                    "text": text
+                }
+            }
+        ]
+        service.documents().batchUpdate(documentId=document_id, body={"requests": requests}).execute()
+        
+        return {"message": "Document created successfully", "document_id": document_id}
+    
+    except HttpError as error:
+        print(f"An error occurred: {error}")
+        raise HTTPException(status_code=500, detail=f"Failed to create document: {error}")
+
+
+@app.post('/integrations/read_document')
+async def read_document(doc_identifier: str = Query('', description="Whether to send as a draft"), current_user=Depends(get_current_user)):
+    """
+    Reads a Google Doc based on the provided identifier (title, link, or document ID).
+    
+    :param doc_identifier: The title, link, or document ID of the Google Doc.
+    :param current_user: The currently authenticated user (dependency injection).
+    :return: The content of the Google Doc.
+    """
+    username = current_user["username"]
+    creds_dict = await fetch_google_creds(username)  # Fetch credentials from DB
+    creds = Credentials(
+        token=creds_dict["token"],
+        refresh_token=creds_dict.get("refresh_token"),
+        token_uri=creds_dict["token_uri"],
+        client_id=creds_dict["client_id"],
+        client_secret=creds_dict["client_secret"],
+        scopes=creds_dict["scopes"],
+    )
+    
+    try:
+        # Check if the credentials are expired and refresh them if necessary
+        if creds.expired and creds.refresh_token:
+            creds.refresh(Request())
+            await save_google_creds(username, creds.to_json())  # Update refreshed creds in DB
+        elif creds.expired and not creds.refresh_token:
+            raise HTTPException(status_code=401, detail="No refresh token found. User needs to authorize again.")
+        
+        # Build Google Docs and Drive API clients
+        docs_service = build("docs", "v1", credentials=creds)
+        drive_service = build("drive", "v3", credentials=creds)
+        
+        # Determine if the identifier is a document ID, link, or title
+        document_id = None
+        
+        # Case 1: Identifier is a document ID (e.g., alphanumeric string like "123abc...")
+        if len(doc_identifier) == 44 and doc_identifier.isalnum():
+            document_id = doc_identifier
+        
+        # Case 2: Identifier is a link (e.g., "https://docs.google.com/document/d/...")
+        elif doc_identifier.startswith("https://docs.google.com/document/d/"):
+            document_id = doc_identifier.split("/d/")[1].split("/")[0]
+        
+        # Case 3: Identifier is a title (search using Google Drive API)
+        else:
+            query = f"name='{doc_identifier}' and mimeType='application/vnd.google-apps.document'"
+            results = drive_service.files().list(q=query, fields="files(id)").execute()
+            items = results.get("files", [])
+            
+            if not items:
+                raise HTTPException(status_code=404, detail=f"No document found with title: {doc_identifier}")
+            
+            # Use the first matching document
+            document_id = items[0]["id"]
+        
+        # Fetch the document content using the Google Docs API
+        document = docs_service.documents().get(documentId=document_id).execute()
+        content = document.get("body", {}).get("content", [])
+        
+        # Extract plain text from the document content
+        plain_text = ""
+        for element in content:
+            if "paragraph" in element:
+                for text_run in element["paragraph"]["elements"]:
+                    if "textRun" in text_run:
+                        plain_text += text_run["textRun"]["content"]
+        
+        return {"message": "Document read successfully", "content": plain_text}
+    
+    except HttpError as error:
+        print(f"An error occurred: {error}")
+        raise HTTPException(status_code=500, detail=f"Failed to read document: {error}")
+
 # Template operations
 # Add template
 @app.post('/database/add_template')

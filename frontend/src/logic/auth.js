@@ -298,3 +298,131 @@ export async function save_google_creds(creds_dict) {
         throw error; // Re-throw the error for higher-level handling
     }
 }
+
+export async function send_draft() {
+    try {
+        let token = getAccessToken();
+
+        if (!token) {
+            await refreshToken(); // Get a new token if none exists
+            token = getAccessToken();
+        }
+
+        const response = await fetch(`${BASE_URL}/integrations/send_draft?isDraft=true`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            credentials: "include", // Include cookies in requests
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json(); // Parse error details from the server
+            throw new Error(errorData.detail || "Failed to send google draft");
+        }
+
+        const data = await response.json();
+        console.log("Response from sending google draft: ", data);
+    } catch (error) {
+        console.error("Error during sending google draft:", error.message);
+        throw error; // Re-throw the error for higher-level handling
+    }
+}
+
+export async function create_doc(content) {
+    try {
+        let token = getAccessToken();
+
+        if (!token) {
+            await refreshToken(); // Get a new token if none exists
+            token = getAccessToken();
+        }
+
+        const response = await fetch(`${BASE_URL}/integrations/create_document`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+                title: 'New Automation Doc', 
+                text: 'Automated text'
+            }),
+            credentials: "include", // Include cookies in requests
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json(); // Parse error details from the server
+            throw new Error(errorData.detail || "Failed to create google doc");
+        }
+
+        const data = await response.json();
+        console.log("Response from creating google doc: ", data);
+    } catch (error) {
+        console.error("Error during creating google doc: ", error.message);
+        throw error; // Re-throw the error for higher-level handling
+    }
+}
+
+export async function read_doc(doc_identifier) {
+    try {
+        let token = getAccessToken();
+
+        if (!token) {
+            await refreshToken(); // Get a new token if none exists
+            token = getAccessToken();
+        }
+
+        const response = await fetch(`${BASE_URL}/integrations/read_document?doc_identifier=${doc_identifier}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            credentials: "include", // Include cookies in requests
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json(); // Parse error details from the server
+            throw new Error(errorData.detail || "Failed to read google doc");
+        }
+
+        const data = await response.json();
+        console.log("Response from reading google doc: ", data);
+    } catch (error) {
+        console.error("Error during reading google doc: ", error.message);
+        throw error; // Re-throw the error for higher-level handling
+    }
+}
+
+export async function read_emails(max_results, labels) {
+    try {
+        let token = getAccessToken();
+
+        if (!token) {
+            await refreshToken(); // Get a new token if none exists
+            token = getAccessToken();
+        }
+
+        const response = await fetch(`${BASE_URL}/integrations/read_emails?max_results=${max_results}` + (labels ? `&labels=${labels}` : ''), {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            credentials: "include", // Include cookies in requests
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json(); // Parse error details from the server
+            throw new Error(errorData.detail || "Failed to read emails");
+        }
+
+        const data = await response.json();
+        console.log("Response from reading emails: ", data);
+    } catch (error) {
+        console.error("Error during reading emails: ", error.message);
+        throw error; // Re-throw the error for higher-level handling
+    }
+}

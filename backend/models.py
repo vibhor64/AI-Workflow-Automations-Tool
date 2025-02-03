@@ -57,3 +57,7 @@ class Token(BaseModel):
     access_token: str
     # refresh_token: str
     token_type: str
+
+class DocumentCreate(BaseModel):
+    title: str | None = None  # Title is optional
+    text: str | None = None  
