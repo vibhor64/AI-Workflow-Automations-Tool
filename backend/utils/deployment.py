@@ -220,10 +220,16 @@ def handle_gmail_output(id, username, fieldValue2):
     isDraft = fieldValue2["isDraft"]
     creds_dict = fieldValue2["creds_dict"]
     to = fieldValue2["to"]
-    message = resMap[handleMap[str(id + '-left-handle-0')]]  # Get the AI-generated output
-    message = json.loads(message)
-    message_text = message.get("text", json.dumps(message))
-    subject = message.get("subject", "No reply - Automated Email")
+    input_message = resMap[handleMap[str(id + '-left-handle-0')]]  # Get the AI-generated output
+    # message = json.loads(message)
+    try:
+        # Try to parse the content as JSON
+        input_message = json.loads(input_message)
+    except json.JSONDecodeError:
+        # If parsing fails, treat the content as a plain string
+        input_message = {"text": input_message}
+    message_text = input_message.get("text", json.dumps(input_message))
+    subject = input_message.get("subject", "No reply - Automated Email")
     sender = str(user_email)
 
     try:
@@ -269,8 +275,7 @@ def handle_gmail_output(id, username, fieldValue2):
                 .send(userId="me", body=create_message)
                 .execute()
             )
-            resMap[id] = send_message
-            return send_message
+            resMap[id] = "success"
             # print(f'Message Id: {send_message["id"]}')
 
 
@@ -361,7 +366,13 @@ def handle_create_doc(id, username):
     )
 
     content = str(resMap[handleMap[str(id + '-left-handle-0')]])
-    content = json.loads(content)
+    try:
+        # Try to parse the content as JSON
+        content = json.loads(content)
+    except json.JSONDecodeError:
+        # If parsing fails, treat the content as a plain string
+        content = {"text": content}
+    
     title = content.get("title", "Automated Doc")
     text = content.get("text", json.dumps(content))
 
@@ -393,7 +404,200 @@ def handle_create_doc(id, username):
         ]
         service.documents().batchUpdate(documentId=document_id, body={"requests": requests}).execute()
         
-        return {"message": "Document created successfully", "document_id": document_id}
+        resMap[id] = "success"
+    
+    except HttpError as error:
+        print(f"An error occurred: {error}")
+        return {"status": "error", "message": f"An error occurred: {error}"}
+
+
+def handle_read_form(id, username, form_identifier):
+    """Handle Gmail output node to send or draft an email."""
+    creds_dict = asyncio.run(fetch_google_creds(username))
+
+    creds = Credentials(
+        token=creds_dict["token"],
+        refresh_token=creds_dict.get("refresh_token"),
+        token_uri=creds_dict["token_uri"],
+        client_id=creds_dict["client_id"],
+        client_secret=creds_dict["client_secret"],
+        scopes=creds_dict["scopes"],
+    )
+
+
+    try:
+        # Check if the credentials are expired and refresh them if necessary
+        if creds.expired and creds.refresh_token:
+            creds.refresh(Request())
+            asyncio.run(save_google_creds(username, creds.to_json()))  # Update refreshed creds in DB
+        elif creds.expired and not creds.refresh_token:
+            return {"status": "error", "message": "No refresh token found. User needs to authorize again."}
+        
+        # Build Google Docs and Drive API clients
+        forms_service = build("forms", "v1", credentials=creds)
+        drive_service = build("drive", "v3", credentials=creds)
+        
+        # Determine if the identifier is a form ID, link, or title
+        form_id = None
+        
+        # Case 1: Identifier is a form ID (e.g., alphanumeric string like "123abc...")
+        if len(form_identifier) == 44 and form_identifier.isalnum():
+            form_id = form_identifier
+        
+        # Case 2: Identifier is a link (e.g., "https://docs.google.com/forms/d/...")
+        elif form_identifier.startswith("https://docs.google.com/forms/d/"):
+            form_id = form_identifier.split("/d/")[1].split("/")[0]
+        
+        # Case 3: Identifier is a title (search using Google Drive API)
+        else:
+            query = f"name='{form_identifier}' and mimeType='application/vnd.google-apps.form'"
+            results = drive_service.files().list(q=query, fields="files(id)").execute()
+            items = results.get("files", [])
+            
+            if not items:
+                return {"status": "error", "message": f"No form found with title: {form_identifier}"}
+            
+            # Use the first matching form
+            form_id = items[0]["id"]
+        
+        # Fetch the form metadata and questions using the Google Forms API
+        form = forms_service.forms().get(formId=form_id).execute()
+        form_info = {
+            "title": form.get("info", {}).get("title", "Untitled Form"),
+            "description": form.get("info", {}).get("description", ""),
+            "questions": []
+        }
+        
+        # Extract questions
+        for item in form.get("items", []):
+            question = {
+                "title": item.get("title", "Untitled Question"),
+                "type": item.get("questionItem", {}).get("question", {}).get("type", "Unknown"),
+                "options": []
+            }
+            
+            # Extract options for multiple-choice questions
+            if question["type"] == "RADIO" or question["type"] == "CHECKBOX":
+                for option in item.get("questionItem", {}).get("question", {}).get("options", []):
+                    question["options"].append(option.get("value", "Unknown Option"))
+            
+            form_info["questions"].append(question)
+        
+        resMap[id] = form_info
+    
+    except HttpError as error:
+        print(f"An error occurred: {error}")
+        return {"status": "error", "message": f"An error occurred: {error}"}
+
+
+def handle_read_google_sheet(id, username, sheet_identifier, sheet_range):
+    """Handle Gmail output node to send or draft an email."""
+    creds_dict = asyncio.run(fetch_google_creds(username))
+
+    creds = Credentials(
+        token=creds_dict["token"],
+        refresh_token=creds_dict.get("refresh_token"),
+        token_uri=creds_dict["token_uri"],
+        client_id=creds_dict["client_id"],
+        client_secret=creds_dict["client_secret"],
+        scopes=creds_dict["scopes"],
+    )
+
+    try:
+        # Check if the credentials are expired and refresh them if necessary
+        if creds.expired and creds.refresh_token:
+            creds.refresh(Request())
+            asyncio.run(save_google_creds(username, creds.to_json()))  # Update refreshed creds in DB
+        elif creds.expired and not creds.refresh_token:
+            return {"status": "error", "message": "No refresh token found. User needs to authorize again."}
+        
+        # Build Google Sheets and Drive API clients
+        sheets_service = build("sheets", "v4", credentials=creds)
+        drive_service = build("drive", "v3", credentials=creds)
+        
+        # Determine if the identifier is a sheet ID, link, or title
+        sheet_id = None
+        
+        # Case 1: Identifier is a sheet ID (e.g., alphanumeric string like "123abc...")
+        if len(sheet_identifier) == 44 and sheet_identifier.isalnum():
+            sheet_id = sheet_identifier
+        
+        # Case 2: Identifier is a link (e.g., "https://docs.google.com/spreadsheets/d/...")
+        elif sheet_identifier.startswith("https://docs.google.com/spreadsheets/d/"):
+            sheet_id = sheet_identifier.split("/d/")[1].split("/")[0]
+        
+        # Case 3: Identifier is a title (search using Google Drive API)
+        else:
+            query = f"name='{sheet_identifier}' and mimeType='application/vnd.google-apps.spreadsheet'"
+            results = drive_service.files().list(q=query, fields="files(id)").execute()
+            items = results.get("files", [])
+            
+            if not items:
+                return {"status": "error", "message": f"No sheet found with title: {sheet_identifier}"}
+            
+            # Use the first matching sheet
+            sheet_id = items[0]["id"]
+        
+        # Fetch the sheet data using the Google Sheets API
+        result = sheets_service.spreadsheets().values().get(spreadsheetId=sheet_id, range=sheet_range).execute()
+        values = result.get("values", [])
+        
+        resMap[id] = values
+    
+    except HttpError as error:
+        print(f"An error occurred: {error}")
+        return {"status": "error", "message": f"An error occurred: {error}"}
+
+
+def handle_read_google_meet(id, username, meet_title):
+    """Handle Gmail output node to send or draft an email."""
+    creds_dict = asyncio.run(fetch_google_creds(username))
+
+    creds = Credentials(
+        token=creds_dict["token"],
+        refresh_token=creds_dict.get("refresh_token"),
+        token_uri=creds_dict["token_uri"],
+        client_id=creds_dict["client_id"],
+        client_secret=creds_dict["client_secret"],
+        scopes=creds_dict["scopes"],
+    )
+
+    try:
+        # Check if the credentials are expired and refresh them if necessary
+        if creds.expired and creds.refresh_token:
+            creds.refresh(Request())
+            asyncio.run(save_google_creds(username, creds.to_json()))  # Update refreshed creds in DB
+        elif creds.expired and not creds.refresh_token:
+            return {"status": "error", "message": "No refresh token found. User needs to authorize again."}
+        
+        # Build Google Drive & Docs API clients
+        drive_service = build("drive", "v3", credentials=creds)
+        docs_service = build("docs", "v1", credentials=creds)
+        
+        # Search for the transcript file in Google Drive
+        query = f"name contains '{meet_title}' and mimeType='application/vnd.google-apps.document'"
+        results = drive_service.files().list(q=query, fields="files(id, name)").execute()
+        files = results.get("files", [])
+        
+        if not files:
+            return {"status": "error", "message": f"No transcript found for: {meet_title}"}
+        
+        # Use the first matching transcript
+        transcript_id = files[0]["id"]
+        
+        # Fetch the transcript content from Google Docs
+        document = docs_service.documents().get(documentId=transcript_id).execute()
+        content = document.get("body", {}).get("content", [])
+        
+        # Extract plain text
+        transcript_text = ""
+        for element in content:
+            if "paragraph" in element:
+                for text_run in element["paragraph"]["elements"]:
+                    if "textRun" in text_run:
+                        transcript_text += text_run["textRun"]["content"]
+        
+        resMap[id] = transcript_text
     
     except HttpError as error:
         print(f"An error occurred: {error}")

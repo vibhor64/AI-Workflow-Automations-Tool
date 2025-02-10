@@ -24,6 +24,7 @@ export const LoginWindow = () => {
     const [focus, setFocus] = useState(0);
     const [incorrect, setIncorrect] = useState(false);
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
     const {
         addTemplate,
@@ -53,7 +54,6 @@ export const LoginWindow = () => {
 
     const hasRun = useRef(false);
     useEffect(() => {
-
         if (hasRun.current) return; // Prevents second execution
         hasRun.current = true;
         async function initSession() {
@@ -88,10 +88,11 @@ export const LoginWindow = () => {
                     // Redirect user to login page or show login prompt
                     console.log("User needs to log in manually");
                 }
+                console.log("False load now")
                 setLoading(false);
             } else if (accessToken) {
                 console.log("User is already logged in");
-                await fetchData();
+                const fetchedData = await fetchData();
                 const parsed = queryString.parse(window.location.search);
                 const queryCreds_dict = parsed.creds_dict;
                 if (queryCreds_dict) {
@@ -106,12 +107,14 @@ export const LoginWindow = () => {
 
                     await save_google_creds(parsedCreds);
                     setLoading(false);
-                    navigate('/deployment');
+                    navigate('/pipelines');
                 } else {
                     console.log("No creds_dict found in query parameters");
                 }
                 setLoading(false);
-                gotoWeb();
+                if (fetchedData) {
+                    gotoWeb();
+                }
             }
         } catch (e) {
             console.log("Error is fetching token: ", e)
@@ -176,26 +179,6 @@ export const LoginWindow = () => {
         }
     }
 
-    // async function fetchProtectedData() {
-    //     try {
-    //         const response = await fetch("http://127.0.0.1:8000/users/me", {
-    //             method: "GET",
-    //             credentials: "include", // Include cookies in the request
-    //         });
-
-    //         if (!response.ok) {
-    //             throw new Error("Failed to fetch protected data");
-    //         }
-
-    //         const data = await response.json();
-    //         console.log("Protected Data:", data);
-    //         gotoWeb();
-    //     } catch (error) {
-    //         console.error("Error fetching protected data:", error.message);
-    //     }
-    // }
-
-    const navigate = useNavigate();
     const gotoWeb = () => {
         // Successfully logs in user, navigate to the web page
         setLoading(false);

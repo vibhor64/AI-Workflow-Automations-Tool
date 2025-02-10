@@ -426,3 +426,99 @@ export async function read_emails(max_results, labels) {
         throw error; // Re-throw the error for higher-level handling
     }
 }
+
+export async function read_google_forms(form_identifier) {
+    try {
+        let token = getAccessToken();
+
+        if (!token) {
+            await refreshToken(); // Get a new token if none exists
+            token = getAccessToken();
+        }
+
+        const response = await fetch(`${BASE_URL}/integrations/read_form?form_identifier=${form_identifier}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            credentials: "include", // Include cookies in requests
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json(); // Parse error details from the server
+            throw new Error(errorData.detail || "Failed to read emails");
+        }
+
+        const data = await response.json();
+        console.log("Response from reading emails: ", data);
+    } catch (error) {
+        console.error("Error during reading emails: ", error.message);
+        throw error; // Re-throw the error for higher-level handling
+    }
+}
+
+
+export async function read_google_sheets(sheet_identifier, sheet_range) {
+    try {
+        let token = getAccessToken();
+
+        if (!token) {
+            await refreshToken(); // Get a new token if none exists
+            token = getAccessToken();
+        }
+
+        const response = await fetch(`${BASE_URL}/integrations/read_google_sheets?sheet_identifier=${sheet_identifier}` + (sheet_range ? `&sheet_range=${sheet_range}` : ''), {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            credentials: "include", // Include cookies in requests
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json(); // Parse error details from the server
+            throw new Error(errorData.detail || "Failed to read emails");
+        }
+
+        const data = await response.json();
+        console.log("Response from reading emails: ", data);
+    } catch (error) {
+        console.error("Error during reading emails: ", error.message);
+        throw error; // Re-throw the error for higher-level handling
+    }
+}
+
+
+
+export async function read_google_meet(meet_title) {
+    try {
+        let token = getAccessToken();
+
+        if (!token) {
+            await refreshToken(); // Get a new token if none exists
+            token = getAccessToken();
+        }
+
+        const response = await fetch(`${BASE_URL}/integrations/read_meet_transcript?meet_title=${meet_title}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            credentials: "include", // Include cookies in requests
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json(); // Parse error details from the server
+            throw new Error(errorData.detail || "Failed to read emails");
+        }
+
+        const data = await response.json();
+        console.log("Response from reading emails: ", data);
+    } catch (error) {
+        console.error("Error during reading emails: ", error.message);
+        throw error; // Re-throw the error for higher-level handling
+    }
+}
