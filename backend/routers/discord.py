@@ -1,16 +1,12 @@
 from fastapi import FastAPI, HTTPException, Depends, Request, Query, APIRouter
 from fastapi.responses import RedirectResponse
 from fastapi.security import OAuth2AuthorizationCodeBearer
-# from pydantic import BaseModel
 import httpx
 import os
 from datetime import datetime
 from dotenv import load_dotenv
 from main import get_current_user
 from utils.database import fetch_discord_creds, save_discord_creds
-# import json
-# import base64
-
 # Load environment variables
 load_dotenv()
 

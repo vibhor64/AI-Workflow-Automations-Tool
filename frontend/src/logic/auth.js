@@ -532,7 +532,7 @@ export async function discord_authentication() {
         }
 
         // Redirect instead of fetching
-        window.location.href = `${BASE_URL}/auth/notion/authorize?token=${token}`;
+        window.location.href = `${BASE_URL}/auth/discord/authorize?token=${token}`;
     } catch (error) {
         console.error("Error from discord auth: ", error.message);
         throw error;
@@ -550,6 +550,69 @@ export async function send_discord_message() {
 
         const response = await fetch(`${BASE_URL}/auth/notion/read_page?page_id=935529701567520820`, {
             method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            credentials: "include", // Include cookies in requests
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json(); // Parse error details from the server
+            throw new Error(errorData.detail || "Failed to send message");
+        }
+
+        const data = await response.json();
+        console.log("Response from sending message: ", data);
+    } catch (error) {
+        console.error("Error sending message: ", error.message);
+        throw error; // Re-throw the error for higher-level handling
+    }
+}
+
+export async function notion_authentication() {
+    try {
+        let token = getAccessToken();
+        if (!token) {
+            await refreshToken();
+            token = getAccessToken();
+        }
+
+        // Redirect instead of fetching
+        window.location.href = `${BASE_URL}/auth/notion/authorize?token=${token}`;
+    } catch (error) {
+        console.error("Error from notion auth: ", error.message);
+        throw error;
+    }
+}
+
+export async function airtable_authentication() {
+    try {
+        let token = getAccessToken();
+        if (!token) {
+            await refreshToken();
+            token = getAccessToken();
+        }
+
+        // Redirect instead of fetching
+        window.location.href = `${BASE_URL}/auth/airtable/authorize?token=${token}`;
+    } catch (error) {
+        console.error("Error from airtable auth: ", error.message);
+        throw error;
+    }
+}
+
+export async function read_airtable() {
+    try {
+        let token = getAccessToken();
+
+        if (!token) {
+            await refreshToken(); // Get a new token if none exists
+            token = getAccessToken();
+        }
+
+        const response = await fetch(`${BASE_URL}/auth/airtable/read_table?url=https://airtable.com/app698vugnq63i7ia/tbltblglold5y42Bg/viwz7pwmYt2wkvkf0?blocks=hide&columns=CommentsProduct`, {
+            method: "GET",
             headers: {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${token}`,

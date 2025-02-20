@@ -22,7 +22,7 @@ from email.message import EmailMessage
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from email import message_from_bytes
-from routers import discord, google as google_integrations, notion
+from routers import discord, google as google_integrations, notion, airtable
 
 """
 - Notion integration
@@ -43,6 +43,7 @@ app = FastAPI()
 app.include_router(google_integrations.router)
 app.include_router(discord.router)
 app.include_router(notion.router)
+app.include_router(airtable.router)
 # oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 # oauth2_scheme = auth.oauth2_scheme
 

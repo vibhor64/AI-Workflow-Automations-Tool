@@ -1,6 +1,6 @@
 import Close from '../assets/close.png';
 import { useState } from 'react';
-import { create_doc, discord_authentication, read_doc, read_emails, read_google_forms, read_google_sheets, send_discord_message, send_draft } from '../logic/auth';
+import { airtable_authentication, create_doc, discord_authentication, read_airtable, read_doc, read_emails, read_google_forms, read_google_sheets, send_discord_message, send_draft } from '../logic/auth';
 
 export default function AutomationWindow({ setAutomationWindow, creds_dict }) {
     const [hoverClose, setHoverClose] = useState(false);
@@ -126,8 +126,8 @@ export default function AutomationWindow({ setAutomationWindow, creds_dict }) {
                     borderRadius: '20%',
                     transition: 'background-color 0.2s ease', // Only animate background color
                 }}
-                onClick={() => discord_authentication()}>
-                Notion Auth
+                onClick={() => airtable_authentication()}>
+                Airtable Auth
             </button>
             <button
                 style={{
@@ -143,8 +143,8 @@ export default function AutomationWindow({ setAutomationWindow, creds_dict }) {
                     borderRadius: '20%',
                     transition: 'background-color 0.2s ease', // Only animate background color
                 }}
-                onClick={() => send_discord_message()}>
-                Notion send message
+                onClick={() => read_airtable()}>
+                Airtable read
             </button>
 
 

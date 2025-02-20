@@ -175,3 +175,28 @@ async def fetch_slack_creds(username: str):
             return None
     except Exception as e:
         return {"status": "error", "message": str(e)}
+
+# Airtable Integration Options
+async def save_airtable_creds(username: str, token_data: dict):
+    try:
+        collection_name.update_one({"_id": username}, {"$set": {"airtable_creds": token_data}})
+        return {"status": "success", "message": "airtable credentials saved successfully"}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+    
+async def fetch_airtable_creds(username: str):
+    try:
+        user = collection_name.find_one({"_id": username})
+        if user:
+            return user["airtable_creds"]
+        else:
+            return None
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
+async def update_airtable_creds(username: str, token_data: dict):
+    try:
+        collection_name.update_one({"_id": username}, {"$set": {"airtable_creds": token_data}})
+        return {"status": "success", "message": "airtable credentials updated successfully"}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
