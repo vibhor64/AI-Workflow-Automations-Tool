@@ -121,3 +121,57 @@ async def fetch_google_creds(username: str):
             return None
     except Exception as e:
         return {"status": "error", "message": str(e)}
+
+# Discord Integration operations
+async def save_discord_creds(username: str, token_data: dict):
+    try:
+        collection_name.update_one({"_id": username}, {"$set": {"discord_creds": token_data}})
+        return {"status": "success", "message": "Discord credentials saved successfully"}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
+async def fetch_discord_creds(username: str):
+    try:
+        user = collection_name.find_one({"_id": username})
+        if user:
+            return user["discord_creds"]
+        else:
+            return None
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
+# Notion Integration Options
+async def save_notion_creds(username: str, token_data: dict):
+    try:
+        collection_name.update_one({"_id": username}, {"$set": {"notion_creds": token_data}})
+        return {"status": "success", "message": "Notion credentials saved successfully"}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+    
+async def fetch_notion_creds(username: str):
+    try:
+        user = collection_name.find_one({"_id": username})
+        if user:
+            return user["notion_creds"]
+        else:
+            return None
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
+# Slack Integration Options
+async def save_slack_creds(username: str, token_data: dict):
+    try:
+        collection_name.update_one({"_id": username}, {"$set": {"slack_creds": token_data}})
+        return {"status": "success", "message": "slack credentials saved successfully"}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+    
+async def fetch_slack_creds(username: str):
+    try:
+        user = collection_name.find_one({"_id": username})
+        if user:
+            return user["slack_creds"]
+        else:
+            return None
+    except Exception as e:
+        return {"status": "error", "message": str(e)}

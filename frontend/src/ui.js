@@ -17,7 +17,7 @@ import { useNavigate } from 'react-router-dom';
 
 import 'reactflow/dist/style.css';
 
-const gridSize = 20;
+const gridSize = 10;
 const proOptions = { hideAttribution: true };
 const nodeTypes = {
   NodeNode: NewNode,
@@ -219,7 +219,7 @@ export const PipelineUI = () => {
         </div>
 
         {/* Reset 🔄 */}
-        <div style={{ display: 'flex',flexDirection: 'column', position: 'absolute', bottom: '3px', height: '10vh', alignItems: 'center', justifyContent: 'center', right: '17%' }}>
+        <div style={{ display: 'flex',flexDirection: 'column', position: 'absolute', bottom: '3px', height: '10vh', alignItems: 'center', justifyContent: 'center', right: '15rem' }}>
           <button
             style={{
               backgroundColor: '#d1d1d1',

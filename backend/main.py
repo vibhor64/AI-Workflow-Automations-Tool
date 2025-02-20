@@ -2,6 +2,7 @@ import json
 from fastapi import FastAPI, Depends, HTTPException, status, Response, Request, Query
 from fastapi.responses import RedirectResponse
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+# from backend.routers import google
 import utils.auth as auth
 from utils.auth import oauth2_scheme, get_current_user
 from fastapi.middleware.cors import CORSMiddleware
@@ -21,12 +22,16 @@ from email.message import EmailMessage
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from email import message_from_bytes
-from routers import integrations
+from routers import discord, google as google_integrations, notion
 
 """
-- Discord integration: https://chat.deepseek.com/a/chat/s/438aa411-f6f0-4f10-a0ab-f5824a8c7f24
 - Notion integration
-- See how webhooks and automatic endpoint creation for pipelines could work
+- Webhook endpoint for discord to test payload details
+- This endpoint will then trigger the required pipeline, after sending the input to it
+- Save pipeline endpoint that will save pipelines in a new Mongo collection (already done by deepseek)
+- Return pipeline endpoint to user along with intructions to use it
+- Explore and complete google webhooks similarly
+- Add feature for deploying normal pipelines as well?
 - Resource: https://chat.deepseek.com/a/chat/s/2b1f814a-d95b-48ef-a5ba-5e9146163c49
 - Include Redis and Celery
 
@@ -35,7 +40,9 @@ from routers import integrations
 """
 app = FastAPI()
 
-app.include_router(integrations.router)
+app.include_router(google_integrations.router)
+app.include_router(discord.router)
+app.include_router(notion.router)
 # oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 # oauth2_scheme = auth.oauth2_scheme
 
@@ -301,7 +308,7 @@ async def google_integration_callback(request: Request):
 
 @app.post('/database/add_google_creds')
 async def call_save_google_creds(creds_dict: dict, current_user = Depends(get_current_user)):
-    print("creds_dict: ", creds_dict)
+    # print("creds_dict: ", creds_dict)
     result = await save_google_creds(current_user["username"], creds_dict)
     if result["status"] == "success":
         return result

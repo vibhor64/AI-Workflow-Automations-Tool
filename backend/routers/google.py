@@ -14,7 +14,7 @@ from fastapi import FastAPI, Depends, HTTPException, status, Response, Request, 
 from utils.auth import get_current_user
 from models import DocumentCreate
 # Create an instance of APIRouter
-router = APIRouter(prefix="/integrations", tags=["Integrations"])
+router = APIRouter(prefix="/google", tags=["google"])
 
 
 @router.get('/read_emails')

@@ -4,6 +4,7 @@ import markdown
 import PIL.Image
 import os
 import json
+import httpx
 from dotenv import load_dotenv
 import base64
 from email.mime.text import MIMEText
@@ -12,7 +13,6 @@ from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
-from integrations.gmail import create_message, send_message, create_draft
 from utils.database import fetch_google_creds, save_google_creds
 import asyncio
 from email.message import EmailMessage
@@ -26,6 +26,10 @@ model = genai.GenerativeModel('gemini-1.5-flash')
 
 # Scopes required for Gmail API
 SCOPES = ['https://www.googleapis.com/auth/gmail.compose']
+
+# Discord OAuth2 configuration
+DISCORD_API_URL = os.getenv("DISCORD_API_URL")
+DISCORD_BOT_TOKEN = os.getenv("DISCORD_BOT_TOKEN")
 
 def execute_pipeline(pipeline):
     # Create the graph
@@ -50,7 +54,7 @@ def execute_pipeline(pipeline):
         node_data = G.nodes[node_id]
         node_type = node_data["type"]
         # Handle each node type (input, LLM, output, etc.)
-        if node_type == "Input" or node_type == "File" or node_type == "Text":
+        if node_type == "Input" or node_type == "File" or node_type == "Text" or node_type == "Trigger":
             handle_input(node_id, node_data["fieldValue1"])
         elif node_type == "Database":
             handle_DB(node_id)
@@ -602,3 +606,31 @@ def handle_read_google_meet(id, username, meet_title):
     except HttpError as error:
         print(f"An error occurred: {error}")
         return {"status": "error", "message": f"An error occurred: {error}"}
+
+def send_discord_message(id, channel_id, message):
+    try:
+        async def _send_message():
+            url = f"{DISCORD_API_URL}/channels/{channel_id}/messages"
+            headers = {
+                "Authorization": f"Bot {DISCORD_BOT_TOKEN}",
+                "Content-Type": "application/json"
+            }
+            payload = {
+                "content": message
+            }
+            
+            async with httpx.AsyncClient() as client:
+                response = await client.post(url, json=payload, headers=headers)
+                response.raise_for_status()
+            
+            return "Message sent successfully"
+        
+        # Run the asynchronous function in an event loop
+        result = asyncio.run(_send_message())
+        # resMap[id] = message
+        resMap[id] = result
+        return {"message": result}
+    
+    except httpx.HTTPStatusError as error:
+        print(f"Failed to send message: {error}")
+        return {"status": "error", "message": f"Failed to send message: {error}"}

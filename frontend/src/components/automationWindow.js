@@ -1,6 +1,6 @@
 import Close from '../assets/close.png';
 import { useState } from 'react';
-import { create_doc, read_doc, read_emails, read_google_forms, read_google_sheets, send_draft } from '../logic/auth';
+import { create_doc, discord_authentication, read_doc, read_emails, read_google_forms, read_google_sheets, send_discord_message, send_draft } from '../logic/auth';
 
 export default function AutomationWindow({ setAutomationWindow, creds_dict }) {
     const [hoverClose, setHoverClose] = useState(false);
@@ -109,6 +109,42 @@ export default function AutomationWindow({ setAutomationWindow, creds_dict }) {
                 }}
                 onClick={() => read_google_sheets('https://docs.google.com/spreadsheets/d/1xhrhUoppcTe0WB1oxqIKeKbjvXJKWbL7fesWSBuTH4E/edit?gid=1244179328#gid=1244179328', 20)}>
                 Read sheet
+            </button>
+
+            {/* Discord */}
+            <button
+                style={{
+                    backgroundColor: '#2d4ecf',
+                    height: '30px', // Fixed size to match the container
+                    width: '90px', // Fixed size to match the container
+                    marginTop: '1rem',
+                    border: 'none',
+                    cursor: 'pointer',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    display: 'flex',
+                    borderRadius: '20%',
+                    transition: 'background-color 0.2s ease', // Only animate background color
+                }}
+                onClick={() => discord_authentication()}>
+                Notion Auth
+            </button>
+            <button
+                style={{
+                    backgroundColor: '#2d4ecf',
+                    height: '30px', // Fixed size to match the container
+                    width: '90px', // Fixed size to match the container
+                    marginTop: '1rem',
+                    border: 'none',
+                    cursor: 'pointer',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    display: 'flex',
+                    borderRadius: '20%',
+                    transition: 'background-color 0.2s ease', // Only animate background color
+                }}
+                onClick={() => send_discord_message()}>
+                Notion send message
             </button>
 
 
