@@ -18,12 +18,15 @@
 *** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
 *** https://www.markdownguide.org/basic-syntax/#reference-style-links
 -->
+  
+<!-- ![Contributors](https://img.shields.io/badge/Contributors-%23#32a836.svg?style=for-the-badge&logo=<badge>&logoColor=<logo-color>) -->
 [![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
-[![Unlicense License][license-shield]][license-url]
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 [![LinkedIn][linkedin-shield]][linkedin-url]
+<!-- [![Unlicense License][license-shield]][license-url] -->
 
 
 
@@ -37,7 +40,7 @@
   <h3 align="center">Weavebot</h3>
 
   <p align="center">
-    A FOSS Initiative - AI-native Workflow Automation Tool
+    AI-native Workflow Automation Tool - A FOSS Initiative
     <br />
     <a href="https://github.com/vibhor64/AI-Workflow-Automations-Tool"><strong>Explore Platform »</strong></a>
     <br />
@@ -116,6 +119,8 @@ The project is currently under development. At the end of the day, this is just 
 * ![JWT](https://img.shields.io/badge/JWT-black?style=for-the-badge&logo=JSON%20web%20tokens)
 * ![Google Cloud](https://img.shields.io/badge/GoogleCloud-%234285F4.svg?style=for-the-badge&logo=google-cloud&logoColor=white)
 * ![Discord](https://img.shields.io/badge/Discord-%235865F2.svg?style=for-the-badge&logo=discord&logoColor=white)
+* ![Notion](https://img.shields.io/badge/Notion-%23000000.svg?style=for-the-badge&logo=notion&logoColor=white)
+* ![Airtable](https://img.shields.io/badge/Airtable-18BFFF?style=for-the-badge&logo=Airtable&logoColor=white)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -189,6 +194,8 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 ## Roadmap
 
 - [x] Add a homepage
+- [x] Use font: geist mono
+- [x] Inspiration: https://onepagelove.com/reactin
 - [x] Tutorial for new users
 - [ ] Virtual scrolling for databases
 - [ ] Load databases only when user clicks on them
@@ -221,7 +228,7 @@ Don't forget to give the project a star! Thanks again!
 ### Top contributors:
 
 <a href="https://github.com/vibhor64/AI-Workflow-Automations-Tool/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=othneildrew/Best-README-Template" alt="contrib.rocks image" />
+  <img src="https://contrib.rocks/image?repo=vibhor64/AI-Workflow-Automations-Tool" alt="contrib.rocks image" />
 </a>
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -231,7 +238,7 @@ Don't forget to give the project a star! Thanks again!
 <!-- LICENSE -->
 ## License
 
-Distributed under the Unlicense License. See `LICENSE.txt` for more information.
+Distributed under the MIT License. See `LICENSE` for more information.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -267,19 +274,20 @@ Use this space to list resources you find helpful and would like to give credit 
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/othneildrew/Best-README-Template.svg?style=for-the-badge
+<!-- [contributors-shield]: https://img.shields.io/github/contributors/vibhor64/AI-Workflow-Automations-Tool.svg?style=for-the-badge -->
+[contributors-shield]: https://img.shields.io/github/contributors/vibhor64/AI-Workflow-Automations-Tool.svg?style=for-the-badge
 [contributors-url]: https://github.com/vibhor64/AI-Workflow-Automations-Tool/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/othneildrew/Best-README-Template.svg?style=for-the-badge
+[forks-shield]: https://img.shields.io/github/forks/vibhor64/AI-Workflow-Automations-Tool.svg?style=for-the-badge
 [forks-url]: https://github.com/vibhor64/AI-Workflow-Automations-Tool/network/members
-[stars-shield]: https://img.shields.io/github/stars/othneildrew/Best-README-Template.svg?style=for-the-badge
+[stars-shield]: https://img.shields.io/github/stars/vibhor64/AI-Workflow-Automations-Tool.svg?style=for-the-badge
 [stars-url]: https://github.com/vibhor64/AI-Workflow-Automations-Tool/stargazers
-[issues-shield]: https://img.shields.io/github/issues/othneildrew/Best-README-Template.svg?style=for-the-badge
+[issues-shield]: https://img.shields.io/github/issues/vibhor64/AI-Workflow-Automations-Tool.svg?style=for-the-badge
 [issues-url]: https://github.com/vibhor64/AI-Workflow-Automations-Tool/issues
-[license-shield]: https://img.shields.io/github/license/othneildrew/Best-README-Template.svg?style=for-the-badge
+[license-shield]: https://img.shields.io/github/license/vibhor64/AI-Workflow-Automations-Tool.svg?style=for-the-badge
 [license-url]: https://github.com/vibhor64/AI-Workflow-Automations-Tool/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://www.linkedin.com/in/vibhor-sharma64/
-[product-screenshot]: images/screenshot.png
+[product-screenshot]: screenshots/weavebot_showcase.png
 [Next.js]: https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white
 [Next-url]: https://nextjs.org/
 [React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB

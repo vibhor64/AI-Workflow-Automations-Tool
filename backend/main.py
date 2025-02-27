@@ -33,6 +33,7 @@ from routers import discord, google as google_integrations, notion, airtable
 - Explore and complete google webhooks similarly
 - Add feature for deploying normal pipelines as well?
 - Resource: https://chat.deepseek.com/a/chat/s/2b1f814a-d95b-48ef-a5ba-5e9146163c49
+- https://chatgpt.com/share/67c04b7b-5fa4-8002-8cf6-cec2749d52a3
 - Include Redis and Celery
 
 
