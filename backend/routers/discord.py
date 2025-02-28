@@ -148,6 +148,17 @@ async def refresh_access_token(refresh_token: str):
         print(f"Error refreshing access token: {e}")
         return None
 
+# Validate access token
+@router.post('/validate')
+async def validate_token(token: str = Query(..., description="Your token")):
+    current_user = await get_current_user(token)
+    current_username = current_user["username"]
+    user_data = await fetch_discord_creds(current_username)
+    if not user_data:
+        return {"valid": False, "message": "Discord credentials are invalid."}
+    
+    return {"valid": True, "message": "Discord credentials are valid."}
+
 async def get_valid_access_token(username: str):
     user_data = await fetch_discord_creds(username)
     if not user_data:

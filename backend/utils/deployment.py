@@ -609,6 +609,7 @@ def handle_read_google_meet(id, username, meet_title):
 
 def send_discord_message(id, channel_id, message):
     try:
+        # todo: validate channel_id
         async def _send_message():
             url = f"{DISCORD_API_URL}/channels/{channel_id}/messages"
             headers = {

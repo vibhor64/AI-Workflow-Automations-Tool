@@ -50,11 +50,11 @@ export const PipelineUI = () => {
     createDeployment,
   } = useStore(selector, shallow);
 
-  const navigate = useNavigate();
-  let accessToken = sessionStorage.getItem("access_token");
-  if (!accessToken) {
-    navigate('/login');
-  }
+  // const navigate = useNavigate();
+  // let accessToken = sessionStorage.getItem("access_token");
+  // if (!accessToken) {
+  //   navigate('/login');
+  // }
 
   const onDrop = useCallback(
     (event) => {

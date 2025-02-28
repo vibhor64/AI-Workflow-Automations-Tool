@@ -101,7 +101,7 @@ const newNodesConfig = [
       leftHandles: 2,
       bgcolor: '#ffe682',
       headColor: '#f5d65b',
-      desc: 'This is a LLM.',
+      
       img: openai,
       category: 'LLMs',
       sources: ['system', 'prompt'],
@@ -121,7 +121,7 @@ const newNodesConfig = [
       leftHandles: 2,
       bgcolor: '#ffe682',
       headColor: '#f5d65b',
-      desc: 'This is a LLM.',
+      
       img: Anthropic,
       category: 'LLMs',
       sources: ['system', 'prompt'],
@@ -141,7 +141,7 @@ const newNodesConfig = [
       leftHandles: 2,
       bgcolor: '#ffe682',
       headColor: '#f5d65b',
-      desc: 'This is a LLM.',
+      
       img: meta,
       category: 'LLMs',
       sources: ['system', 'prompt'],
@@ -161,7 +161,7 @@ const newNodesConfig = [
       leftHandles: 2,
       bgcolor: '#ffe682',
       headColor: '#f5d65b',
-      desc: 'This is a LLM.',
+      
       img: google,
       category: 'LLMs',
       sources: ['system', 'prompt'],
@@ -181,7 +181,7 @@ const newNodesConfig = [
       leftHandles: 2,
       bgcolor: '#ffe682',
       headColor: '#f5d65b',
-      desc: 'This is a LLM.',
+      
       img: perplexity,
       category: 'LLMs',
       sources: ['system', 'prompt'],
@@ -201,7 +201,7 @@ const newNodesConfig = [
       leftHandles: 2,
       bgcolor: '#ffe682',
       headColor: '#f5d65b',
-      desc: 'This is a LLM.',
+      
       img: aws,
       category: 'LLMs',
       sources: ['system', 'prompt'],
@@ -221,7 +221,7 @@ const newNodesConfig = [
       rightHandles: 1,
       leftHandles: 3,
       bgcolor: '#c382ff',
-      desc: 'This is a LLM.',
+      
       img: openai,
       category: 'Multi-Modal',
       sources: ['system', 'prompt', 'image'],
@@ -240,7 +240,7 @@ const newNodesConfig = [
       rightHandles: 1,
       leftHandles: 3,
       bgcolor: '#c382ff',
-      desc: 'This is a LLM.',
+      
       img: Anthropic,
       category: 'Multi-Modal',
       sources: ['system', 'prompt', 'image'],
@@ -259,7 +259,7 @@ const newNodesConfig = [
       rightHandles: 1,
       leftHandles: 3,
       bgcolor: '#c382ff',
-      desc: 'This is a LLM.',
+      
       img: google,
       category: 'Multi-Modal',
       sources: ['system', 'prompt', 'image'],
@@ -309,12 +309,14 @@ const newNodesConfig = [
     id: 'newNode-1',
     type: 'NodeNode',
     data: {
-      name: 'Coming Soon',
-      isInput: false,
+      name: 'Discord',
+      desc: 'Our discord bot will send messages to your requested channel',
+      isInput: true,
       isType: false,
-      bgcolor: '#e76f51',
+      bgcolor: '#5865F2',
       rightHandles: 0,
-      leftHandles: 0,
+      leftHandles: 1,
+      fieldValue1: 'Eg. 987654321567520820',
       img: discord,
       category: 'Integrations',
     },

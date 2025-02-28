@@ -308,6 +308,50 @@ async def google_integration_callback(request: Request):
     redirect_url = f"http://localhost:3000/login?creds_dict={creds_json}"
     return RedirectResponse(redirect_url)
 
+@app.post("/auth/google/validate")
+async def validate_google_credentials(current_user=Depends(get_current_user)):
+    """
+    Validates the user's Google OAuth credentials by checking token expiry and refreshing if necessary.
+    """
+    try:
+        # Step 1: Fetch the user's stored credentials from the database
+        username = current_user["username"]
+        creds_dict = await fetch_google_creds(username)
+        if not creds_dict:
+            raise HTTPException(status_code=401, detail="No Google credentials found.")
+
+        creds = Credentials(
+            token=creds_dict["token"],
+            refresh_token=creds_dict.get("refresh_token"),
+            token_uri=creds_dict["token_uri"],
+            client_id=creds_dict["client_id"],
+            client_secret=creds_dict["client_secret"],
+            scopes=creds_dict["scopes"],
+        )
+
+        # Step 3: Check if the token is expired
+        if creds.expired:
+            if creds.refresh_token:
+                # Step 4: Refresh the token if expired
+                creds.refresh(Request())
+                # Update the refreshed credentials in the database
+                await save_google_creds(username, {
+                    "token": creds.token,
+                    "refresh_token": creds.refresh_token,
+                    "token_uri": creds.token_uri,
+                    "client_id": creds.client_id,
+                    "client_secret": creds.client_secret,
+                    "scopes": creds.scopes,
+                })
+            else:
+                return {"valid": False, "message": "Google credentials are invalid."}
+
+        # Step 5: Return validation result
+        return {"valid": True, "message": "Google credentials are valid."}
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to validate credentials: {str(e)}")
+
 @app.post('/database/add_google_creds')
 async def call_save_google_creds(creds_dict: dict, current_user = Depends(get_current_user)):
     # print("creds_dict: ", creds_dict)
@@ -320,7 +364,7 @@ async def call_save_google_creds(creds_dict: dict, current_user = Depends(get_cu
 @app.get('/database/get_google_service')
 async def call_fetch_google_creds(current_user = Depends(get_current_user)):
     username = current_user["username"]
-    creds_dict = await fetch_google_creds(username)  # Fetch from DB
+    creds_dict = await fetch_google_creds(username) 
 
     if not creds_dict:
         raise HTTPException(status_code=401, detail="No Google credentials found.")

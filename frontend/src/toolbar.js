@@ -21,7 +21,7 @@ export const PipelineToolbar = () => {
 
         <div>
             {/* Category Selector */}
-            <div style={{ display: 'flex', gap: '10px', marginBottom: '10px', marginLeft: '15px' }}>
+            <div style={{ display: 'flex', flexDirection: 'row', gap: '10px', marginBottom: '10px', marginLeft: '15px',}}>
                 {categories.map((category) => (
                     <button
                         key={category}
@@ -43,9 +43,9 @@ export const PipelineToolbar = () => {
                     </button>
                 ))}
             </div>
-
+                
             {/* Filtered Node List */}
-            <div style={{ marginTop: '10px', marginLeft: '15px', display: 'flex', flexWrap: 'wrap', gap: '13px', marginBottom: '10px' }}>
+            <div style={{ marginTop: '10px', marginLeft: '15px', display: 'flex', gap: '13px', marginBottom: '10px', overflowX: 'auto', whiteSpace: 'nowrap', WebkitOverflowScrolling: 'touch', scrollbarWidth: 'none', msOverflowStyle: 'none', }}>
                 {newNodesConfig
                     .filter((config) => config.data.category === selectedCategory)
                     .map((config) => (

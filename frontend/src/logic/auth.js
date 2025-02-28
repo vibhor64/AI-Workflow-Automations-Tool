@@ -267,6 +267,59 @@ export async function modifyBook(bookId, newData) {
     }
 }
 
+export async function google_integration_authentication() {
+    try {
+        let token = getAccessToken();
+        if (!token) {
+            await refreshToken();
+            token = getAccessToken();
+        }
+
+        // Redirect instead of fetching
+        window.location.href = `${BASE_URL}/auth/google/integration`;
+    } catch (error) {
+        console.error("Error from discord auth: ", error.message);
+        throw error;
+    }
+}
+
+export async function validateGoogleCredentials() {
+    try {
+        // Step 1: Retrieve the access token
+        let token = getAccessToken();
+
+        if (!token) {
+            await refreshToken(); // Refresh the token if none exists
+            token = getAccessToken();
+        }
+
+        // Step 2: Call the backend endpoint to validate credentials
+        const response = await fetch(`${BASE_URL}/auth/google/validate`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            credentials: "include", // Include cookies in requests
+        });
+
+        // Step 3: Handle the response
+        if (!response.ok) {
+            const errorData = await response.json(); // Parse error details from the server
+            throw new Error(errorData.detail || "Failed to validate Google credentials");
+        }
+
+        const data = await response.json();
+        console.log("Validation response:", data);
+
+        // Step 4: Return the validation result
+        return data.valid; // Returns `true` if valid, otherwise `false`
+    } catch (error) {
+        console.error("Error during Google credentials validation:", error.message);
+        throw error; // Re-throw the error for higher-level handling
+    }
+}
+
 export async function save_google_creds(creds_dict) {
     try {
         let token = getAccessToken();
@@ -536,6 +589,44 @@ export async function discord_authentication() {
     } catch (error) {
         console.error("Error from discord auth: ", error.message);
         throw error;
+    }
+}
+
+
+export async function validateDiscordCredentials() {
+    try {
+        // Step 1: Retrieve the access token
+        let token = getAccessToken();
+
+        if (!token) {
+            await refreshToken(); // Refresh the token if none exists
+            token = getAccessToken();
+        }
+
+        // Step 2: Call the backend endpoint to validate credentials
+        const response = await fetch(`${BASE_URL}/auth/discord/validate?token=${token}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            credentials: "include", // Include cookies in requests
+        });
+
+        // Step 3: Handle the response
+        if (!response.ok) {
+            const errorData = await response.json(); // Parse error details from the server
+            throw new Error(errorData.detail || "Failed to validate Google credentials");
+        }
+
+        const data = await response.json();
+        console.log("Validation response:", data);
+
+        // Step 4: Return the validation result
+        return data.valid; // Returns `true` if valid, otherwise `false`
+    } catch (error) {
+        console.error("Error during Google credentials validation:", error.message);
+        throw error; // Re-throw the error for higher-level handling
     }
 }
 

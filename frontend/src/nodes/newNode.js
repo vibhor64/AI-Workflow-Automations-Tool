@@ -9,6 +9,7 @@ import { Handle, Position, useUpdateNodeInternals } from 'reactflow';
 import { useStore } from '../store';
 import { shallow } from 'zustand/shallow';
 import { useRef } from 'react';
+import { airtable_authentication, discord_authentication, google_integration_authentication, notion_authentication, validateDiscordCredentials, validateGoogleCredentials } from '../logic/auth';
 
 
 const selector = (state) => ({
@@ -53,6 +54,7 @@ export const NewNode = ({ id, data }) => {
     const [isFocused2, setIsFocused2] = useState(false);
     const [hover, setHover] = useState(false);
     const [hover2, setHover2] = useState(false);
+    const [globalHover, setGlobalHover] = useState(0);
 
     const [initSources, setInitSources] = useState(sources);
 
@@ -76,9 +78,9 @@ export const NewNode = ({ id, data }) => {
             updateNodeField(id, 'targets', [`${e.target.value}`])
         }
         updateNodeField(id, 'fieldValue1', `${e.target.value}`)
-        
+
     };
-    
+
     const handleNameChange2 = (e) => {
         setCurrName2(e.target.value);
         autoResize(e.target);
@@ -108,6 +110,50 @@ export const NewNode = ({ id, data }) => {
         return matches ? matches : [];
     };
 
+    const handleIntegrationClick = () => {
+        if (name === 'Discord') {
+            discord_authentication();
+        }
+        else if (name === 'Google Docs' || name === 'Google Sheets' || name === 'Google Meet' || name === 'Gmail') {
+            google_integration_authentication();
+        }
+        else if (name === 'Airtable') {
+            airtable_authentication();
+        }
+        else if (name === 'Notion') {
+            notion_authentication();
+        }
+    }
+
+    const [status, setStatus] = useState(null);
+    useEffect(() => {
+        async function fetchStatus() {
+            try {
+                let isValid = false;
+                if (name === 'Google Docs' || name === 'Google Sheets' || name === 'Google Meet' || name === 'Gmail') {
+                    isValid = await validateGoogleCredentials();
+                }
+                else if (name === 'Discord') {
+                    isValid = await validateDiscordCredentials();
+                }
+                else if (name === 'Airtable') {
+                    // todo
+                    airtable_authentication();
+                }
+                else if (name === 'Notion') {
+                    notion_authentication();
+                }
+                setStatus(isValid ? true : false);
+            } 
+            catch (error) {
+                setStatus(false);
+            }
+        }
+
+        fetchStatus();
+    }, []);
+
+
     const textareaRef = useRef(null);
 
     const handleInput = (e) => {
@@ -135,17 +181,27 @@ export const NewNode = ({ id, data }) => {
                     />
                 ))}
 
+                {/* Node Name */}
                 <div style={{ display: 'flex', paddingTop: '5px', paddingBottom: '5px', fontSize: '14px', fontWeight: '700', color: bgcolor ? bgcolor : '#3c859e', marginLeft: '10px' }}>
                     <span>{name}</span>
                 </div>
 
+                {/* Node Description */}
+                {desc &&
+                    <div style={{ display: 'flex', paddingTop: '5px', paddingBottom: '10px', fontSize: '10px', fontWeight: '600', color: '#5e5e5e', textAlign: 'center' }}>
+                        {desc}
+                    </div>
+                }
+
+                {/* Node Image */}
                 {category === 'LLMs' || category === 'Multi-Modal' || category === 'Knowledge Base' || name === 'File' ?
                     <>
-                        <img src={img} style={{ width: '40px', height: '40px', alignSelf: 'center', marginBottom: '10px' }} />
+                        <img alt='logo' src={img} style={{ width: '40px', height: '40px', alignSelf: 'center', marginBottom: '10px' }} />
                     </>
                     : null
                 }
 
+                {/* Node Input Field Value 2 */}
                 <div style={{ paddingRight: '10px', paddingLeft: '10px', marginBottom: '10px', display: 'flex', alignItems: 'center', flexDirection: 'column', }}>
 
                     {category === 'LLMs' || category === 'Multi-Modal' ?
@@ -189,10 +245,11 @@ export const NewNode = ({ id, data }) => {
                         null
                     }
 
+                    {/* Node Input Field Value 1 */}
                     {isInput ?
 
                         <label>
-                            <span style={{ fontWeight: 700, color: '#363636', marginLeft: '2px', fontSize: '9px' }}>{data.name === 'Text' ? 'Text:' : category === 'LLMs' || category === 'Multi-Modal' ? 'Prompt:' : 'Field Name:'}</span>
+                            <span style={{ fontWeight: 700, color: '#363636', marginLeft: '2px', fontSize: '9px' }}>{data.name === 'Text' ? 'Text:' : category === 'LLMs' || category === 'Multi-Modal' ? 'Prompt:' : data.name=== 'Discord' ? 'Channel ID' : 'Field Name:'}</span>
                             <textarea
                                 value={currName}
                                 ref={textareaRef}
@@ -203,7 +260,7 @@ export const NewNode = ({ id, data }) => {
                                 onFocus={() => setIsFocused(true)}
                                 onBlur={() => setIsFocused(false)}
                                 rows={1}
-                                placeholder='Enter here'
+                                placeholder= 'Enter here'
                                 style={{
                                     marginTop: '2px',
                                     fontFamily: 'Inter',
@@ -230,6 +287,46 @@ export const NewNode = ({ id, data }) => {
                         null
                     }
 
+                    {(category === 'Integrations' || category === 'Triggers') &&
+                        <>
+                            <div>
+                                <button style={{
+                                    backgroundColor: status ? '#6e7af5' : globalHover === 1 ? '#6e7af5' : '#5865F2',
+                                    borderRadius: '10px',
+                                    border: status ? `2px solid #6e7af5` : globalHover === 1 ? `2px solid #6e7af5` : `2px solid #5865F2`,
+                                    color:  '#fff',
+                                    cursor: 'pointer',
+                                    // fontFamily: 'Poppins',
+                                    fontSize: '12px',
+                                    fontWeight: 600,
+                                    listStyle: 'none',
+                                    margin: '0',
+                                    padding: '5px 7px',
+                                    marginTop: '10px',
+                                    textAlign: 'center',
+                                    transition: 'all 200ms',
+                                    verticalAlign: 'baseline',
+                                    whiteSpace: 'nowrap',
+                                    userSelect: 'none',
+                                    WebkitUserSelect: 'none',
+                                    touchAction: 'manipulation',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center'
+                                }}
+                                onMouseEnter={() => setGlobalHover(1)}
+                                onMouseLeave={() => setGlobalHover(0)}
+                                onClick={handleIntegrationClick}
+                                // disabled={status}
+                                >
+                                    {status ? 'Connected ✅' : 'Authenticate ❌'}
+                                </button>
+                            </div>
+                        </>
+                    }
+
+
+                    {/* Node Input Field: Type */}
                     {isType ?
                         <label style={{ display: 'flex', alignSelf: 'flex-start', marginLeft: '2px', marginTop: '2px', gap: '8px' }}>
                             <span style={{ marginTop: '4px', fontWeight: 400, color: '#363636', fontSize: '10px' }}>Type:</span>
