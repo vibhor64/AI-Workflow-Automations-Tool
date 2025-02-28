@@ -83,6 +83,31 @@ export async function refreshToken() {
     }
 }
 
+export async function getUsername() {
+    try {
+        const response = await fetch(`${BASE_URL}/users/username`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${getAccessToken()}`,
+            },
+            credentials: "include", // Important for sending/receiving cookies
+        });
+
+        if (!response.ok) {
+            clearAccessToken();
+            return false;
+        }
+
+        const data = await response.json();
+        return data.username;
+    } catch (error) {
+        clearAccessToken();
+        console.log("Error refreshing token:", error);
+        return false;
+    }
+}
+
 // Generic API Wrapper for Authenticated Requests
 export async function requestWithAuth(endpoint, options = {}) {
     let token = getAccessToken();

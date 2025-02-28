@@ -9,7 +9,7 @@ import { Handle, Position, useUpdateNodeInternals } from 'reactflow';
 import { useStore } from '../store';
 import { shallow } from 'zustand/shallow';
 import { useRef } from 'react';
-import { airtable_authentication, discord_authentication, google_integration_authentication, notion_authentication, validateDiscordCredentials, validateGoogleCredentials } from '../logic/auth';
+import { airtable_authentication, discord_authentication, getUsername, google_integration_authentication, notion_authentication, validateDiscordCredentials, validateGoogleCredentials } from '../logic/auth';
 
 
 const selector = (state) => ({
@@ -25,25 +25,29 @@ const selector = (state) => ({
 
 export const NewNode = ({ id, data }) => {
     const {
-        name: name,
-        isInput: isInput,
-        isType: isType,
-        rightHandles: rightHandles,
-        leftHandles: leftHandles,
-        bgcolor: bgcolor,
-        desc: desc,
-        img: img,
-        category: category,
-        sources: sources,
-        targets: targets,
-        fieldValue1: fieldValue1,
-        fieldValue2: fieldValue2
+        name,
+        isInput,
+        isType,
+        rightHandles,
+        leftHandles,
+        bgcolor,
+        Nodestate,
+        desc,
+        img,
+        category,
+        sources,
+        targets,
+        fieldValue1,
+        fieldValue2,
     } = data;
 
     const {
         updateNodeField,
     } = useStore(selector, shallow);
 
+
+    const [status, setStatus] = useState(null);
+    const [nodeState, setNodeState] = useState();
     const initialName = fieldValue1 || `Node-${id.split('-')[1]}`;
     const initialName2 = fieldValue2 || `Node-${id.split('-')[1]}`;
     const [currName, setCurrName] = useState(initialName);
@@ -55,8 +59,11 @@ export const NewNode = ({ id, data }) => {
     const [hover, setHover] = useState(false);
     const [hover2, setHover2] = useState(false);
     const [globalHover, setGlobalHover] = useState(0);
-
     const [initSources, setInitSources] = useState(sources);
+    const [integrationValue1, setIntegrationValue1] = useState('');
+    const [integrationValue2, setIntegrationValue2] = useState('');
+
+
 
     useEffect(() => {
         updateNodeField(id, 'fieldValue1', initialName);
@@ -125,9 +132,43 @@ export const NewNode = ({ id, data }) => {
         }
     }
 
-    const [status, setStatus] = useState(null);
+    const handleNodeStateChange = (s) => {
+        // console.log("NodeState: ", Nodestate);
+        setNodeState(s);
+        if (Nodestate) {
+            if (s === 'Create draft' || s === 'Send email') {
+                // Update leftHandles to 1
+                updateNodeField(id, 'leftHandles', 1);
+                updateNodeField(id, 'sources', ['Message']);
+                updateNodeField(id, 'rightHandles', 0);
+                updateNodeField(id, 'targets', []);
+                if (s === 'Create draft') {
+                    updateNodeField(id, 'fieldValue1', { ...fieldValue1, 'isDraft': true });
+                }
+                else {
+                    updateNodeField(id, 'fieldValue1', { ...fieldValue1, 'isDraft': false });
+                }
+
+            } else if (s === 'Read emails') {
+                // Update rightHandles to 1=
+                updateNodeField(id, 'leftHandles', 0);
+                updateNodeField(id, 'sources', []);
+                updateNodeField(id, 'rightHandles', 1);
+                updateNodeField(id, 'targets', ['Emails']);
+            }
+        }
+        console.log(fieldValue1)
+    }
+
+    const isValidCache = useRef(null);
     useEffect(() => {
         async function fetchStatus() {
+            if (Nodestate) {
+                handleNodeStateChange(Nodestate[0]);
+            }
+            const curr_username = getUsername()
+            updateNodeField(id, 'username', curr_username);
+
             try {
                 let isValid = false;
                 if (name === 'Google Docs' || name === 'Google Sheets' || name === 'Google Meet' || name === 'Gmail') {
@@ -143,8 +184,10 @@ export const NewNode = ({ id, data }) => {
                 else if (name === 'Notion') {
                     notion_authentication();
                 }
+                // Cache the isValid value
+                isValidCache.current = isValid;
                 setStatus(isValid ? true : false);
-            } 
+            }
             catch (error) {
                 setStatus(false);
             }
@@ -152,7 +195,17 @@ export const NewNode = ({ id, data }) => {
 
         fetchStatus();
     }, []);
+    const getCachedIsValid = () => isValidCache.current;
 
+    const handleIntegrationValue1 = (s) => {
+        setIntegrationValue1(s)
+        updateNodeField(id, 'fieldValue1', { ...fieldValue1, "1" : s }); // to, max_results
+    }
+
+    const handleIntegrationValue2 = (s) => {
+        setIntegrationValue2(s)
+        updateNodeField(id, 'fieldValue1', { ...fieldValue1, "2": s }); // labels
+    }
 
     const textareaRef = useRef(null);
 
@@ -201,9 +254,105 @@ export const NewNode = ({ id, data }) => {
                     : null
                 }
 
-                {/* Node Input Field Value 2 */}
                 <div style={{ paddingRight: '10px', paddingLeft: '10px', marginBottom: '10px', display: 'flex', alignItems: 'center', flexDirection: 'column', }}>
 
+                    {/* Node State (read or write) for integrations and triggers only*/}
+                    {nodeState &&
+                        <>
+                            <label style={{ display: 'flex', alignSelf: 'center', marginLeft: '2px', marginTop: '2px', gap: '8px', flexDirection: 'column' }}>
+                                <select value={nodeState} onChange={(e) => handleNodeStateChange(e.target.value)}
+                                    onMouseEnter={() => setGlobalHover(2)}
+                                    onMouseLeave={() => setGlobalHover(0)}
+                                    style={{
+                                        backgroundColor: globalHover === 2 ? '#6e7af5' : '#5865F2',
+                                        padding: '3px 2px',
+                                        borderRadius: '4px',
+                                        border: globalHover === 2 ? '2px solid #6e7af5' : `2px solid #5865F2`,
+                                        color: '#fff',
+                                        // backgroundColor: '#fff',
+                                        fontSize: '12px',
+                                        paddingLeft: '20px',
+                                        paddingRight: '15px',
+                                        fontWeight: 600,
+                                        marginLeft: '1px',
+                                        cursor: 'pointer',
+                                        outline: 'none',
+                                        transition: 'border-color 0.3s, box-shadow 0.3s',
+                                    }}
+                                    onFocus={(e) => (e.target.style.boxShadow = '0 0 5px rgba(128, 72, 199, 0.5)')}
+                                    onBlur={(e) => (e.target.style.boxShadow = 'rgba(0, 0, 0, 0.24) 0px 3px 8px;')}
+                                >
+                                    {Nodestate?.map((state, index) => (
+                                        <option key={index} value={state} style={{ fontWeight: 600 }}>{state}</option>
+                                    ))
+                                    }
+                                </select>
+                            </label>
+
+                            {(nodeState === 'Create draft' || nodeState === 'Send email') ?
+                                <>
+                                    <label style={{ marginTop: '10px' }}>
+                                        <span style={{ fontWeight: 700, color: '#363636', marginLeft: '2px', fontSize: '9px' }}>Receiver's Email Address</span>
+                                        <textarea
+                                            value={integrationValue1}
+                                            // ref={textareaRef}
+                                            onInput={handleInput}
+                                            onChange={(e) => handleIntegrationValue1(e.target.value)}
+                                            onMouseEnter={() => setHover(true)}
+                                            onMouseLeave={() => setHover(false)}
+                                            onFocus={() => setIsFocused(true)}
+                                            onBlur={() => setIsFocused(false)}
+                                            rows={1}
+                                            placeholder='you@example.com'
+                                            style={{ marginTop: '2px', fontFamily: 'Inter', backgroundColor: hover ? '#d9d9d9' : '#ededed', border: `2px solid ${isFocused ? bgcolor : '#fff'}`, borderRadius: '8px', padding: '5px', paddingLeft: '7px', paddingRight: '7px', minWidth: '150px', height: '14px', fontSize: '12px', lineHeight: '1', outline: 'none', overflow: "hidden", resize: "none", // color: '#a1a1a1', color: `${isFocused ? '#000' : '#a1a1a1'}`, transition: 'border-color 0.2s ease-in-out',
+                                            }}
+                                        />
+                                    </label>
+                                </> : (nodeState === 'Read emails') ?
+                                    <>
+                                        <label style={{ marginTop: '10px' }}>
+                                        <span style={{ fontWeight: 700, color: '#363636', marginLeft: '2px', fontSize: '9px' }}>Max Results</span>
+                                        <textarea
+                                            value={integrationValue1}
+                                            ref={textareaRef}
+                                            onInput={handleInput}
+                                            onChange={(e) => handleIntegrationValue1(e.target.value)}
+                                            onMouseEnter={() => setHover(1)}
+                                            onMouseLeave={() => setHover(0)}
+                                            onFocus={() => setIsFocused(1)}
+                                            onBlur={() => setIsFocused(0)}
+                                            rows={1}
+                                            placeholder='Default is 100'
+                                            style={{ marginTop: '2px', fontFamily: 'Inter', backgroundColor: hover===1 ? '#d9d9d9' : '#ededed', border: `2px solid ${isFocused===1 ? bgcolor : '#fff'}`, borderRadius: '8px', padding: '5px', paddingLeft: '7px', paddingRight: '7px', minWidth: '150px', height: '14px', fontSize: '12px', lineHeight: '1', outline: 'none', overflow: "hidden", resize: "none", // color: '#a1a1a1', color: `${isFocused ? '#000' : '#a1a1a1'}`, transition: 'border-color 0.2s ease-in-out',
+                                            }}
+                                        />
+                                    </label>
+
+                                    <label style={{ marginTop: '10px' }}>
+                                        <span style={{ fontWeight: 700, color: '#363636', marginLeft: '2px', fontSize: '9px' }}>Labels</span>
+                                        <textarea
+                                            value={integrationValue2}
+                                            ref={textareaRef}
+                                            onInput={handleInput}
+                                            onChange={(e) => handleIntegrationValue2(e.target.value)}
+                                            onMouseEnter={() => setHover(2)}
+                                            onMouseLeave={() => setHover(0)}
+                                            onFocus={() => setIsFocused(2)}
+                                            onBlur={() => setIsFocused(0)}
+                                            rows={1}
+                                            placeholder='Eg. Unread, Starred, Draft'
+                                            style={{ marginTop: '2px', fontFamily: 'Inter', backgroundColor: hover===2 ? '#d9d9d9' : '#ededed', border: `2px solid ${isFocused===2 ? bgcolor : '#fff'}`, borderRadius: '8px', padding: '5px', paddingLeft: '7px', paddingRight: '7px', minWidth: '150px', height: '14px', fontSize: '12px', lineHeight: '1', outline: 'none', overflow: "hidden", resize: "none", // color: '#a1a1a1', color: `${isFocused ? '#000' : '#a1a1a1'}`, transition: 'border-color 0.2s ease-in-out',
+                                            }}
+                                        />
+                                    </label>
+                                    </>
+
+                                    : <></>}
+                        </>
+                    }
+
+
+                    {/* Node Input Field Value 2 */}
                     {category === 'LLMs' || category === 'Multi-Modal' ?
 
                         <label>
@@ -219,25 +368,7 @@ export const NewNode = ({ id, data }) => {
                                 onBlur={() => setIsFocused2(false)}
                                 rows={1}
                                 placeholder='Enter here'
-                                style={{
-                                    marginTop: '2px',
-                                    fontFamily: 'Inter',
-                                    backgroundColor: hover2 ? '#d9d9d9' : '#ededed',
-                                    border: `2px solid ${isFocused2 ? bgcolor : '#fff'}`,
-                                    borderRadius: '8px',
-                                    lineHeight: '1',
-                                    padding: '5px',
-                                    paddingLeft: '7px',
-                                    paddingRight: '7px',
-                                    minWidth: '150px',
-                                    height: '14px',
-                                    fontSize: '12px',
-                                    outline: 'none',
-                                    overflow: "hidden",
-                                    resize: "none",
-                                    // color: '#a1a1a1',
-                                    color: `${isFocused ? '#000' : '#a1a1a1'}`,
-                                    transition: 'border-color 0.2s ease-in-out',
+                                style={{ marginTop: '2px', fontFamily: 'Inter', backgroundColor: hover2 ? '#d9d9d9' : '#ededed', border: `2px solid ${isFocused2 ? bgcolor : '#fff'}`, borderRadius: '8px', lineHeight: '1', padding: '5px', paddingLeft: '7px', paddingRight: '7px', minWidth: '150px', height: '14px', fontSize: '12px', outline: 'none', overflow: "hidden", resize: "none", // color: '#a1a1a1', color: `${isFocused ? '#000' : '#a1a1a1'}`, transition: 'border-color 0.2s ease-in-out',
                                 }}
                             />
                         </label>
@@ -249,7 +380,7 @@ export const NewNode = ({ id, data }) => {
                     {isInput ?
 
                         <label>
-                            <span style={{ fontWeight: 700, color: '#363636', marginLeft: '2px', fontSize: '9px' }}>{data.name === 'Text' ? 'Text:' : category === 'LLMs' || category === 'Multi-Modal' ? 'Prompt:' : data.name=== 'Discord' ? 'Channel ID' : 'Field Name:'}</span>
+                            <span style={{ fontWeight: 700, color: '#363636', marginLeft: '2px', fontSize: '9px' }}>{data.name === 'Text' ? 'Text:' : category === 'LLMs' || category === 'Multi-Modal' ? 'Prompt:' : data.name === 'Discord' ? 'Channel ID' : 'Field Name:'}</span>
                             <textarea
                                 value={currName}
                                 ref={textareaRef}
@@ -260,7 +391,7 @@ export const NewNode = ({ id, data }) => {
                                 onFocus={() => setIsFocused(true)}
                                 onBlur={() => setIsFocused(false)}
                                 rows={1}
-                                placeholder= 'Enter here'
+                                placeholder='Enter here'
                                 style={{
                                     marginTop: '2px',
                                     fontFamily: 'Inter',
@@ -294,7 +425,7 @@ export const NewNode = ({ id, data }) => {
                                     backgroundColor: status ? '#6e7af5' : globalHover === 1 ? '#6e7af5' : '#5865F2',
                                     borderRadius: '10px',
                                     border: status ? `2px solid #6e7af5` : globalHover === 1 ? `2px solid #6e7af5` : `2px solid #5865F2`,
-                                    color:  '#fff',
+                                    color: '#fff',
                                     cursor: 'pointer',
                                     // fontFamily: 'Poppins',
                                     fontSize: '12px',
@@ -314,9 +445,9 @@ export const NewNode = ({ id, data }) => {
                                     alignItems: 'center',
                                     justifyContent: 'center'
                                 }}
-                                onMouseEnter={() => setGlobalHover(1)}
-                                onMouseLeave={() => setGlobalHover(0)}
-                                onClick={handleIntegrationClick}
+                                    onMouseEnter={() => setGlobalHover(1)}
+                                    onMouseLeave={() => setGlobalHover(0)}
+                                    onClick={handleIntegrationClick}
                                 // disabled={status}
                                 >
                                     {status ? 'Connected ✅' : 'Authenticate ❌'}

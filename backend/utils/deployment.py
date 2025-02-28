@@ -131,7 +131,7 @@ def handle_output(id):
     return output
 
 
-def handle_read_emails(id, max_results, labels, username):
+def handle_read_emails(id, fieldValue1, username):
     """Handle Gmail output node to send or draft an email."""
     creds_dict = asyncio.run(fetch_google_creds(username))
 
@@ -145,7 +145,10 @@ def handle_read_emails(id, max_results, labels, username):
     )
 
 
+
     try:
+        max_results = int(fieldValue1["1"])
+        labels = fieldValue1["2"]
         # Check if the credentials are expired and refresh them if necessary
         if creds.expired and creds.refresh_token:
             creds.refresh(Request())
@@ -207,7 +210,7 @@ def handle_read_emails(id, max_results, labels, username):
         print(f"An error occurred: {error}")
         return {"status": "error", "message": str(error)}
 
-def handle_gmail_output(id, username, fieldValue2):
+def handle_gmail_output(id, username, fieldValue1):
     """Handle Gmail output node to send or draft an email."""
     creds_dict = asyncio.run(fetch_google_creds(username))
     user_email = creds_dict["user_email"]
@@ -221,9 +224,7 @@ def handle_gmail_output(id, username, fieldValue2):
         scopes=creds_dict["scopes"],
     )
 
-    isDraft = fieldValue2["isDraft"]
-    creds_dict = fieldValue2["creds_dict"]
-    to = fieldValue2["to"]
+    # creds_dict = fieldValue2["creds_dict"]
     input_message = resMap[handleMap[str(id + '-left-handle-0')]]  # Get the AI-generated output
     # message = json.loads(message)
     try:
@@ -237,6 +238,8 @@ def handle_gmail_output(id, username, fieldValue2):
     sender = str(user_email)
 
     try:
+        isDraft = fieldValue1["isDraft"]
+        to = fieldValue1["1"]
         # Check if the credentials are expired and refresh them if necessary
         if creds.expired and creds.refresh_token:
             creds.refresh(Request())

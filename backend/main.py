@@ -185,6 +185,11 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), response: Resp
 def read_users_me(current_user: Epic_DB = Depends(get_current_user)):
     return current_user
 
+@app.get("/users/username")
+def read_users_me(current_user: Epic_DB = Depends(get_current_user)):
+    ans = current_user["username"]
+    return {"username" : ans}
+
 @app.post("/refresh", response_model=Token)
 def refresh(response: Response, refresh_token: str = Depends(oauth2_scheme)):
     """

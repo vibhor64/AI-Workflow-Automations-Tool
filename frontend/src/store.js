@@ -4,7 +4,7 @@ import { create } from "zustand";
 import { defaultNodes } from "./nodes/nodes"
 import { defaultEdges } from "./nodes/edges"
 import { templateNodes } from "./components/templateNodes";
-import { pushBook, deleteBook as removeBook, modifyBook as editBook } from "./logic/auth";
+import { pushBook, modifyBook as editBook } from "./logic/auth";
 // import { TemplateBooks } from "./components/templateBooks";
 
 import {
@@ -163,21 +163,11 @@ export const useStore = create((set, get) => ({
       edges: addEdge({ ...connection, type: 'smoothstep', animated: true, markerEnd: { type: MarkerType.Arrow, height: '20px', width: '40px', color: '#aaa' } }, get().edges),
     });
   },
-  // updateNodeField: (nodeId, fieldName, fieldValue) => {
-  //   set({
-  //     nodes: get().nodes.map((node) => {
-  //       if (node.id === nodeId) {
-  //         node.data = { ...node.data, [fieldName]: fieldValue };
-  //         console.log('lefthandles in store: ', node.data.leftHandles)
-  //       }
-  //       return node;
-  //     }),
-  //   });
-  // },
   updateNodeField: (nodeId, fieldName, fieldValue) => {
     set((state) => {
       const updatedNodes = state.nodes.map((node) => {
         if (node.id === nodeId) {
+          console.log("Updated node:", node)
           return {
             ...node,
             data: { ...node.data, [fieldName]: fieldValue },
