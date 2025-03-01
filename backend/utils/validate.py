@@ -1,3 +1,4 @@
+import re
 
 # Verification functions
 def checkDAG(nodes, edges):
@@ -64,3 +65,19 @@ def countIONodes(nodes):
             integration.append(node.name)
     
     return input, output, integration
+
+def validate_emails(email_list):
+    """
+    Validate a list of email addresses and return only the valid ones.
+    """
+    valid_emails = []
+    email_regex = r"[^@]+@[^@]+\.[^@]+"  # Simple regex for email validation
+
+    for email in email_list:
+        email = email.strip()  # Remove whitespace
+        if re.match(email_regex, email):
+            valid_emails.append(email)
+        else:
+            print(f"Invalid email address skipped: {email}")
+
+    return valid_emails

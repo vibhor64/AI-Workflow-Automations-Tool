@@ -167,7 +167,6 @@ export const useStore = create((set, get) => ({
     set((state) => {
       const updatedNodes = state.nodes.map((node) => {
         if (node.id === nodeId) {
-          console.log("Updated node:", node)
           return {
             ...node,
             data: { ...node.data, [fieldName]: fieldValue },

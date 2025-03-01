@@ -17,6 +17,7 @@ from utils.database import fetch_google_creds, save_google_creds
 import asyncio
 from email.message import EmailMessage
 from email import message_from_bytes
+from utils.validate import validate_emails
 
 # Load environment variables
 load_dotenv()
@@ -240,6 +241,15 @@ def handle_gmail_output(id, username, fieldValue1):
     try:
         isDraft = fieldValue1["isDraft"]
         to = fieldValue1["1"]
+
+        # Validate and format the 'to' field
+        if isinstance(to, list):  # If a list of email addresses is provided
+            to = ",".join(validate_emails(to))  # Join valid emails into a comma-separated string
+        elif isinstance(to, str):  # If a single string is provided
+            to = ",".join(validate_emails(to.split(",")))  # Split, validate, and rejoin
+        else:
+            return {"status": "error", "message": "'to' field must be a list or comma-separated string."}
+
         # Check if the credentials are expired and refresh them if necessary
         if creds.expired and creds.refresh_token:
             creds.refresh(Request())
@@ -251,17 +261,12 @@ def handle_gmail_output(id, username, fieldValue1):
         service = build("gmail", "v1", credentials=creds)
 
         message = EmailMessage()
-
         message.set_content(str(message_text))
-
         message["To"] = str(to)
         message["From"] = str(sender)
         message["Subject"] = str(subject)
 
-        # encoded message
         encoded_message = base64.urlsafe_b64encode(message.as_bytes()).decode()
-
-        # pylint: disable=E1101
 
         if isDraft:
             create_message = {"message": {"raw": encoded_message}}
@@ -271,7 +276,6 @@ def handle_gmail_output(id, username, fieldValue1):
                 .create(userId="me", body=create_message)
                 .execute()
             )
-            # print(f'Draft id: {draft["id"]}\nDraft message: {draft["message"]}')
             resMap[id] = draft
             return draft
         else:
@@ -282,8 +286,7 @@ def handle_gmail_output(id, username, fieldValue1):
                 .send(userId="me", body=create_message)
                 .execute()
             )
-            resMap[id] = "success"
-            # print(f'Message Id: {send_message["id"]}')
+            resMap[id] = message
 
 
     except HttpError as error:

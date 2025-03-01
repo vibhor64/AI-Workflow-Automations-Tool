@@ -76,7 +76,6 @@ const defaultNodes = [
             "rightHandles": 1,
             "leftHandles": 5,
             "bgcolor": "#c382ff",
-            "desc": "This is a LLM.",
             "img": "/static/media/openai.67924d2dae8e9d4cc849.png",
             "category": "Multi-Modal",
             "sources": [
@@ -149,7 +148,6 @@ const defaultNodes = [
             "rightHandles": 1,
             "leftHandles": 4,
             "bgcolor": "#c382ff",
-            "desc": "This is a LLM.",
             "img": "/static/media/openai.67924d2dae8e9d4cc849.png",
             "category": "Multi-Modal",
             "sources": [

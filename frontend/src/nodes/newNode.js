@@ -280,7 +280,8 @@ export const NewNode = ({ id, data }) => {
                                         transition: 'border-color 0.3s, box-shadow 0.3s',
                                     }}
                                     onFocus={(e) => (e.target.style.boxShadow = '0 0 5px rgba(128, 72, 199, 0.5)')}
-                                    onBlur={(e) => (e.target.style.boxShadow = 'rgba(0, 0, 0, 0.24) 0px 3px 8px;')}
+                                    // onBlur={(e) => (e.target.style.boxShadow = 'rgba(0, 0, 0, 0.24) 0px 3px 8px;')}
+                                    onBlur={(e) => (e.target.style.boxShadow = 'none')}
                                 >
                                     {Nodestate?.map((state, index) => (
                                         <option key={index} value={state} style={{ fontWeight: 600 }}>{state}</option>
@@ -292,7 +293,7 @@ export const NewNode = ({ id, data }) => {
                             {(nodeState === 'Create draft' || nodeState === 'Send email') ?
                                 <>
                                     <label style={{ marginTop: '10px' }}>
-                                        <span style={{ fontWeight: 700, color: '#363636', marginLeft: '2px', fontSize: '9px' }}>Receiver's Email Address</span>
+                                        <span style={{ fontWeight: 700, color: '#363636', marginLeft: '2px', fontSize: '9px' }}>Receiver's Email Addresses</span>
                                         <textarea
                                             value={integrationValue1}
                                             // ref={textareaRef}
@@ -303,7 +304,7 @@ export const NewNode = ({ id, data }) => {
                                             onFocus={() => setIsFocused(true)}
                                             onBlur={() => setIsFocused(false)}
                                             rows={1}
-                                            placeholder='you@example.com'
+                                            placeholder='Eg. m@gmail.com, a@b.com'
                                             style={{ marginTop: '2px', fontFamily: 'Inter', backgroundColor: hover ? '#d9d9d9' : '#ededed', border: `2px solid ${isFocused ? bgcolor : '#fff'}`, borderRadius: '8px', padding: '5px', paddingLeft: '7px', paddingRight: '7px', minWidth: '150px', height: '14px', fontSize: '12px', lineHeight: '1', outline: 'none', overflow: "hidden", resize: "none", // color: '#a1a1a1', color: `${isFocused ? '#000' : '#a1a1a1'}`, transition: 'border-color 0.2s ease-in-out',
                                             }}
                                         />
