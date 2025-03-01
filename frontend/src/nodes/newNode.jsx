@@ -369,7 +369,25 @@ export const NewNode = ({ id, data }) => {
                                 onBlur={() => setIsFocused2(false)}
                                 rows={1}
                                 placeholder='Enter here'
-                                style={{ marginTop: '2px', fontFamily: 'Inter', backgroundColor: hover2 ? '#d9d9d9' : '#ededed', border: `2px solid ${isFocused2 ? bgcolor : '#fff'}`, borderRadius: '8px', lineHeight: '1', padding: '5px', paddingLeft: '7px', paddingRight: '7px', minWidth: '150px', height: '14px', fontSize: '12px', outline: 'none', overflow: "hidden", resize: "none", // color: '#a1a1a1', color: `${isFocused ? '#000' : '#a1a1a1'}`, transition: 'border-color 0.2s ease-in-out',
+                                style={{
+                                    marginTop: '2px',
+                                    fontFamily: 'Inter',
+                                    backgroundColor: hover2 ? '#d9d9d9' : '#ededed',
+                                    border: `2px solid ${isFocused2 ? bgcolor : '#fff'}`,
+                                    borderRadius: '8px',
+                                    padding: '5px',
+                                    paddingLeft: '7px',
+                                    paddingRight: '7px',
+                                    minWidth: '150px',
+                                    height: '14px',
+                                    fontSize: '12px',
+                                    lineHeight: '1',
+                                    outline: 'none',
+                                    overflow: "hidden",
+                                    resize: "none",
+                                    // color: '#a1a1a1',
+                                    color: `${isFocused2 ? '#000' : '#a1a1a1'}`,
+                                    transition: 'border-color 0.2s ease-in-out',
                                 }}
                             />
                         </label>

@@ -8,22 +8,23 @@
     "@testing-library/user-event": "^13.5.0",
     "@xyflow/react": "^12.3.6",
     "axios": "^1.7.9",
+    "babel-plugin-react-compiler": "^19.0.0-beta-e1e972c-20250221",
     "query-string": "^9.1.1",
     "react": "^18.2.0",
+    "react-compiler-runtime": "^19.0.0-beta-e1e972c-20250221",
     "react-dom": "^18.2.0",
     "react-loading-indicators": "^1.0.0",
     "react-router-dom": "^7.1.5",
-    "react-scripts": "5.0.1",
     "react-transition-group": "^4.4.5",
     "reactflow": "^11.8.3",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
   },
+  "type": "module",
   "eslintConfig": {
     "extends": [
       "react-app",
@@ -43,6 +44,8 @@
     ]
   },
   "devDependencies": {
-    "tailwindcss": "^3.4.17"
+    "@vitejs/plugin-react": "^4.3.4",
+    "tailwindcss": "^3.4.17",
+    "vite": "^6.2.0"
   }
 }
