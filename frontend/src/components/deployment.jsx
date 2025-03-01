@@ -57,6 +57,7 @@ export const Deployment = (props) => {
         const formattedNodes = nodes.map(node => ({
             id: node.id,
             name: node.data.name,
+            username: node.data.username || '',
             rightHandles: node.data.rightHandles,
             leftHandles: node.data.leftHandles,
             sources: node.data.sources || [],
@@ -70,6 +71,7 @@ export const Deployment = (props) => {
                 Object.assign(node, {
                     id: node.id,
                     name: node.name,
+                    username: node.username || '',
                     rightHandles: node.rightHandles,
                     leftHandles: node.leftHandles,
                     sources: node.sources || [],
@@ -88,7 +90,7 @@ export const Deployment = (props) => {
             targetHandle: edge.targetHandle
         }));
 
-        // console.log(JSON.stringify({ formattedNodes }, null, 2));
+        console.log(JSON.stringify({ formattedNodes }, null, 2));
         setIsLoading(true);
 
         try {

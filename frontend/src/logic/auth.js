@@ -100,6 +100,7 @@ export async function getUsername() {
         }
 
         const data = await response.json();
+        // console.log(data.username);
         return data.username;
     } catch (error) {
         clearAccessToken();

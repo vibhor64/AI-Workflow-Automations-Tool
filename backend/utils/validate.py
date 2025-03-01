@@ -54,17 +54,21 @@ def isConnected(nodes, edges):
 def countIONodes(nodes):
     input = []
     output = []
-    integration = []
+    integration_input = []
+    integration_output = []
     
     for node in nodes:
         if node.name == "Input":
             input.append(node.fieldValue1)
         elif node.name == "Output":
             output.append(node.fieldValue1)
-        elif node.name == "Coming Soon":
-            integration.append(node.name)
+        elif node.name == "Gmail" or node.name == "Discord" or node.name == "Slack" or node.name == "GDocs" or node.name == "GSheets" or node.name == "Google Meet" or node.name == "GForms":
+            if node.rightHandles > 0:
+                integration_input.append(node.fieldValue1)
+            else:
+                integration_output.append(node.fieldValue1)
     
-    return input, output, integration
+    return input, output, integration_input, integration_output
 
 def validate_emails(email_list):
     """

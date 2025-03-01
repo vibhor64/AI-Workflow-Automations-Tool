@@ -19,6 +19,10 @@ import postgresql from '../assets/postgresql.png';
 import s3 from '../assets/s3.png';
 import meta from '../assets/meta.svg';
 import chat from '../assets/chat.png';
+import slack from '../assets/slack.png';
+import meet from '../assets/meet.png';
+import sheet from '../assets/sheets.png';
+import forms from '../assets/forms.png';
 
 const newNodesConfig = [
   {
@@ -306,22 +310,6 @@ const newNodesConfig = [
     },
   },
   {
-    id: 'newNode-1',
-    type: 'NodeNode',
-    data: {
-      name: 'Discord',
-      desc: 'Our discord bot will send messages to your requested channel',
-      isInput: true,
-      isType: false,
-      bgcolor: '#5865F2',
-      rightHandles: 0,
-      leftHandles: 1,
-      fieldValue1: 'Eg. 987654321567520820',
-      img: discord,
-      category: 'Integrations',
-    },
-  },
-  {
     id: 'newNode-6',
     type: 'NodeNode',
     data: {
@@ -340,17 +328,89 @@ const newNodesConfig = [
       category: 'Integrations',
     },
   },
+  
+  {
+    id: 'newNode-1',
+    type: 'NodeNode',
+    data: {
+      name: 'Discord',
+      desc: 'Our discord bot will send messages to your requested channel',
+      isInput: true,
+      isType: false,
+      bgcolor: '#5865F2',
+      rightHandles: 0,
+      leftHandles: 1,
+      fieldValue1: '',
+      sources: ['Message Content'],
+      img: discord,
+      category: 'Integrations',
+    },
+  },
+  {
+    id: 'newNode-4',
+    type: 'NodeNode',
+    data: {
+      name: 'GDocs',
+      desc: 'Read or create a document',
+      Nodestate: ['Read Doc', 'Create Doc'],
+      isInput: false,
+      isType: false,
+      bgcolor: '#636ff2',
+      rightHandles: 0,
+      leftHandles: 0,
+      img: gdocs,
+      category: 'Integrations',
+    },
+  },
   {
     id: 'newNode-2',
     type: 'NodeNode',
     data: {
-      name: 'Coming Soon',
+      name: 'GSheets',
+      desc: 'Reads data from a Google Sheet based on the provided identifier (title, link, or sheet ID).',
+      Nodestate: ['Read Sheet'],
       isInput: false,
       isType: false,
-      bgcolor: '#e76f51',
+      bgcolor: '#0F9D58',
       rightHandles: 1,
-      leftHandles: 1,
-      img: aws,
+      leftHandles: 0,
+      targets: ['Sheet Data'],
+      fieldValue1: '',
+      img: sheet,
+      category: 'Integrations',
+    },
+  },
+  {
+    id: 'newNode-3',
+    type: 'NodeNode',
+    data: {
+      name: 'Google Meet',
+      desc: 'Reads the transcript of a Google Meet session based on the provided title or filename. You need a Google Workspace Business Standard or higher subscription.',
+      isInput: true,
+      isType: false,
+      bgcolor: '#34d4ed',
+      rightHandles: 1,
+      leftHandles: 0,
+      targets: ['Transcript'],
+      fieldValue1: '',
+      img: meet,
+      category: 'Integrations',
+    },
+  },
+  {
+    id: 'newNode-5',
+    type: 'NodeNode',
+    data: {
+      name: 'GForms',
+      desc: 'Reads a Google Form based on the provided identifier (title, link, or form ID).',
+      isInput: true,
+      isType: false,
+      bgcolor: '#9434ed',
+      rightHandles: 1,
+      leftHandles: 0,
+      targets: ['Form Data'],
+      fieldValue1: '',
+      img: forms,
       category: 'Integrations',
     },
   },
@@ -369,7 +429,7 @@ const newNodesConfig = [
     },
   },
   {
-    id: 'newNode-5',
+    id: 'newNode-7',
     type: 'NodeNode',
     data: {
       name: 'Coming Soon',
@@ -378,7 +438,7 @@ const newNodesConfig = [
       bgcolor: '#e76f51',
       rightHandles: 0,
       leftHandles: 0,
-      img: gdrive,
+      img: slack,
       category: 'Integrations',
     },
   },
@@ -398,6 +458,34 @@ const newNodesConfig = [
   },
   {
     id: 'newNode-10',
+    type: 'NodeNode',
+    data: {
+      name: 'Coming Soon',
+      isInput: false,
+      isType: false,
+      bgcolor: '#e76f51',
+      rightHandles: 1,
+      leftHandles: 1,
+      img: aws,
+      category: 'Integrations',
+    },
+  },
+  {
+    id: 'newNode-13',
+    type: 'NodeNode',
+    data: {
+      name: 'Coming Soon',
+      isInput: false,
+      isType: false,
+      bgcolor: '#e76f51',
+      rightHandles: 0,
+      leftHandles: 0,
+      img: gdrive,
+      category: 'Integrations',
+    },
+  },
+  {
+    id: 'newNode-12',
     type: 'NodeNode',
     data: {
       name: 'Coming Soon',
@@ -425,7 +513,7 @@ const newNodesConfig = [
     },
   },
   {
-    id: 'newNode-3',
+    id: 'newNode-14',
     type: 'NodeNode',
     data: {
       name: 'Coming Soon',
@@ -435,20 +523,6 @@ const newNodesConfig = [
       rightHandles: 0,
       leftHandles: 0,
       img: azure,
-      category: 'Integrations',
-    },
-  },
-  {
-    id: 'newNode-4',
-    type: 'NodeNode',
-    data: {
-      name: 'GDocs',
-      isInput: false,
-      isType: false,
-      bgcolor: '#e76f51',
-      rightHandles: 0,
-      leftHandles: 0,
-      img: gdocs,
       category: 'Integrations',
     },
   },

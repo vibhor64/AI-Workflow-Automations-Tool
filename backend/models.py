@@ -1,15 +1,17 @@
 from pydantic import BaseModel
-from typing import List, Dict
+from typing import List, Dict, Any, Union
 
 # Pipeline models
 class Node(BaseModel):
     id: str
     name: str
+    username: str
     rightHandles: int
     leftHandles: int
     sources: List[str] = []
     targets: List[str] = []
-    fieldValue1: str = ''
+    # fieldValue1: str = ''
+    fieldValue1: Union[str, Dict[Any, Any]] = ''
     fieldValue2: str = ''
 
 class Edge(BaseModel):

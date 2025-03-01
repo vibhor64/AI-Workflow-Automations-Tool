@@ -83,9 +83,9 @@ export const useStore = create((set, get) => ({
       templateWorkflows: [...get().templateWorkflows, template],
     });
   },
-  createDeployment: (inp, out, integration) => {
+  createDeployment: (inp, out, integration_input, integration_output) => {
     set({
-      deploymentVariables: { "inputs": inp, "outputs": out, "integration": integration },
+      deploymentVariables: { "inputs": inp, "outputs": out, "integration_input": integration_input, "integration_output": integration_output },
     });
   },
   addBooks: (books) => {
@@ -166,6 +166,7 @@ export const useStore = create((set, get) => ({
   updateNodeField: (nodeId, fieldName, fieldValue) => {
     set((state) => {
       const updatedNodes = state.nodes.map((node) => {
+        // console.log(node);
         if (node.id === nodeId) {
           return {
             ...node,

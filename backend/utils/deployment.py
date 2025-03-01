@@ -23,7 +23,7 @@ from utils.validate import validate_emails
 load_dotenv()
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 genai.configure(api_key=GOOGLE_API_KEY)
-model = genai.GenerativeModel('gemini-1.5-flash')
+model = genai.GenerativeModel('gemini-2.0-flash')
 
 # Scopes required for Gmail API
 SCOPES = ['https://www.googleapis.com/auth/gmail.compose']
@@ -42,7 +42,7 @@ def execute_pipeline(pipeline):
     print(pipeline.formattedNodes)
 
     for node in pipeline.formattedNodes:
-        G.add_node(node.id, type=node.name, rightHandles = int(node.rightHandles), leftHandles = int(node.leftHandles), sources = node.sources, targets = node.targets, fieldValue1 = node.fieldValue1, fieldValue2 = node.fieldValue2)
+        G.add_node(node.id, type=node.name, rightHandles = int(node.rightHandles), leftHandles = int(node.leftHandles), sources = node.sources, targets = node.targets, fieldValue1 = node.fieldValue1, fieldValue2 = node.fieldValue2, username = node.username)
     for edge in pipeline.formattedEdges:
         G.add_edge(edge.source, edge.target, sourceHandle = edge.sourceHandle, targetHandle = edge.targetHandle)
         handleMap[edge.targetHandle] = edge.source
@@ -64,6 +64,27 @@ def execute_pipeline(pipeline):
             handle_llm(node_id, node_data["fieldValue1"], node_data["fieldValue2"], node_data["sources"])
         elif node_type == "GPT-4 Vision" or node_type == "Anthropic Vision" or node_type == "Gemini Vis":
             handle_vision_llm(node_id, node_data["fieldValue1"], node_data["fieldValue2"])
+        
+        elif node_type == "Discord":
+            res = send_discord_message(node_id, node_data["fieldValue1"])
+        elif node_type == "GForms":
+            res = handle_read_form(node_id, node_data["fieldValue1"], node_data["username"])
+        elif node_type == "GSheets":
+            res = handle_read_google_sheet(node_id, node_data["fieldValue1"], node_data["username"])
+        elif node_type == "Google Meet":
+            res = handle_read_google_meet(node_id, node_data["fieldValue1"], node_data["username"])
+
+        elif node_type == "Gmail":
+            if node_data["rightHandles"] > 0:
+                handle_read_emails(node_id, node_data["fieldValue1"], node_data["username"])
+            else:
+                handle_gmail_output(node_id, node_data["fieldValue1"], node_data["username"])
+                res = "Successfully sent email to " + node_data["fieldValue1"]["1"]
+        elif node_type == "GDocs":
+            if node_data["rightHandles"] > 0:
+                handle_read_doc(node_id, node_data["fieldValue1"], node_data["username"])
+            else:
+                res = handle_create_doc(node_id, node_data["username"])
 
         elif node_type == "Output":
             res = handle_output(node_id)
@@ -205,13 +226,14 @@ def handle_read_emails(id, fieldValue1, username):
                 "date": headers.get("Date", "Unknown"),
             })
         
+        print(email_data)
         resMap[id] = email_data
     
     except HttpError as error:
         print(f"An error occurred: {error}")
         return {"status": "error", "message": str(error)}
 
-def handle_gmail_output(id, username, fieldValue1):
+def handle_gmail_output(id, fieldValue1, username):
     """Handle Gmail output node to send or draft an email."""
     creds_dict = asyncio.run(fetch_google_creds(username))
     user_email = creds_dict["user_email"]
@@ -287,6 +309,7 @@ def handle_gmail_output(id, username, fieldValue1):
                 .execute()
             )
             resMap[id] = message
+            return message
 
 
     except HttpError as error:
@@ -295,7 +318,7 @@ def handle_gmail_output(id, username, fieldValue1):
         return {"status": "error", "message": f"An error occurred: {error}"}
 
 
-def handle_read_doc(id, username, doc_identifier):
+def handle_read_doc(id, fieldValue1, username):
     """Handle Gmail output node to send or draft an email."""
     creds_dict = asyncio.run(fetch_google_creds(username))
 
@@ -310,6 +333,7 @@ def handle_read_doc(id, username, doc_identifier):
 
 
     try:
+        doc_identifier = fieldValue1["1"]
         # Check if the credentials are expired and refresh them if necessary
         if creds.expired and creds.refresh_token:
             creds.refresh(Request())
@@ -414,14 +438,17 @@ def handle_create_doc(id, username):
         ]
         service.documents().batchUpdate(documentId=document_id, body={"requests": requests}).execute()
         
-        resMap[id] = "success"
-    
+        # Return the document link
+        document_url = f"https://docs.google.com/document/d/{document_id}"
+        resMap[id] = res = f"Successfully created document: <a href='{document_url}' target='_blank'>View Doc</a>"
+        return res
+     
     except HttpError as error:
         print(f"An error occurred: {error}")
         return {"status": "error", "message": f"An error occurred: {error}"}
 
 
-def handle_read_form(id, username, form_identifier):
+def handle_read_form(id, form_identifier, username):
     """Handle Gmail output node to send or draft an email."""
     creds_dict = asyncio.run(fetch_google_creds(username))
 
@@ -500,7 +527,7 @@ def handle_read_form(id, username, form_identifier):
         return {"status": "error", "message": f"An error occurred: {error}"}
 
 
-def handle_read_google_sheet(id, username, sheet_identifier, sheet_range):
+def handle_read_google_sheet(id, fieldValue1, username):
     """Handle Gmail output node to send or draft an email."""
     creds_dict = asyncio.run(fetch_google_creds(username))
 
@@ -514,6 +541,8 @@ def handle_read_google_sheet(id, username, sheet_identifier, sheet_range):
     )
 
     try:
+        sheet_identifier = fieldValue1["1"]
+        sheet_range = fieldValue1["2"]
         # Check if the credentials are expired and refresh them if necessary
         if creds.expired and creds.refresh_token:
             creds.refresh(Request())
@@ -559,8 +588,8 @@ def handle_read_google_sheet(id, username, sheet_identifier, sheet_range):
         return {"status": "error", "message": f"An error occurred: {error}"}
 
 
-def handle_read_google_meet(id, username, meet_title):
-    """Handle Gmail output node to send or draft an email."""
+def handle_read_google_meet(id, meet_title, username):
+    """Handle Gmail Meet input node to read meeting transcript"""
     creds_dict = asyncio.run(fetch_google_creds(username))
 
     creds = Credentials(
@@ -613,8 +642,9 @@ def handle_read_google_meet(id, username, meet_title):
         print(f"An error occurred: {error}")
         return {"status": "error", "message": f"An error occurred: {error}"}
 
-def send_discord_message(id, channel_id, message):
+def send_discord_message(id, channel_id):
     try:
+        message = str(resMap[handleMap[str(id + '-left-handle-0')]])
         # todo: validate channel_id
         async def _send_message():
             url = f"{DISCORD_API_URL}/channels/{channel_id}/messages"
@@ -635,8 +665,8 @@ def send_discord_message(id, channel_id, message):
         # Run the asynchronous function in an event loop
         result = asyncio.run(_send_message())
         # resMap[id] = message
-        resMap[id] = result
-        return {"message": result}
+        resMap[id] = message
+        return "Message sent successfully: " + message
     
     except httpx.HTTPStatusError as error:
         print(f"Failed to send message: {error}")

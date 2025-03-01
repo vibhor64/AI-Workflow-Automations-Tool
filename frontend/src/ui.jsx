@@ -116,6 +116,7 @@ export const PipelineUI = () => {
     const formattedNodes = nodes.map(node => ({
       id: node.id,
       name: node.data.name,
+      username : node.data.username || '',
       rightHandles: node.data.rightHandles,
       leftHandles: node.data.leftHandles,
       sources: node.data.sources || [],
@@ -145,18 +146,19 @@ export const PipelineUI = () => {
         formattedEdges
       });
       // console.log('Response:', response.data);
-      const { num_nodes, num_edges, is_dag, is_con, inp, out, integration, output } = response.data;
+      const { num_nodes, num_edges, is_dag, is_con, inp, out, integration_input, integration_output, output } = response.data;
+      // console.log("input:", inp, "output:", out, "integration_input:", integration_input, "integration_output:", integration_output);
       if (!is_dag)
         alert(` Invalid pipeline! \n A cycle has been detected!`);
       else if (!is_con)
         alert(` Invalid pipeline! \n Graph is not connected! \n`);
-      else if (inp.length < 1 || out.length < 1)
+      else if ((inp.length < 1 && integration_input.length < 1) || (out.length < 1 && integration_output.length < 1))
         alert(` Invalid pipeline! You need at least 1 input and 1 output node. \n Number of input nodes: ${inp.length} \n Number of output nodes: ${out.length} \n Make sure you have named all your input and output nodes`);
       else
         // alert(` Number of Nodes: ${num_nodes} \n Number of Edges: ${num_edges} \n No cycle found in graph! \n Output: ${output}`);
         alert(`Deployment Successful! Head over to Deployment tab to access your pipeline`);
-        console.log(inp, out, integration);
-        createDeployment(inp, out, integration);
+        // console.log(inp, out, integration_input, integration_output);
+        createDeployment(inp, out, integration_input, integration_output);
     } catch (error) {
       console.error('Error sending pipeline data:', error);
       alert('Error occurred while processing the pipeline!');

@@ -116,12 +116,12 @@ def parse_pipeline(pipeline: Pipeline):
     num_edges = len(pipeline.formattedEdges)
     is_dag = checkDAG(pipeline.formattedNodes, pipeline.formattedEdges)
     is_con = isConnected(pipeline.formattedNodes, pipeline.formattedEdges)
-    inp, out, integration = countIONodes(pipeline.formattedNodes)
+    inp, out, integration_input, integration_output = countIONodes(pipeline.formattedNodes)
     if not is_dag or not is_con:
         return {"num_nodes": num_nodes, "num_edges": num_edges, "is_dag": is_dag, "is_con": is_con, "inp": inp, "out": out, "output": 'NONE'}
     
     output = 'Deployed'
-    return {"num_nodes": num_nodes, "num_edges": num_edges, "is_dag": is_dag, "is_con": is_con, "inp": inp, "out": out,"integration" : integration, "output": output}
+    return {"num_nodes": num_nodes, "num_edges": num_edges, "is_dag": is_dag, "is_con": is_con, "inp": inp, "out": out,"integration_input": integration_input, "integration_output": integration_output, "output": output}
 
 @app.post('/deployment/parse')
 def parse_deployment(pipeline: Pipeline):

@@ -70,11 +70,9 @@ async def airtable_callback(request: Request, code: str = Query(None), state: st
         # Fetch the current user based on the frontend token
         current_user = await get_current_user(frontend_token)
         current_username = current_user["username"]
-        print(f"Username: {current_username}")
         code_verifier = request.session.get("code_verifier")
         if not code_verifier:
             raise HTTPException(status_code=400, detail="Code verifier missing")
-        print("uuuuuuuuuuuuuuuu")
 
         # Exchange the authorization code for an access token
         async with httpx.AsyncClient() as client:
