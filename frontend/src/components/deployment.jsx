@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { FourSquare } from "react-loading-indicators";
+import { FourSquare, TrophySpin } from "react-loading-indicators";
 import axios from 'axios';
 import './deploy.css'
 import AutomationWindow from "./automationWindow";
@@ -7,7 +7,7 @@ import queryString from "query-string";
 import { save_google_creds } from "../logic/auth";
 
 export const Deployment = (props) => {
-    const { inputs, outputs, integrations, nodes, edges } = props;
+    const { inputs, outputs, integration_input, nodes, edges } = props;
     const [inputValues, setInputValues] = useState({});
     const [hoverInput, setHoverInput] = useState(null);
     const [hoverButton, setHoverButton] = useState(false);
@@ -30,16 +30,6 @@ export const Deployment = (props) => {
             });
         }
     }, [pipelineOutput]);
-
-    // useEffect(() => {
-    //     try {
-    //         // Fetch required credentials
-            
-    //     } catch (error) {
-    //         console.error("Error processing query parameters:", error);
-    //     }
-    // }, []);
-// 
 
     const handleInputChange = (index, value) => {
         setInputValues(prev => ({ ...prev, [index]: value }));
@@ -118,11 +108,39 @@ export const Deployment = (props) => {
         setIsLoading(false);
     };
 
+    console.log("integration_input: ", integration_input);
+    console.log("integration_input: ", integration_input.type);
+    console.log("inputs: ", inputs);
+
     return (
         <div style={{ height: '89vh', width: '99vw', backgroundColor: '#fff', color: '#000', display: 'flex', borderRadius: '10px', overflowY: 'auto' }}>
 
+            {/* Input */}
             <div style={{ marginTop: '1.5vh', marginLeft: '5em', }}>
                 <h1 style={{ fontSize: '55px', fontWeight: 'bold', }}>Inputs</h1>
+                {/* {integration_input && integration_input.length > 0 && <>
+                
+                </>} */}
+                {integration_input?.map((value, index) => (
+                    <div key={index} style={{ display: 'flex', marginTop: '2em', flexDirection: 'column' }}>
+                        <span key={index} style={{ color: '#2D4ECF', fontWeight: 'bold', fontSize: '16px' }}>⚡{value} Integration</span>
+                        {/* <textarea style={
+                            focusInput === index ? { ...styles.textInput, border: '3px solid #2D4ECF', color: '#000' } :
+                                hoverInput === index ? { ...styles.textInput, backgroundColor: '#C6C6C6', border: '3px solid #C6C6C6' }
+                                    : styles.textInput}
+                            type="text"
+                            placeholder="Type here..."
+                            value={inputValues[value] || ''}
+                            onChange={(e) => handleInputChange(value, e.target.value)}
+                            onInput={autoResize}
+                            onMouseEnter={() => setHoverInput(index)}
+                            onMouseLeave={() => setHoverInput(null)}
+                            onFocus={() => setFocusInput(index)}
+                            onBlur={() => setFocusInput(null)}
+                            rows={1}
+                        /> */}
+                    </div>
+                ))}
                 {inputs?.map((value, index) => (
                     <div key={index} style={{ display: 'flex', marginTop: '2em', flexDirection: 'column' }}>
                         <span style={{ color: '#5B5B5B', fontWeight: 'bold', fontSize: '20px' }}>{value}:</span>
@@ -145,7 +163,7 @@ export const Deployment = (props) => {
                 ))}
                 <button style={hoverButton2 ? { ...styles.goButton, backgroundColor: '#385EF4' } : styles.goButton} onMouseEnter={() => setHoverButton2(true)} onMouseLeave={() => setHoverButton2(false)}
                     onClick={sendPipelineData}
-                >Run</button>
+                >Test</button>
                 <div style={{ height: '5vh', backgroundColor: 'transparent' }}></div>
             </div>
 
@@ -154,7 +172,7 @@ export const Deployment = (props) => {
                 <h1 style={{ fontSize: '55px', fontWeight: 'bold', }}>Output</h1>
                 {isLoading ? (
                     <div style={{ display: 'flex', marginLeft: '7em', marginTop: '3em', }}>
-                        <FourSquare color="#2D4ECF" size="medium" text="Thinking Hard..." textColor="" />
+                        <TrophySpin color={["#db8d39", "#7ddb39", "#782ad1", "#d12a7b"]} size="large" text="executing pipeline" textColor="" />
                     </div>
                 ) :
                     null}
@@ -162,7 +180,7 @@ export const Deployment = (props) => {
                     <div
                         className={`output-container ${isVisible ? 'fade-in' : ''}`}
                         dangerouslySetInnerHTML={{ __html: pipelineOutput }}
-                        style={{ marginTop: '1em', paddingBottom: '1em', transition: 'all 0.3s ease-out' }}
+                        style={{ marginTop: '1em', paddingBottom: '1em', transition: 'all 0.3s ease-out', fontWeight: '400' }}
                     ></div>
                 )}
             </div>
@@ -170,14 +188,14 @@ export const Deployment = (props) => {
             {/* Automation */}
             <div style={{ marginTop: '1.5vh', width: '30vw', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                 <h1 style={{ fontSize: '55px', fontWeight: 'bold', color: '#2D4ECF' }}>Automation</h1>
-                <span style={{ fontSize: '18px', fontWeight: 'bold', marginTop: '5vh', maxWidth: '90%', textAlign: 'center', color: '#5B5B5B' }}> {integrations && integrations.length > 0 ? 'Your current workflow can be completely automated using 3rd party integrations. Click the button below to never bother doing this task again by yourself!' : 'Your current workflow is already full automated. If you utilize third party integrations, you will need to perform this step.'}</span>
+                <span style={{ fontSize: '18px', fontWeight: 'bold', marginTop: '5vh', maxWidth: '90%', textAlign: 'center', color: '#5B5B5B' }}> {integration_input && integration_input.length > 0 ? 'Your current workflow can be completely automated using 3rd party integrations. Click the button below to never bother doing this task again by yourself!' : 'Your current workflow is already full automated. If you utilize third party integrations, you will need to perform this step.'}</span>
 
                 <button
-                    style={hoverButton && integrations && integrations.length > 0 ? { ...styles.autoButton, backgroundColor: '#2744B3' } : integrations && integrations.length > 0 ? styles.autoButton : { ...styles.autoButton, backgroundColor: '#8AA1FF' }}
+                    style={hoverButton && integration_input && integration_input.length > 0 ? { ...styles.autoButton, backgroundColor: '#2744B3' } : integration_input && integration_input.length > 0 ? styles.autoButton : { ...styles.autoButton, backgroundColor: '#8AA1FF' }}
                     onClick={() => setAutomationWindow(true)}
                     onMouseEnter={() => setHoverButton(true)}
                     onMouseLeave={() => setHoverButton(false)}>
-                    {integrations && integrations.length > 0 ? 'Automate this ✨' : 'Automated ✅'}
+                    {integration_input && integration_input.length > 0 ? 'Automate this ✨' : 'Automated ✅'}
                 </button>
             </div>
 
