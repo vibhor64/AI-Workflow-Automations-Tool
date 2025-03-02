@@ -99,11 +99,21 @@ export const Deployment = (props) => {
                 formattedEdges,
             });
             const { pipelineOutput } = response.data;
+            let displayOutput;
+
+            if (typeof pipelineOutput === 'object' && pipelineOutput !== null) {
+                // If pipelineOutput is an object, stringify it for display
+                displayOutput = JSON.stringify(pipelineOutput, null, 2);
+            } else {
+                // Otherwise, use it as-is (assuming it's already a string)
+                displayOutput = pipelineOutput;
+            }
             // alert(`Deployment Successful! \n${pipelineOutput}`);
-            setPipelineOutput(pipelineOutput);
+            setPipelineOutput(displayOutput);
         } catch (error) {
             console.error('Error sending pipeline data:', error);
-            alert('Error occurred while processing the pipeline!');
+            setPipelineOutput("An unexpected error occurred while processing the pipeline! This is likely because your pipeline inputs are invalid. If the problem persists, re-authenticate all your inbound integrations.");
+            // alert('Error occurred while processing the pipeline!');
         }
         setIsLoading(false);
     };

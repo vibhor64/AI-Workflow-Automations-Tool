@@ -18,6 +18,9 @@ import asyncio
 from email.message import EmailMessage
 from email import message_from_bytes
 from utils.validate import validate_emails
+from routers.airtable import fetch_airtable_creds, parse_airtable_url, update_airtable_creds, refresh_access_token, clean_airtable_data
+from routers.notion import fetch_notion_creds
+from urllib.parse import urlparse, parse_qs
 
 # Load environment variables
 load_dotenv()
@@ -39,7 +42,7 @@ def execute_pipeline(pipeline):
     handleMap = {} # handle id : source node id
     global resMap
     resMap = {} # node id : result
-    print(pipeline.formattedNodes)
+    print("*********************")
 
     for node in pipeline.formattedNodes:
         G.add_node(node.id, type=node.name, rightHandles = int(node.rightHandles), leftHandles = int(node.leftHandles), sources = node.sources, targets = node.targets, fieldValue1 = node.fieldValue1, fieldValue2 = node.fieldValue2, username = node.username)
@@ -73,6 +76,11 @@ def execute_pipeline(pipeline):
             res = handle_read_google_sheet(node_id, node_data["fieldValue1"], node_data["username"])
         elif node_type == "Google Meet":
             res = handle_read_google_meet(node_id, node_data["fieldValue1"], node_data["username"])
+        elif node_type == "Airtable":
+            resMap[id] = handle_read_airtable(node_id, node_data["fieldValue1"], node_data["username"])
+            print("res: ", resMap[id])
+        elif node_type == "Notion":
+            handle_read_notion(node_id, node_data["fieldValue1"], node_data["username"])
 
         elif node_type == "Gmail":
             if node_data["rightHandles"] > 0:
@@ -87,6 +95,7 @@ def execute_pipeline(pipeline):
                 res = handle_create_doc(node_id, node_data["username"])
 
         elif node_type == "Output":
+            print("********* Output Node Now************")
             res = handle_output(node_id)
         else:
             print("Unknown node type:", node_type)
@@ -671,3 +680,116 @@ def send_discord_message(id, channel_id):
     except httpx.HTTPStatusError as error:
         print(f"Failed to send message: {error}")
         return {"status": "error", "message": f"Failed to send message: {error}"}
+
+def handle_read_airtable(id, fieldValue1, username):
+    # todo: 
+    # 1. handle refresh token
+    # 2. better output format
+    try:
+        print(fieldValue1)
+        url = fieldValue1["1"]
+        columns = fieldValue1["2"]
+        if len(columns) <2:
+            columns = ""
+        # Parse the URL to extract base_id and table_name
+        base_id, table_name = parse_airtable_url(url)
+
+        # Fetch the access token for the current user
+        current_username = username
+        creds = asyncio.run(fetch_airtable_creds(current_username))
+        access_token = creds.get("access_token")
+        refresh_token = creds.get("refresh_token")
+
+        if not access_token or not refresh_token:
+            return {"status": "error", "message": "Access token or refresh token not found"}
+
+        async def _get_airtable_data(columns):
+            # access_token = await refresh_access_token(refresh_token)
+            # await update_airtable_creds(current_username, access_token)
+
+            # Prepare the Airtable API request
+            api_url = f"https://api.airtable.com/v0/{base_id}/{table_name}"
+            headers = {
+                "Authorization": f"Bearer {access_token}",
+                "Content-Type": "application/json",
+            }
+            columns = columns.replace(" ", "") 
+            carr = columns.split(",")
+            if len(carr) == 1:
+                return {"status": "error", "message": "Please enter at least two columns"}
+            if columns:
+                params = {
+                    "fields": columns.split(","),
+                }
+            else:
+                params = {
+                    "fields": [],
+                }
+
+            print("Params: ", params)
+            # Fetch data from Airtable
+            async with httpx.AsyncClient() as client:
+                response = await client.get(api_url, headers=headers, params=params)
+                response.raise_for_status()
+                data = response.json()
+            return data
+
+        data = asyncio.run(_get_airtable_data(columns))
+        
+        # data = clean_airtable_data(data)
+        print("data: ", data)
+        resMap[id] = data
+        return data
+
+    except ValueError as e:
+        return {"status": "error", "message": str(e)}
+    except httpx.HTTPStatusError as error:
+        return {"status": "error", "message": f"Failed to fetch data from Airtable: {error}"}
+    except Exception as e:
+        return {"status": "error", "message": f"An unexpected error occurred: {str(e)}"}
+
+def handle_read_notion(id, notion_url, username):
+    try:
+        if not notion_url.startswith("https://www.notion.so/"):
+            return {"status": "error", "message": "Invalid Notion URL format"}
+        
+        # Parse the URL to remove query parameters
+        parsed_url = urlparse(notion_url)
+        clean_url = parsed_url.path  # This removes query parameters and fragments
+        url_parts = clean_url.split("-")
+        if len(url_parts) < 2:
+            return {"status": "error", "message": "Invalid Notion URL format"}
+        
+        page_id = url_parts[-1]  # The last part of the URL is the page_id
+
+        # Fetch the user's Notion credentials from the database
+        notion_creds = asyncio.run(fetch_notion_creds(username))
+        if not notion_creds or "access_token" not in notion_creds:
+            return {"status": "error", "message": "Notion credentials not found for the user"}
+        
+        access_token = notion_creds["access_token"]
+        
+        async def _read_notion_page(page_id):
+            # Fetch the page content using the Notion API
+            async with httpx.AsyncClient() as client:
+                response = await client.get(
+                    f"https://api.notion.com/v1/pages/{page_id}",
+                    headers={
+                        "Authorization": f"Bearer {access_token}",
+                        "Notion-Version": "2022-06-28",  # Specify the Notion API version
+                        "Content-Type": "application/json"
+                    }
+                )
+                response.raise_for_status()  # Raise an exception for HTTP errors
+                page_data = response.json()
+
+            return page_data
+        
+        page_data = asyncio.run(_read_notion_page(page_id))
+        print(page_data)
+        resMap[id] = page_data
+    
+    except httpx.HTTPStatusError as error:
+        return {"status": "error", "message": f"Failed to fetch Notion page: {error}"}
+    except Exception as e:
+        return {"status": "error", "message": f"An unexpected error occurred: {str(e)}"}

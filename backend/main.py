@@ -25,7 +25,7 @@ from email import message_from_bytes
 from routers import discord, google as google_integrations, notion, airtable
 
 """
-- Notion integration
+- Modify frontend deployment for showing errors when run
 - Webhook endpoint for discord to test payload details
 - This endpoint will then trigger the required pipeline, after sending the input to it
 - Save pipeline endpoint that will save pipelines in a new Mongo collection (already done by deepseek)

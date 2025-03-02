@@ -14,8 +14,10 @@ import {
   getUsername,
   google_integration_authentication,
   notion_authentication,
+  validateAirtableCredentials,
   validateDiscordCredentials,
   validateGoogleCredentials,
+  validateNotionCredentials,
 } from "../logic/auth";
 
 const selector = (state) => ({
@@ -51,7 +53,7 @@ export const NewNode = ({ id, data }) => {
 
   const [status, setStatus] = useState(null);
   const [nodeState, setNodeState] = useState();
-  const initialName = name==="GForms" || name==="Google Meet" || name==="Discord" ? '' : fieldValue1 || `Node-${id.split("-")[1]}`;
+  const initialName = name==="GForms" || name==="Google Meet" || name==="Notion" || name==="Discord" ? '' : fieldValue1 || `Node-${id.split("-")[1]}`;
   const initialName2 = fieldValue2 || `Node-${id.split("-")[1]}`;
   const [currName, setCurrName] = useState(initialName);
   const [currName2, setCurrName2] = useState(initialName2);
@@ -201,9 +203,9 @@ export const NewNode = ({ id, data }) => {
           isValid = await validateDiscordCredentials();
         } else if (name === "Airtable") {
           // todo
-          airtable_authentication();
+          isValid = await validateAirtableCredentials();
         } else if (name === "Notion") {
-          notion_authentication();
+          isValid = await validateNotionCredentials();
         }
         // Cache the isValid value
         isValidCache.current = isValid;
@@ -356,7 +358,7 @@ export const NewNode = ({ id, data }) => {
           {/* Node State (read or write) for integrations and triggers only*/}
           {nodeState && (
             <>
-              {name != "GSheets" && (
+              {(name != "GSheets" && name != "Airtable") && (
                 <label
                   style={{
                     display: "flex",
@@ -432,8 +434,8 @@ export const NewNode = ({ id, data }) => {
                       onChange={(e) => handleIntegrationValue1(e.target.value)}
                       onMouseEnter={() => setHover(true)}
                       onMouseLeave={() => setHover(false)}
-                      onFocus={() => setIsFocused(true)}
-                      onBlur={() => setIsFocused(false)}
+                      onFocus={() => setIsFocused(3)}
+                      onBlur={() => setIsFocused(0)}
                       rows={1}
                       placeholder="Eg. m@gmail.com, a@b.com"
                       style={{
@@ -451,7 +453,7 @@ export const NewNode = ({ id, data }) => {
                         lineHeight: "1",
                         outline: "none",
                         overflow: "hidden",
-                        resize: "none", // color: '#a1a1a1', color: `${isFocused ? '#000' : '#a1a1a1'}`, transition: 'border-color 0.2s ease-in-out',
+                        resize: "none", color: '#a1a1a1', color: `${isFocused===3 ? '#000' : '#a1a1a1'}`, transition: 'border-color 0.2s ease-in-out',
                       }}
                     />
                   </label>
@@ -497,7 +499,7 @@ export const NewNode = ({ id, data }) => {
                         lineHeight: "1",
                         outline: "none",
                         overflow: "hidden",
-                        resize: "none", // color: '#a1a1a1', color: `${isFocused ? '#000' : '#a1a1a1'}`, transition: 'border-color 0.2s ease-in-out',
+                        resize: "none", color: '#a1a1a1', color: `${isFocused===1 ? '#000' : '#a1a1a1'}`, transition: 'border-color 0.2s ease-in-out',
                       }}
                     />
                   </label>
@@ -541,7 +543,7 @@ export const NewNode = ({ id, data }) => {
                         lineHeight: "1",
                         outline: "none",
                         overflow: "hidden",
-                        resize: "none", // color: '#a1a1a1', color: `${isFocused ? '#000' : '#a1a1a1'}`, transition: 'border-color 0.2s ease-in-out',
+                        resize: "none", color: '#a1a1a1', color: `${isFocused===2 ? '#000' : '#a1a1a1'}`, transition: 'border-color 0.2s ease-in-out',
                       }}
                     />
                   </label>
@@ -561,8 +563,8 @@ export const NewNode = ({ id, data }) => {
                     </span>
                     <textarea
                       value={integrationValue1}
-                      ref={textareaRef}
-                      onInput={handleInput}
+                      // ref={textareaRef}
+                      // onInput={handleInput}
                       onChange={(e) => handleIntegrationValue1(e.target.value)}
                       onMouseEnter={() => setHover(1)}
                       onMouseLeave={() => setHover(0)}
@@ -587,7 +589,7 @@ export const NewNode = ({ id, data }) => {
                         lineHeight: "1",
                         outline: "none",
                         overflow: "hidden",
-                        resize: "none", // color: '#a1a1a1', color: `${isFocused ? '#000' : '#a1a1a1'}`, transition: 'border-color 0.2s ease-in-out',
+                        resize: "none", color: '#a1a1a1', color: `${isFocused ? '#000' : '#a1a1a1'}`, transition: 'border-color 0.2s ease-in-out',
                       }}
                     />
                   </label>
@@ -645,7 +647,7 @@ export const NewNode = ({ id, data }) => {
                         lineHeight: "1",
                         outline: "none",
                         overflow: "hidden",
-                        resize: "none", // color: '#a1a1a1', color: `${isFocused ? '#000' : '#a1a1a1'}`, transition: 'border-color 0.2s ease-in-out',
+                        resize: "none", color: '#a1a1a1', color: `${isFocused ? '#000' : '#a1a1a1'}`, transition: 'border-color 0.2s ease-in-out',
                       }}
                     />
                   </label>
@@ -689,12 +691,105 @@ export const NewNode = ({ id, data }) => {
                         lineHeight: "1",
                         outline: "none",
                         overflow: "hidden",
-                        resize: "none", // color: '#a1a1a1', color: `${isFocused ? '#000' : '#a1a1a1'}`, transition: 'border-color 0.2s ease-in-out',
+                        resize: "none", color: '#a1a1a1', color: `${isFocused ? '#000' : '#a1a1a1'}`, transition: 'border-color 0.2s ease-in-out',
                       }}
                     />
                   </label>
                 </>
-              ) : (
+              ) : nodeState === "Read Airtable" ? (
+                <>
+                  <label style={{ marginTop: "10px" }}>
+                    <span
+                      style={{
+                        fontWeight: 700,
+                        color: "#363636",
+                        marginLeft: "2px",
+                        fontSize: "9px",
+                      }}
+                    >
+                      Table URL
+                    </span>
+                    <textarea
+                      value={integrationValue1}
+                    //   ref={textareaRef}
+                    //   onInput={handleInput}
+                      onChange={(e) => handleIntegrationValue1(e.target.value)}
+                      onMouseEnter={() => setHover(1)}
+                      onMouseLeave={() => setHover(0)}
+                      onFocus={() => setIsFocused(1)}
+                      onBlur={() => setIsFocused(0)}
+                      rows={1}
+                      placeholder="https://airtable.com/..."
+                      style={{
+                        marginTop: "2px",
+                        fontFamily: "Inter",
+                        backgroundColor: hover === 1 ? "#d9d9d9" : "#ededed",
+                        border: `2px solid ${
+                          isFocused === 1 ? bgcolor : "#fff"
+                        }`,
+                        borderRadius: "8px",
+                        padding: "5px",
+                        paddingLeft: "7px",
+                        paddingRight: "7px",
+                        minWidth: "150px",
+                        height: "14px",
+                        fontSize: "12px",
+                        lineHeight: "1",
+                        outline: "none",
+                        overflow: "hidden",
+                        resize: "none", color: '#a1a1a1', color: `${isFocused ? '#000' : '#a1a1a1'}`, transition: 'border-color 0.2s ease-in-out',
+                      }}
+                    />
+                  </label>
+
+                  <label style={{ marginTop: "10px" }}>
+                    <span
+                      style={{
+                        fontWeight: 700,
+                        color: "#363636",
+                        marginLeft: "2px",
+                        fontSize: "9px",
+                      }}
+                    >
+                      Columns
+                    </span>
+                    <textarea
+                      value={integrationValue2}
+                      ref={textareaRef}
+                      //   onInput={handleInput}
+                      onChange={(e) => handleIntegrationValue2(e.target.value)}
+                      onMouseEnter={() => setHover(2)}
+                      onMouseLeave={() => setHover(0)}
+                      onFocus={() => setIsFocused(2)}
+                      onBlur={() => setIsFocused(0)}
+                      rows={1}
+                      placeholder="Eg. AB, CD, EF"
+                      style={{
+                        marginTop: "2px",
+                        fontFamily: "Inter",
+                        backgroundColor: hover === 2 ? "#d9d9d9" : "#ededed",
+                        border: `2px solid ${
+                          isFocused === 2 ? bgcolor : "#fff"
+                        }`,
+                        borderRadius: "8px",
+                        padding: "5px",
+                        paddingLeft: "7px",
+                        paddingRight: "7px",
+                        minWidth: "150px",
+                        height: "14px",
+                        fontSize: "12px",
+                        lineHeight: "1",
+                        outline: "none",
+                        overflow: "hidden",
+                        resize: "none", color: '#a1a1a1', color: `${isFocused ? '#000' : '#a1a1a1'}`, transition: 'border-color 0.2s ease-in-out',
+                      }}
+                    />
+                  </label>
+                </>
+              ) 
+              
+              
+              : (
                 <></>
               )}
             </>
@@ -767,6 +862,8 @@ export const NewNode = ({ id, data }) => {
                   ? "Channel ID"
                   : name === "GForms" 
                   ? "Form Identifier:"
+                  : name === "Notion" 
+                  ? "Page URL:"
                   : name === "Google Meet"
                   ? "Meet Title:"
                   : "Field Name:"}
@@ -781,7 +878,7 @@ export const NewNode = ({ id, data }) => {
                 onFocus={() => setIsFocused(true)}
                 onBlur={() => setIsFocused(false)}
                 rows={1}
-                placeholder= {name === "GForms" ? "Form ID, link, or title" : name === "Discord" ? "Eg. 987654321098765432" : "Enter here"}
+                placeholder= {name === "GForms" ? "Form ID, link, or title" : name === "Discord" ? "Eg. 987654321098765432" : name ==="Notion" ? "https://www.notion.so/..." : "Enter here"}
                 style={{
                   marginTop: "2px",
                   fontFamily: "Inter",

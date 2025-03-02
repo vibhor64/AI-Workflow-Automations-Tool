@@ -642,7 +642,7 @@ export async function validateDiscordCredentials() {
         // Step 3: Handle the response
         if (!response.ok) {
             const errorData = await response.json(); // Parse error details from the server
-            throw new Error(errorData.detail || "Failed to validate Google credentials");
+            throw new Error(errorData.detail || "Failed to validate Discord credentials");
         }
 
         const data = await response.json();
@@ -651,7 +651,7 @@ export async function validateDiscordCredentials() {
         // Step 4: Return the validation result
         return data.valid; // Returns `true` if valid, otherwise `false`
     } catch (error) {
-        console.error("Error during Google credentials validation:", error.message);
+        console.error("Error during Discord credentials validation:", error.message);
         throw error; // Re-throw the error for higher-level handling
     }
 }
@@ -746,6 +746,80 @@ export async function read_airtable() {
         console.log("Response from reading emails: ", data);
     } catch (error) {
         console.error("Error during reading emails: ", error.message);
+        throw error; // Re-throw the error for higher-level handling
+    }
+}
+
+export async function validateAirtableCredentials() {
+    try {
+        // Step 1: Retrieve the access token
+        let token = getAccessToken();
+
+        if (!token) {
+            await refreshToken(); // Refresh the token if none exists
+            token = getAccessToken();
+        }
+
+        // Step 2: Call the backend endpoint to validate credentials
+        const response = await fetch(`${BASE_URL}/auth/airtable/validate?token=${token}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            credentials: "include", // Include cookies in requests
+        });
+
+        // Step 3: Handle the response
+        if (!response.ok) {
+            const errorData = await response.json(); // Parse error details from the server
+            throw new Error(errorData.detail || "Failed to validate Airtable credentials");
+        }
+
+        const data = await response.json();
+        console.log("Validation response:", data);
+
+        // Step 4: Return the validation result
+        return data.valid; // Returns `true` if valid, otherwise `false`
+    } catch (error) {
+        console.error("Error during Google credentials validation:", error.message);
+        throw error; // Re-throw the error for higher-level handling
+    }
+}
+
+export async function validateNotionCredentials() {
+    try {
+        // Step 1: Retrieve the access token
+        let token = getAccessToken();
+
+        if (!token) {
+            await refreshToken(); // Refresh the token if none exists
+            token = getAccessToken();
+        }
+
+        // Step 2: Call the backend endpoint to validate credentials
+        const response = await fetch(`${BASE_URL}/auth/notion/validate?token=${token}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            credentials: "include", // Include cookies in requests
+        });
+
+        // Step 3: Handle the response
+        if (!response.ok) {
+            const errorData = await response.json(); // Parse error details from the server
+            throw new Error(errorData.detail || "Failed to validate Notion credentials");
+        }
+
+        const data = await response.json();
+        console.log("Validation response:", data);
+
+        // Step 4: Return the validation result
+        return data.valid; // Returns `true` if valid, otherwise `false`
+    } catch (error) {
+        console.error("Error during Notion credentials validation:", error.message);
         throw error; // Re-throw the error for higher-level handling
     }
 }

@@ -105,3 +105,13 @@ async def read_notion_page(page_id: str, username: str = Depends(get_current_use
         raise HTTPException(status_code=400, detail=f"Failed to fetch Notion page: {error}")
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"An unexpected error occurred: {str(e)}")
+
+@router.post("/validate")
+async def validate(token: str = Query(..., description="Your token")):
+    current_user = await get_current_user(token)
+    current_username = current_user["username"]
+    user_data = await fetch_notion_creds(current_username)
+    if not user_data:
+        return {"valid": False, "message": "Notion credentials are invalid."}
+    
+    return {"valid": True, "message": "Notion credentials are valid."}

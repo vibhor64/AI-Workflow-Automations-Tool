@@ -23,6 +23,7 @@ import slack from '../assets/slack.png';
 import meet from '../assets/meet.png';
 import sheet from '../assets/sheets.png';
 import forms from '../assets/forms.png';
+import airtable from '../assets/airtable.png';
 
 const newNodesConfig = [
   {
@@ -363,24 +364,6 @@ const newNodesConfig = [
     },
   },
   {
-    id: 'newNode-2',
-    type: 'NodeNode',
-    data: {
-      name: 'GSheets',
-      desc: 'Reads data from a Google Sheet based on the provided identifier (title, link, or sheet ID).',
-      Nodestate: ['Read Sheet'],
-      isInput: false,
-      isType: false,
-      bgcolor: '#0F9D58',
-      rightHandles: 1,
-      leftHandles: 0,
-      targets: ['Sheet Data'],
-      fieldValue1: '',
-      img: sheet,
-      category: 'Integrations',
-    },
-  },
-  {
     id: 'newNode-3',
     type: 'NodeNode',
     data: {
@@ -398,6 +381,58 @@ const newNodesConfig = [
     },
   },
   {
+    id: 'newNode-8',
+    type: 'NodeNode',
+    data: {
+      name: 'Notion',
+      desc: "Reads data from a Notion Page.",
+      isInput: true,
+      isType: false,
+      bgcolor: '#1a1a1a',
+      rightHandles: 1,
+      leftHandles: 0,
+      img: notion,
+      targets: ['Page Data'],
+      category: 'Integrations',
+    },
+  },
+  {
+    id: 'newNode-2',
+    type: 'NodeNode',
+    data: {
+      name: 'Airtable',
+      desc: 'Read data from an Airtable table. You need to specify either none or at least two columns.',
+      Nodestate: ['Read Airtable'],
+      isInput: false,
+      isType: false,
+      bgcolor: '#ebdb34',
+      rightHandles: 1,
+      leftHandles: 0,
+      targets: ['Table'],
+      fieldValue1: '',
+      img: airtable,
+      category: 'Integrations',
+    },
+  },
+  {
+    id: 'newNode-21',
+    type: 'NodeNode',
+    data: {
+      name: 'GSheets',
+      desc: 'Reads data from a Google Sheet based on the provided identifier (title, link, or sheet ID).',
+      Nodestate: ['Read Sheet'],
+      isInput: false,
+      isType: false,
+      bgcolor: '#0F9D58',
+      rightHandles: 1,
+      leftHandles: 0,
+      targets: ['Sheet Data'],
+      fieldValue1: '',
+      img: sheet,
+      category: 'Integrations',
+    },
+  },
+  {
     id: 'newNode-5',
     type: 'NodeNode',
     data: {
@@ -411,20 +446,6 @@ const newNodesConfig = [
       targets: ['Form Data'],
       fieldValue1: '',
       img: forms,
-      category: 'Integrations',
-    },
-  },
-  {
-    id: 'newNode-8',
-    type: 'NodeNode',
-    data: {
-      name: 'Coming Soon',
-      isInput: false,
-      isType: false,
-      bgcolor: '#e76f51',
-      rightHandles: 0,
-      leftHandles: 0,
-      img: notion,
       category: 'Integrations',
     },
   },

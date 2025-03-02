@@ -108,54 +108,15 @@ async def airtable_callback(request: Request, code: str = Query(None), state: st
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"An unexpected error occurred: {str(e)}")
 
-# @router.get("/read_table")
-# async def read_airtable(
-#     base_id: str = Query(..., description="The Airtable base ID"),
-#     table_name: str = Query(..., description="The name of the table"),
-#     columns: str = Query(..., description="Comma-separated list of column names"),
-#     token: str = Depends(oauth2_scheme)
-# ):
-#     """
-#     Read specified columns from a selected table in Airtable using the stored access token.
-#     """
-#     try:
-#         # Fetch the access token for the current user
-#         current_user = await get_current_user(token)
-#         current_username = current_user["username"]
-#         creds = await fetch_airtable_creds(current_username)
-#         access_token = creds.get("access_token")
-#         if not access_token:
-#             raise HTTPException(status_code=401, detail="Access token not found")
-
-#         # Prepare the Airtable API request
-#         url = f"{AIRTABLE_API_URL}/{base_id}/{table_name}"
-#         headers = {
-#             "Authorization": f"Bearer {access_token}",
-#             "Content-Type": "application/json"
-#         }
-#         params = {
-#             "fields": columns.split(",")
-#         }
-
-#         # Fetch data from Airtable
-#         async with httpx.AsyncClient() as client:
-#             response = await client.get(url, headers=headers, params=params)
-#             response.raise_for_status()
-#             data = response.json()
-
-#         print("Fetched data from Airtable:", data)
-#         return {"data": data}
-
-#     except httpx.HTTPStatusError as error:
-#         raise HTTPException(status_code=400, detail=f"Failed to fetch data from Airtable: {error}")
-#     except Exception as e:
-#         raise HTTPException(status_code=500, detail=f"An unexpected error occurred: {str(e)}")
 @router.get("/read_table")
 async def read_airtable(
     url: str = Query(..., description="The full Airtable table URL"),
     columns: str = Query(None),
     token: str = Depends(oauth2_scheme),
 ):
+    """
+    Read data from an Airtable table.
+    """
     try:
         # Parse the URL to extract base_id and table_name
         base_id, table_name = parse_airtable_url(url)
@@ -229,6 +190,7 @@ def parse_airtable_url(url: str):
     Parse an Airtable URL to extract the base_id and table_name.
     """
     parsed_url = urlparse(url)
+    # parsed_url = parsed_url.path  # This removes query parameters and fragments
     path_parts = parsed_url.path.strip("/").split("/")
     
     if len(path_parts) < 2:
@@ -259,10 +221,8 @@ async def refresh_access_token(refresh_token: str):
 
             # Extract the new access token and calculate its expiration time
             access_token = token_data["access_token"]
-            expires_in = token_data["expires_in"]
-            expires_at = int(time.time()) + expires_in
 
-            return access_token, expires_at
+            return access_token
 
     except httpx.HTTPStatusError as error:
         print(f"Failed to refresh token: {error.response.text}")
@@ -271,6 +231,59 @@ async def refresh_access_token(refresh_token: str):
         print(f"Unexpected error during token refresh: {str(e)}")
         raise HTTPException(status_code=500, detail="An unexpected error occurred during token refresh")
 
+@router.post("/validate")
+async def validate(token: str = Query(..., description="Your token")):
+    current_user = await get_current_user(token)
+    current_username = current_user["username"]
+    user_data = await fetch_airtable_creds(current_username)
+    if not user_data:
+        return {"valid": False, "message": "Airtable credentials are invalid."}
+    
+    return {"valid": True, "message": "Airtable credentials are valid."}
+
+def clean_airtable_data(raw_data):
+    """
+    Cleans the Airtable API read_table output into a simplified format for data analysis.
+
+    Args:
+        raw_data (dict): The raw JSON data from the Airtable API.
+
+    Returns:
+        list: A list of dictionaries containing cleaned and meaningful data.
+    """
+    cleaned_data = []
+
+    # Iterate through each record in the 'records' field
+    for record in raw_data.get("records", []):
+        # Extract relevant fields
+        record_id = record.get("id")
+        created_time = record.get("createdTime")
+        fields = record.get("fields", {})
+
+        # Construct a cleaned dictionary with meaningful data
+        cleaned_record = {
+            "Record ID": record_id,
+            "Created Time": created_time,
+            "Feedback ID": fields.get("Feedback ID"),
+            "Comments": fields.get("Comments"),
+            "Rating": fields.get("Rating"),
+            "Feedback Date": fields.get("Feedback Date"),
+            "Product": fields.get("Product", []),
+            "Attachments": [
+                {
+                    "Filename": attachment.get("filename"),
+                    "URL": attachment.get("url"),
+                    "Type": attachment.get("type"),
+                    "Size (bytes)": attachment.get("size"),
+                }
+                for attachment in fields.get("Attachments", [])
+            ],
+        }
+
+        # Append the cleaned record to the result list
+        cleaned_data.append(cleaned_record)
+
+    return cleaned_data
 # Todo: 
 # 1. Add refresh token functinality
 # 2. Fix case where no. of columns specified is 1
