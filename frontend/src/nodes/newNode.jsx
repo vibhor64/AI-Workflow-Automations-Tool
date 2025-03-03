@@ -8,6 +8,7 @@ import { Handle, Position, useUpdateNodeInternals } from "reactflow";
 import { useStore } from "../store";
 import { shallow } from "zustand/shallow";
 import { useRef } from "react";
+import Close from "../assets/close.png";
 import {
   airtable_authentication,
   discord_authentication,
@@ -29,6 +30,7 @@ const selector = (state) => ({
   onEdgesChange: state.onEdgesChange,
   onConnect: state.onConnect,
   updateNodeField: state.updateNodeField,
+  deleteNode: state.deleteNode,
 });
 
 export const NewNode = ({ id, data }) => {
@@ -49,11 +51,17 @@ export const NewNode = ({ id, data }) => {
     fieldValue2,
   } = data;
 
-  const { updateNodeField } = useStore(selector, shallow);
+  const { updateNodeField, deleteNode } = useStore(selector, shallow);
 
   const [status, setStatus] = useState(null);
   const [nodeState, setNodeState] = useState();
-  const initialName = name==="GForms" || name==="Google Meet" || name==="Notion" || name==="Discord" ? '' : fieldValue1 || `Node-${id.split("-")[1]}`;
+  const initialName =
+    name === "GForms" ||
+    name === "Google Meet" ||
+    name === "Notion" ||
+    name === "Discord"
+      ? ""
+      : fieldValue1 || `Node-${id.split("-")[1]}`;
   const initialName2 = fieldValue2 || `Node-${id.split("-")[1]}`;
   const [currName, setCurrName] = useState(initialName);
   const [currName2, setCurrName2] = useState(initialName2);
@@ -63,6 +71,7 @@ export const NewNode = ({ id, data }) => {
   const [isFocused2, setIsFocused2] = useState(false);
   const [hover, setHover] = useState(false);
   const [hover2, setHover2] = useState(false);
+  const [hoverClose, setHoverClose] = useState(false);
   const [globalHover, setGlobalHover] = useState(0);
   const [initSources, setInitSources] = useState(sources);
   const [integrationValue1, setIntegrationValue1] = useState("");
@@ -77,13 +86,17 @@ export const NewNode = ({ id, data }) => {
     setCurrName(e.target.value);
     autoResize(e.target);
 
+    // console.log('LH: ', LH, 'vars: ', variableCount)
     const matches = getVariableCount(e.target.value.trim());
     const variableCount = matches.length;
-    // console.log('LH: ', LH, 'vars: ', variableCount)
     updateHandleCount(variableCount + LH);
     updateNodeField(id, "leftHandles", variableCount + LH);
+    if (!initSources) {
+      setInitSources([]);
+    }
     const updatedSources = initSources?.concat(matches);
     updateNodeField(id, "sources", updatedSources);
+
     if (name === "Input" || name === "File") {
       updateNodeField(id, "targets", [`${e.target.value}`]);
     }
@@ -139,6 +152,10 @@ export const NewNode = ({ id, data }) => {
     } else if (name === "Notion") {
       notion_authentication();
     }
+  };
+
+  const terminateMe = () => {
+    deleteNode(id);
   };
 
   const handleNodeStateChange = (s) => {
@@ -222,11 +239,37 @@ export const NewNode = ({ id, data }) => {
   const handleIntegrationValue1 = (s) => {
     setIntegrationValue1(s);
     updateNodeField(id, "fieldValue1", { ...fieldValue1, 1: s }); // to, max_results, doc indentifier
+
+    if (name != "Gmail" && name != "GSheets" && name != "Airtable") {
+      const matches = getVariableCount(s.trim());
+      const variableCount = matches.length;
+      updateHandleCount(variableCount + LH);
+      updateNodeField(id, "leftHandles", variableCount + LH);
+      if (!initSources) {
+        setInitSources([]);
+      }
+      const updatedSources = initSources?.concat(matches);
+      updateNodeField(id, "sources", updatedSources);
+    }
   };
 
   const handleIntegrationValue2 = (s) => {
     setIntegrationValue2(s);
     updateNodeField(id, "fieldValue1", { ...fieldValue1, 2: s }); // labels
+
+    const matches = getVariableCount(s.trim());
+    const variableCount = matches.length;
+    updateHandleCount(variableCount + LH);
+    updateNodeField(id, "leftHandles", variableCount + LH);
+    if (!initSources) {
+      setInitSources([]);
+    }
+    const updatedSources = initSources?.concat(matches);
+    if (name === "Gmail") {
+      updateNodeField(id, "sources", matches);
+    } else {
+      updateNodeField(id, "sources", updatedSources);
+    }
   };
 
   const textareaRef = useRef(null);
@@ -294,6 +337,35 @@ export const NewNode = ({ id, data }) => {
           />
         ))}
 
+        {/* Delete Node Button */}
+        <button
+          onMouseEnter={() => setHoverClose(1)}
+          onMouseLeave={() => setHoverClose(0)}
+          style={{
+            backgroundColor: hoverClose===1 ? "#e0e0e0" : "#fff",
+            height: "20px", // Fixed size to match the container
+            width: "20px", // Fixed size to match the container
+            position: "absolute",
+            top: "15px", // Center vertically
+            left: "92%", // Center horizontally
+            transform: "translate(-50%, -50%)", // Adjust for exact centering
+            border: "none",
+            cursor: "pointer",
+            alignItems: "center",
+            justifyContent: "center",
+            display: "flex",
+            borderRadius: "50%",
+            transition: "background-color 0.2s ease", // Only animate background color
+          }}
+          onClick={() => deleteNode(id)}
+        >
+          <img
+            src={Close}
+            alt="Close"
+            style={{ width: "13px", height: "13px" }}
+          />
+        </button>
+
         {/* Node Name */}
         <div
           style={{
@@ -358,7 +430,7 @@ export const NewNode = ({ id, data }) => {
           {/* Node State (read or write) for integrations and triggers only*/}
           {nodeState && (
             <>
-              {(name != "GSheets" && name != "Airtable") && (
+              {name != "GSheets" && name != "Airtable" && (
                 <label
                   style={{
                     display: "flex",
@@ -453,7 +525,10 @@ export const NewNode = ({ id, data }) => {
                         lineHeight: "1",
                         outline: "none",
                         overflow: "hidden",
-                        resize: "none", color: '#a1a1a1', color: `${isFocused===3 ? '#000' : '#a1a1a1'}`, transition: 'border-color 0.2s ease-in-out',
+                        resize: "none",
+                        color: "#a1a1a1",
+                        color: `${isFocused === 3 ? "#000" : "#a1a1a1"}`,
+                        transition: "border-color 0.2s ease-in-out",
                       }}
                     />
                   </label>
@@ -473,8 +548,8 @@ export const NewNode = ({ id, data }) => {
                     </span>
                     <textarea
                       value={integrationValue1}
-                    //   ref={textareaRef}
-                    //   onInput={handleInput}
+                      //   ref={textareaRef}
+                      //   onInput={handleInput}
                       onChange={(e) => handleIntegrationValue1(e.target.value)}
                       onMouseEnter={() => setHover(1)}
                       onMouseLeave={() => setHover(0)}
@@ -499,7 +574,10 @@ export const NewNode = ({ id, data }) => {
                         lineHeight: "1",
                         outline: "none",
                         overflow: "hidden",
-                        resize: "none", color: '#a1a1a1', color: `${isFocused===1 ? '#000' : '#a1a1a1'}`, transition: 'border-color 0.2s ease-in-out',
+                        resize: "none",
+                        color: "#a1a1a1",
+                        color: `${isFocused === 1 ? "#000" : "#a1a1a1"}`,
+                        transition: "border-color 0.2s ease-in-out",
                       }}
                     />
                   </label>
@@ -518,7 +596,7 @@ export const NewNode = ({ id, data }) => {
                     <textarea
                       value={integrationValue2}
                       ref={textareaRef}
-                    //   onInput={handleInput}
+                      //   onInput={handleInput}
                       onChange={(e) => handleIntegrationValue2(e.target.value)}
                       onMouseEnter={() => setHover(2)}
                       onMouseLeave={() => setHover(0)}
@@ -543,7 +621,10 @@ export const NewNode = ({ id, data }) => {
                         lineHeight: "1",
                         outline: "none",
                         overflow: "hidden",
-                        resize: "none", color: '#a1a1a1', color: `${isFocused===2 ? '#000' : '#a1a1a1'}`, transition: 'border-color 0.2s ease-in-out',
+                        resize: "none",
+                        color: "#a1a1a1",
+                        color: `${isFocused === 2 ? "#000" : "#a1a1a1"}`,
+                        transition: "border-color 0.2s ease-in-out",
                       }}
                     />
                   </label>
@@ -589,7 +670,10 @@ export const NewNode = ({ id, data }) => {
                         lineHeight: "1",
                         outline: "none",
                         overflow: "hidden",
-                        resize: "none", color: '#a1a1a1', color: `${isFocused ? '#000' : '#a1a1a1'}`, transition: 'border-color 0.2s ease-in-out',
+                        resize: "none",
+                        color: "#a1a1a1",
+                        color: `${isFocused ? "#000" : "#a1a1a1"}`,
+                        transition: "border-color 0.2s ease-in-out",
                       }}
                     />
                   </label>
@@ -621,8 +705,8 @@ export const NewNode = ({ id, data }) => {
                     </span>
                     <textarea
                       value={integrationValue1}
-                    //   ref={textareaRef}
-                    //   onInput={handleInput}
+                      //   ref={textareaRef}
+                      //   onInput={handleInput}
                       onChange={(e) => handleIntegrationValue1(e.target.value)}
                       onMouseEnter={() => setHover(1)}
                       onMouseLeave={() => setHover(0)}
@@ -647,7 +731,10 @@ export const NewNode = ({ id, data }) => {
                         lineHeight: "1",
                         outline: "none",
                         overflow: "hidden",
-                        resize: "none", color: '#a1a1a1', color: `${isFocused ? '#000' : '#a1a1a1'}`, transition: 'border-color 0.2s ease-in-out',
+                        resize: "none",
+                        color: "#a1a1a1",
+                        color: `${isFocused ? "#000" : "#a1a1a1"}`,
+                        transition: "border-color 0.2s ease-in-out",
                       }}
                     />
                   </label>
@@ -691,7 +778,10 @@ export const NewNode = ({ id, data }) => {
                         lineHeight: "1",
                         outline: "none",
                         overflow: "hidden",
-                        resize: "none", color: '#a1a1a1', color: `${isFocused ? '#000' : '#a1a1a1'}`, transition: 'border-color 0.2s ease-in-out',
+                        resize: "none",
+                        color: "#a1a1a1",
+                        color: `${isFocused ? "#000" : "#a1a1a1"}`,
+                        transition: "border-color 0.2s ease-in-out",
                       }}
                     />
                   </label>
@@ -711,8 +801,8 @@ export const NewNode = ({ id, data }) => {
                     </span>
                     <textarea
                       value={integrationValue1}
-                    //   ref={textareaRef}
-                    //   onInput={handleInput}
+                      //   ref={textareaRef}
+                      //   onInput={handleInput}
                       onChange={(e) => handleIntegrationValue1(e.target.value)}
                       onMouseEnter={() => setHover(1)}
                       onMouseLeave={() => setHover(0)}
@@ -737,7 +827,10 @@ export const NewNode = ({ id, data }) => {
                         lineHeight: "1",
                         outline: "none",
                         overflow: "hidden",
-                        resize: "none", color: '#a1a1a1', color: `${isFocused ? '#000' : '#a1a1a1'}`, transition: 'border-color 0.2s ease-in-out',
+                        resize: "none",
+                        color: "#a1a1a1",
+                        color: `${isFocused ? "#000" : "#a1a1a1"}`,
+                        transition: "border-color 0.2s ease-in-out",
                       }}
                     />
                   </label>
@@ -781,15 +874,15 @@ export const NewNode = ({ id, data }) => {
                         lineHeight: "1",
                         outline: "none",
                         overflow: "hidden",
-                        resize: "none", color: '#a1a1a1', color: `${isFocused ? '#000' : '#a1a1a1'}`, transition: 'border-color 0.2s ease-in-out',
+                        resize: "none",
+                        color: "#a1a1a1",
+                        color: `${isFocused ? "#000" : "#a1a1a1"}`,
+                        transition: "border-color 0.2s ease-in-out",
                       }}
                     />
                   </label>
                 </>
-              ) 
-              
-              
-              : (
+              ) : (
                 <></>
               )}
             </>
@@ -860,9 +953,9 @@ export const NewNode = ({ id, data }) => {
                   ? "Prompt:"
                   : data.name === "Discord"
                   ? "Channel ID"
-                  : name === "GForms" 
+                  : name === "GForms"
                   ? "Form Identifier:"
-                  : name === "Notion" 
+                  : name === "Notion"
                   ? "Page URL:"
                   : name === "Google Meet"
                   ? "Meet Title:"
@@ -878,7 +971,15 @@ export const NewNode = ({ id, data }) => {
                 onFocus={() => setIsFocused(true)}
                 onBlur={() => setIsFocused(false)}
                 rows={1}
-                placeholder= {name === "GForms" ? "Form ID, link, or title" : name === "Discord" ? "Eg. 987654321098765432" : name ==="Notion" ? "https://www.notion.so/..." : "Enter here"}
+                placeholder={
+                  name === "GForms"
+                    ? "Form ID, link, or title"
+                    : name === "Discord"
+                    ? "Eg. 987654321098765432"
+                    : name === "Notion"
+                    ? "https://www.notion.so/..."
+                    : "Enter here"
+                }
                 style={{
                   marginTop: "2px",
                   fontFamily: "Inter",

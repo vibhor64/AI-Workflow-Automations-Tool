@@ -179,4 +179,26 @@ export const useStore = create((set, get) => ({
       return { nodes: updatedNodes };
     });
   },
+  deleteNode: (nodeId) => {
+    set((state) => {
+      // Remove the node with the given ID
+      const updatedNodes = state.nodes.filter((node) => node.id !== nodeId);
+
+      // Remove any edges connected to the deleted node
+      const updatedEdges = state.edges.filter(
+        (edge) => edge.source !== nodeId && edge.target !== nodeId
+      );
+
+      // Notify ReactFlow of the changes
+      get().onNodesChange([{ id: nodeId, type: 'remove' }]);
+      get().onEdgesChange(
+        updatedEdges.map((edge) => ({ id: edge.id, type: 'update' }))
+      );
+
+      return {
+        nodes: updatedNodes,
+        edges: updatedEdges,
+      };
+    });
+  },
 }));

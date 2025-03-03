@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { FourSquare, TrophySpin } from "react-loading-indicators";
+import { FourSquare, TrophySpin, Mosaic } from "react-loading-indicators";
 import axios from 'axios';
 import './deploy.css'
 import AutomationWindow from "./automationWindow";
@@ -30,6 +30,29 @@ export const Deployment = (props) => {
             });
         }
     }, [pipelineOutput]);
+
+    const texts = [
+        "Now how should I handle this? 🤔",
+        "This will require some Quantum Mechanics",
+        "Damn, that's a hard one.",
+        "Ah, another one of these",
+        "Just a minecraft minute...",
+        "I love executing these type of pipelines!",
+        "I hope you're ready for this...",
+        "Even Einstein couldn't execute this pipeline.",
+        "Time runs slower when I am executing these pipelines.",
+        "This is a hard one, but I'll give it a try...",
+        "Aha, another one of these.",
+        "You gotta give me harder ones next time.",
+        "Resolving edges, one at a time",
+        "These variables are confusing me...",
+        "Whoever made this pipeline is a pure genius.",
+        "My AI pet hasn't been eating enough GPUs recently, it might need a break.",
+        "I will always be running pipelines for you.",
+        "Resolving these edges will take 50 million fortnite years.",
+      ];
+      
+      const randomText = texts[Math.floor(Math.random() * texts.length)];
 
     const handleInputChange = (index, value) => {
         setInputValues(prev => ({ ...prev, [index]: value }));
@@ -84,7 +107,8 @@ export const Deployment = (props) => {
         setIsLoading(true);
 
         try {
-            const response = await axios.post('http://127.0.0.1:8000/deployment/parse', {
+            const response = await axios.post('http://127.0.0.1:8000/automation/parse?audience=anime+viewers&challenges=lack+of+anime+goodies&solutions=anime+goodies&context=very+cheap', {
+            // const response = await axios.post('http://127.0.0.1:8000/automation/parse?hello=whaterverrrr', {
                 formattedNodes,
                 formattedEdges,
             });
@@ -171,8 +195,9 @@ export const Deployment = (props) => {
             <div style={{ marginTop: '1.5vh', marginLeft: '10em', width: '33vw' }}>
                 <h1 style={{ fontSize: '55px', fontWeight: 'bold', }}>Output</h1>
                 {isLoading ? (
-                    <div style={{ display: 'flex', marginLeft: '7em', marginTop: '3em', }}>
-                        <TrophySpin color={["#db8d39", "#7ddb39", "#782ad1", "#d12a7b"]} size="large" text="executing pipeline" textColor="" />
+                    <div style={{ display: 'flex', marginLeft: '0em', marginTop: '3em', alignItems: 'center', justifyContent: 'center', textAlign: 'center', flexDirection: 'column' }}>
+                        <Mosaic color={["#db8d39", "#7ddb39", "#782ad1", "#d12a7b"]} size="medium" text="" textColor="#2D4ECF" />
+                        <div style={{ fontSize: '13px', fontWeight: '700', marginTop: '1em', maxWidth: '50%', textAlign: 'center', color: '#5B5B5B' }}>{randomText}</div> 
                     </div>
                 ) :
                     null}

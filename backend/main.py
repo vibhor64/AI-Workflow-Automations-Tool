@@ -132,6 +132,43 @@ def parse_deployment(pipeline: Pipeline):
     pipelineOutput = execute_pipeline(pipeline)
     return {"pipelineOutput": pipelineOutput}
 
+@app.post('/automation/parse')
+async def parse_deployment(pipeline: Pipeline, request: Request):
+    # Extract query parameters from the request
+    query_params = dict(request.query_params)
+    
+    # Filter nodes where name == "Input"
+    input_nodes = [node for node in pipeline.formattedNodes if node.name == "Input"]
+    
+    # Validate that the number of query parameters matches the number of input nodes
+    if len(query_params) != len(input_nodes):
+        raise HTTPException(
+            status_code=400,
+            detail="Mismatch between the number of query parameters and input nodes. You may leave some query parameters blank."
+        )
+    
+    # Replace fieldValue1 in input nodes with corresponding query parameter values
+    query_param_keys = set(query_params.keys())
+    for node in input_nodes:
+        if node.fieldValue1 in query_param_keys:
+            node.fieldValue1 = query_params[node.fieldValue1]
+            # query_param_keys.remove(node.fieldValue1)
+        else:
+            raise HTTPException(
+                status_code=400,
+                detail=f"No query parameter found for input node: {node.fieldValue1}"
+            )
+    
+    # Check if the pipeline is a DAG and fully connected
+    is_dag = checkDAG(pipeline.formattedNodes, pipeline.formattedEdges)
+    is_con = isConnected(pipeline.formattedNodes, pipeline.formattedEdges)
+    if not is_dag or not is_con:
+        return {"pipelineOutput": "<h1>Invalid Pipeline!</h1> <p>Your pipeline is either not fully connected, or contains a cycle.</p>"}
+    
+    # Execute the pipeline
+    pipelineOutput = execute_pipeline(pipeline)
+    return {"pipelineOutput": pipelineOutput}
+
 # Authorization
 @app.post("/register", response_model=Token)
 async def register(user: UserCreate, response: Response):
