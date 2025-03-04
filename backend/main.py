@@ -23,6 +23,7 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from email import message_from_bytes
 from routers import discord, google as google_integrations, notion, airtable
+from utils.pipeline_db import save_pipeline, get_pipeline, delete_pipeline, get_all_pipelines
 
 """
 - Modify frontend deployment for showing errors when run
@@ -90,25 +91,6 @@ oauth.register(
     # }
 )
 
-# Dependency to get the current user
-# async def get_current_user(token: str = Depends(oauth2_scheme)):
-#     credentials_exception = HTTPException(
-#         status_code=status.HTTP_401_UNAUTHORIZED,
-#         detail="Could not validate credentials",
-#         headers={"WWW-Authenticate": "Bearer"},
-#     )
-#     try:
-#         payload = auth.jwt.decode(token, auth.SECRET_KEY, algorithms=[auth.ALGORITHM])
-#         username: str = payload.get("sub")
-#         if username is None:
-#             raise credentials_exception
-#     except auth.JWTError:
-#         raise credentials_exception
-#     user = await find_user(username)
-#     if not user:
-#         raise credentials_exception
-#     return user
-
 @app.post('/pipelines/parse')
 def parse_pipeline(pipeline: Pipeline):
     # print(pipeline)
@@ -132,8 +114,8 @@ def parse_deployment(pipeline: Pipeline):
     pipelineOutput = execute_pipeline(pipeline)
     return {"pipelineOutput": pipelineOutput}
 
-@app.post('/automation/parse')
-async def parse_deployment(pipeline: Pipeline, request: Request):
+@app.post('/automation/execute')
+async def execute_automation(pipeline: Pipeline, request: Request):
     # Extract query parameters from the request
     query_params = dict(request.query_params)
     
@@ -163,11 +145,73 @@ async def parse_deployment(pipeline: Pipeline, request: Request):
     is_dag = checkDAG(pipeline.formattedNodes, pipeline.formattedEdges)
     is_con = isConnected(pipeline.formattedNodes, pipeline.formattedEdges)
     if not is_dag or not is_con:
-        return {"pipelineOutput": "<h1>Invalid Pipeline!</h1> <p>Your pipeline is either not fully connected, or contains a cycle.</p>"}
+        raise HTTPException( status_code=400, detail="Invalid Pipeline! Your pipeline is either not fully connected, or contains a cycle.")
     
     # Execute the pipeline
     pipelineOutput = execute_pipeline(pipeline)
     return {"pipelineOutput": pipelineOutput}
+
+
+@app.post('/automate')
+def parse_automation(pipeline: Pipeline, name: str, current_user = Depends(get_current_user)):
+    """
+    Deploy the pipeline for automation
+    The pipeline will have input field values as name of the inputs so user can specify the values as query params while calling the pipeline
+
+    Inputs:
+        pipeline: to be deployed
+        access token: for username
+
+    Returns:
+        API endpoint for the pipeline
+
+    """
+    is_dag = checkDAG(pipeline.formattedNodes, pipeline.formattedEdges)
+    is_con = isConnected(pipeline.formattedNodes, pipeline.formattedEdges)
+    if not is_dag or not is_con:
+        raise HTTPException(status_code=400, detail="Invalid Pipeline! Your pipeline is either not fully connected, or contains a cycle.")
+    
+    res = save_pipeline(pipeline, name, username=current_user["username"])
+    if res["status"] != "success":
+        raise HTTPException(status_code=500, detail=res["message"])
+    pipeline_id = res["pipeline_id"]
+
+    # Return the pipeline ID and execution instructions
+    return {
+        "pipeline_id": pipeline_id,
+        "message": "Pipeline created successfully",
+        "execution_endpoint": f"/pipelines/execute/{pipeline_id}"
+    }
+
+@app.post('/pipelines/{pipeline_id}')
+async def execute_pipeline_endpoint(pipeline_id: str, request: Request):
+    # Fetch the pipeline configuration from MongoDB
+    pipeline_result = get_pipeline(pipeline_id)
+    if pipeline_result["status"] != "success":
+        raise HTTPException(status_code=404, detail=pipeline_result["message"])
+    if not pipeline_result["pipeline"]:
+        raise HTTPException(status_code=404, detail="Pipeline does not exist")
+
+    # Execute the pipeline's code
+    try:
+        print(f"Executing pipeline: {pipeline_id}")
+        pipeline_output = execute_automation(pipeline_result["pipeline"], request)
+        print(f"Pipeline output: {pipeline_output}")
+        return {"message": f"Pipeline {pipeline_id} executed successfully", "result": pipeline_output}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error executing pipeline: {str(e)}")
+
+@app.get('/pipelines/fetch_all')
+async def fetch_pipelines(current_user = Depends(get_current_user)):
+    return get_all_pipelines(current_user["username"])
+
+@app.post('/pipelines/fetch_one')
+async def fetch_one_pipeline(pipeline_id: str):
+    return get_pipeline(pipeline_id)["pipeline"]
+
+@app.post('/pipelines/delete_one')
+async def delete_pipe(pipeline_id: str, current_user = Depends(get_current_user)):
+    return delete_pipeline(pipeline_id, current_user["username"])
 
 # Authorization
 @app.post("/register", response_model=Token)

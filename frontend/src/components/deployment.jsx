@@ -107,7 +107,7 @@ export const Deployment = (props) => {
         setIsLoading(true);
 
         try {
-            const response = await axios.post('http://127.0.0.1:8000/automation/parse?audience=anime+viewers&challenges=lack+of+anime+goodies&solutions=anime+goodies&context=very+cheap', {
+            const response = await axios.post('http://127.0.0.1:8000/deployment/parse', {
             // const response = await axios.post('http://127.0.0.1:8000/automation/parse?hello=whaterverrrr', {
                 formattedNodes,
                 formattedEdges,

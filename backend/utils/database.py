@@ -68,8 +68,7 @@ async def add_book(username: str, book_data: dict):
     try:
         result = collection_name.update_one(
             {"_id": username},  
-            {"$push": {"books": book_data}},  
-            upsert=True  # If user doesn't exist, create one with this field
+            {"$push": {"books": book_data}},
         )
         if result.matched_count == 0:
             return {"status": "error", "message": "User not found"}
