@@ -204,8 +204,6 @@ export const NewNode = ({ id, data }) => {
       if (Nodestate) {
         handleNodeStateChange(Nodestate[0]);
       }
-      const curr_username = await getUsername();
-      updateNodeField(id, "username", curr_username);
 
       try {
         let isValid = false;
@@ -229,6 +227,11 @@ export const NewNode = ({ id, data }) => {
         setStatus(isValid ? true : false);
       } catch (error) {
         setStatus(false);
+      }
+
+      if (category==="Integrations"){
+        const curr_username = await getUsername();
+        updateNodeField(id, "username", curr_username);
       }
     }
 

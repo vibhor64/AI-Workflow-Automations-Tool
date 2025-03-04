@@ -1,4 +1,4 @@
-const BASE_URL = "http://127.0.0.1:8000"; // Replace with your FastAPI backend URL
+const BASE_URL = "http://127.0.0.1:8000";
 
 // Utility to set/get access token
 export function setAccessToken(token) {

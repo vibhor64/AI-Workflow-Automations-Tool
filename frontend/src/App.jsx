@@ -1,10 +1,11 @@
+import { AutomationsScreen } from './components/automationsScreen';
 import { DatabaseScreen } from './components/databaseScreen';
 import { DepScreen } from './components/depScreen';
 import { LoginWindow } from './loginWindow';
 import { PipelineToolbar } from './toolbar';
 import { PipelineUI } from './ui';
 import { useState } from 'react';
-import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
 
 function App() {
 
@@ -17,6 +18,9 @@ function App() {
     navigate(`/${page}`);
   }
 
+  const location = useLocation();
+  const pathAfterBaseURL = location.pathname.split('/').filter(Boolean).join('/');
+
   return (
     <div style={{
       padding: '7px', backgroundColor: '#6B87E3', overflow: 'hidden', height: '100vh', width: '100vw', position: 'fixed', // Fix the parent to the viewport
@@ -24,7 +28,7 @@ function App() {
     }}>
       {/* Category Selector */}
       <div style={{ display: 'flex', gap: '10px', marginBottom: '10px', marginLeft: '15px' }}>
-        <select defaultValue={'pipelines'} onChange={(e) => changePage(e.target.value)}
+        <select defaultValue={pathAfterBaseURL} onChange={(e) => changePage(e.target.value)}
           onMouseEnter={() => setHover(true)}
           onMouseLeave={() => setHover(false)}
           style={{
@@ -50,30 +54,11 @@ function App() {
           <option value="deployment"
             style={{ fontWeight: 600, color: '#000' }}
           >Deployment</option>
+          <option value="automations"
+            style={{ fontWeight: 600, color: '#000' }}
+          >Automations</option>
         </select>
       </div>
-
-      {/* {selectedCategory === 'Login' &&
-        <>
-          <LoginWindow setSelectedCategory={setSelectedCategory} />
-        </>
-      }
-      {selectedCategory === 'Pipelines' &&
-        <>
-          <PipelineToolbar />
-          <PipelineUI setSelectedCategory={setSelectedCategory}/>
-        </>
-      }
-      {selectedCategory === 'Deployment' &&
-        <>
-          <DepScreen />
-        </>
-      }
-      {selectedCategory === 'Knowledge' &&
-        <>
-          <DatabaseScreen />
-        </>
-      } */}
       
         
         <Routes>
@@ -87,6 +72,7 @@ function App() {
           } />
           <Route path="/deployment" element={<DepScreen />} />
           <Route path="/knowledge" element={<DatabaseScreen />} />
+          <Route path="/automations" element={<AutomationsScreen />} />
         </Routes>
       {/* </Router> */}
     </div>

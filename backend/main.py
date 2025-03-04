@@ -153,7 +153,7 @@ async def execute_automation(pipeline: Pipeline, request: Request):
 
 
 @app.post('/automate')
-def parse_automation(pipeline: Pipeline, name: str, current_user = Depends(get_current_user)):
+async def parse_automation(pipeline: Pipeline, name: str, current_user = Depends(get_current_user)):
     """
     Deploy the pipeline for automation
     The pipeline will have input field values as name of the inputs so user can specify the values as query params while calling the pipeline
@@ -171,7 +171,7 @@ def parse_automation(pipeline: Pipeline, name: str, current_user = Depends(get_c
     if not is_dag or not is_con:
         raise HTTPException(status_code=400, detail="Invalid Pipeline! Your pipeline is either not fully connected, or contains a cycle.")
     
-    res = save_pipeline(pipeline, name, username=current_user["username"])
+    res = await save_pipeline(pipeline, name, username=current_user["username"])
     if res["status"] != "success":
         raise HTTPException(status_code=500, detail=res["message"])
     pipeline_id = res["pipeline_id"]
@@ -180,13 +180,12 @@ def parse_automation(pipeline: Pipeline, name: str, current_user = Depends(get_c
     return {
         "pipeline_id": pipeline_id,
         "message": "Pipeline created successfully",
-        "execution_endpoint": f"/pipelines/execute/{pipeline_id}"
     }
 
 @app.post('/pipelines/{pipeline_id}')
 async def execute_pipeline_endpoint(pipeline_id: str, request: Request):
     # Fetch the pipeline configuration from MongoDB
-    pipeline_result = get_pipeline(pipeline_id)
+    pipeline_result = await get_pipeline(pipeline_id)
     if pipeline_result["status"] != "success":
         raise HTTPException(status_code=404, detail=pipeline_result["message"])
     if not pipeline_result["pipeline"]:
@@ -195,7 +194,7 @@ async def execute_pipeline_endpoint(pipeline_id: str, request: Request):
     # Execute the pipeline's code
     try:
         print(f"Executing pipeline: {pipeline_id}")
-        pipeline_output = execute_automation(pipeline_result["pipeline"], request)
+        pipeline_output = await execute_automation(pipeline_result["pipeline"], request)
         print(f"Pipeline output: {pipeline_output}")
         return {"message": f"Pipeline {pipeline_id} executed successfully", "result": pipeline_output}
     except Exception as e:
