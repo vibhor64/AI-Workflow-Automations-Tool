@@ -202,7 +202,8 @@ async def execute_pipeline_endpoint(pipeline_id: str, request: Request):
 
 @app.get('/pipelines/fetch_all')
 async def fetch_pipelines(current_user = Depends(get_current_user)):
-    return get_all_pipelines(current_user["username"])
+    data = await get_all_pipelines(current_user["username"])
+    return data
 
 @app.post('/pipelines/fetch_one')
 async def fetch_one_pipeline(pipeline_id: str):
