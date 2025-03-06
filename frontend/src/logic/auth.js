@@ -61,10 +61,6 @@ export async function refreshToken() {
     try {
         const response = await fetch(`${BASE_URL}/refresh`, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${getAccessToken()}`,
-            },
             credentials: "include", // Important for sending/receiving cookies
         });
 
@@ -74,6 +70,7 @@ export async function refreshToken() {
         }
 
         const data = await response.json();
+        console.log(data);
         setAccessToken(data.access_token);
         return true;
     } catch (error) {
@@ -158,6 +155,63 @@ export async function signInWithGoogle() {
     } catch (error) {
         console.error("Error during login:", error.message);
         throw error; // Re-throw the error for higher-level handling
+    }
+}
+
+// Get Pipeline
+export async function get_pipeline(pipeline_id) {
+    try {
+        console.log("Pipeline on client: ", pipeline_id);
+        const response = await fetch(`${BASE_URL}/server/pipelines/fetch_one`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({pipeline_id}),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json(); // Parse error details from the server
+            throw new Error(errorData.detail || "Delete pipeline failed!");
+        }
+
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error("Error during delete pipeline:", error.message);
+        throw error;
+    }
+}
+
+// Delete Automated Pipeline
+export async function delete_automated_pipeline(pipeline_id) {
+    try {
+        let token = getAccessToken();
+
+        if (!token) {
+            await refreshToken(); // Get a new token if none exists
+            token = getAccessToken();
+        }
+        const response = await fetch(`${BASE_URL}/server/pipelines/delete_one`, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({pipeline_id}),
+            credentials: "include", // Include cookies in requests
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json(); // Parse error details from the server
+            throw new Error(errorData.detail || "Delete pipeline failed!");
+        }
+
+        const data = await response.json();
+        console.log("Response from delete pipeline: ", data);
+    } catch (error) {
+        console.error("Error during delete pipeline:", error.message);
+        throw error;
     }
 }
 

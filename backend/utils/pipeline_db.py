@@ -44,7 +44,7 @@ async def save_pipeline(pipeline: Pipeline, name: str, username: str,):
         return {"status": "error", "message": f"MongoDB failed to update: {str(e)}"}
     
 async def get_pipeline(pipeline_id: str):
-    try:        
+    try:
         pipeline = pipelines_db.find_one({"_id": pipeline_id})
         if pipeline:
             return { "status": "success", "pipeline": pipeline["pipeline"]}

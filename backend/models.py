@@ -37,6 +37,9 @@ class User(BaseModel):
 class BookName(BaseModel):
     book_name: str
 
+class PipelineRequest(BaseModel):
+    pipeline_id: str
+
 class ModifyBook(BaseModel):
     id: str
     new_data: dict

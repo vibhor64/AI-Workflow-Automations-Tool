@@ -1,5 +1,5 @@
 import json
-from fastapi import FastAPI, Depends, HTTPException, status, Response, Request, Query
+from fastapi import FastAPI, Depends, HTTPException, status, Response, Request, Query, Cookie
 from fastapi.responses import RedirectResponse
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 # from backend.routers import google
@@ -15,7 +15,7 @@ from google_auth_oauthlib.flow import Flow
 from google.auth.transport.requests import Request as GoogleRequest
 from googleapiclient.discovery import build
 from utils.validate import checkDAG, isConnected, countIONodes
-from models import Node, Edge, Pipeline, PipelineInputs, UserCreate, Token, Epic_DB, BookName, ModifyBook, DocumentCreate
+from models import Node, Edge, Pipeline, PipelineInputs, UserCreate, Token, Epic_DB, BookName, PipelineRequest, ModifyBook, DocumentCreate
 from utils.database import find_user, register_user, add_template, add_book, modify_book, remove_book, fetch_google_creds, save_google_creds
 import base64
 from email.message import EmailMessage
@@ -24,6 +24,7 @@ from googleapiclient.errors import HttpError
 from email import message_from_bytes
 from routers import discord, google as google_integrations, notion, airtable
 from utils.pipeline_db import save_pipeline, get_pipeline, delete_pipeline, get_all_pipelines
+import asyncio
 
 """
 - Modify frontend deployment for showing errors when run
@@ -35,6 +36,7 @@ from utils.pipeline_db import save_pipeline, get_pipeline, delete_pipeline, get_
 - Add feature for deploying normal pipelines as well?
 - Resource: https://chat.deepseek.com/a/chat/s/2b1f814a-d95b-48ef-a5ba-5e9146163c49
 - https://chatgpt.com/share/67c04b7b-5fa4-8002-8cf6-cec2749d52a3
+- Test the public api: /pipelines/{pipeline_id}
 - Include Redis and Celery
 
 
@@ -200,18 +202,34 @@ async def execute_pipeline_endpoint(pipeline_id: str, request: Request):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error executing pipeline: {str(e)}")
 
-@app.get('/pipelines/fetch_all')
+@app.get('/server/pipelines/fetch_all')
 async def fetch_pipelines(current_user = Depends(get_current_user)):
     data = await get_all_pipelines(current_user["username"])
+    # add a 2 second waiting timer
+    # await asyncio.sleep(2)
     return data
 
-@app.post('/pipelines/fetch_one')
-async def fetch_one_pipeline(pipeline_id: str):
-    return get_pipeline(pipeline_id)["pipeline"]
+@app.post('/server/pipelines/fetch_one')
+async def fetch_one_pipeline(request_body: PipelineRequest):
+    pipeline_id = request_body.pipeline_id
+    print("Received pipeline_id:", pipeline_id)
+    if not pipeline_id:
+        raise HTTPException(status_code=400, detail="pipeline_id is required")
+    
+    # Fetch the pipeline
+    result = await get_pipeline(pipeline_id)
+    if result["status"] == "error":
+        raise HTTPException(status_code=404, detail=result["message"])
+    # print(result)
+    return result["pipeline"]
 
-@app.post('/pipelines/delete_one')
-async def delete_pipe(pipeline_id: str, current_user = Depends(get_current_user)):
-    return delete_pipeline(pipeline_id, current_user["username"])
+@app.delete('/server/pipelines/delete_one')
+async def delete_pipe(request_body: PipelineRequest, current_user = Depends(get_current_user)):
+    pipeline_id = request_body.pipeline_id
+    try:
+        return await delete_pipeline(pipeline_id, current_user["username"])
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
 
 # Authorization
 @app.post("/register", response_model=Token)
@@ -248,14 +266,23 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), response: Resp
         access_token = auth.create_access_token(data={"sub": user["_id"]})
         refresh_token = auth.create_refresh_token(data={"sub": user["_id"]})
         # Set the refresh token as an HTTP-only cookie
-        response.set_cookie(
-            key="refresh_token",
-            value=refresh_token,
-            httponly=True,
-            max_age=auth.REFRESH_TOKEN_EXPIRE_DAYS * 24 * 60 * 60, 
-            secure=True,  # Use only for HTTPS
-            samesite="None",  # Strict cookie policy
-        )
+        # response.set_cookie(
+        #     key="refresh_token",
+        #     value=refresh_token,
+        #     httponly=True,
+        #     max_age=auth.REFRESH_TOKEN_EXPIRE_DAYS * 24 * 60 * 60, 
+        #     secure=True,  # Use only for HTTPS
+        #     samesite="None",  # Strict cookie policy
+        # )
+
+        # Calculate the expiry time
+        max_age = auth.REFRESH_TOKEN_EXPIRE_DAYS * 24 * 60 * 60
+        
+        # Set the refresh token as an HTTP-only cookie with Partitioned attribute
+        cookie_value = f"refresh_token={refresh_token}; HttpOnly; Secure; SameSite=None; Partitioned; Max-Age={max_age}; Path=/"
+        response.headers["Set-Cookie"] = cookie_value
+
+
         return {"access_token": access_token, "token_type": "bearer"}
     except Exception as e:
         print(f"Error in /token endpoint: {e}")
@@ -272,13 +299,14 @@ def read_users_me(current_user: Epic_DB = Depends(get_current_user)):
     return {"username" : ans}
 
 @app.post("/refresh", response_model=Token)
-def refresh(response: Response, refresh_token: str = Depends(oauth2_scheme)):
+def refresh(response: Response, refresh_token: str = Cookie(None)):
     """
     Checks if the user has a valid refresh token for seamless login.
     """
     print("Refresh Token: ", refresh_token)
+    if not refresh_token:
+        raise HTTPException(status_code=401, detail="Refresh token missing")
     try:
-        print("Stage 2")
         username = auth.verify_refresh_token(refresh_token)
     except HTTPException as e:
         raise HTTPException(status_code=401, detail="Invalid or expired refresh token")
@@ -288,14 +316,21 @@ def refresh(response: Response, refresh_token: str = Depends(oauth2_scheme)):
     new_refresh_token = auth.create_refresh_token(data={"sub": username})
 
     # Update the refresh token cookie
-    response.set_cookie(
-        key="refresh_token",
-        value=new_refresh_token,
-        httponly=True,
-        max_age=auth.REFRESH_TOKEN_EXPIRE_DAYS * 24 * 60 * 60,
-        secure=True,  # Use True if using HTTPS
-        samesite="None",  # Strict cookie policy
-    )
+    # response.set_cookie(
+    #     key="refresh_token",
+    #     value=new_refresh_token,
+    #     httponly=True,
+    #     max_age=auth.REFRESH_TOKEN_EXPIRE_DAYS * 24 * 60 * 60,
+    #     secure=True,  # Use True if using HTTPS
+    #     samesite="None",  # Strict cookie policy
+    # )
+
+    # Calculate the expiry time
+    max_age = auth.REFRESH_TOKEN_EXPIRE_DAYS * 24 * 60 * 60
+    
+    # Set the refresh token as an HTTP-only cookie with Partitioned attribute
+    cookie_value = f"refresh_token={refresh_token}; HttpOnly; Secure; SameSite=None; Partitioned; Max-Age={max_age}; Path=/"
+    response.headers["Set-Cookie"] = cookie_value
 
     return {"access_token": access_token, "token_type": "bearer"}
 

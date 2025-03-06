@@ -16,6 +16,7 @@ import { useNavigate } from 'react-router-dom';
 // import './CreateDatabase.css';
 
 import 'reactflow/dist/style.css';
+import { refreshToken } from './logic/auth';
 
 const gridSize = 10;
 const proOptions = { hideAttribution: true };
@@ -100,16 +101,10 @@ export const PipelineUI = () => {
     event.dataTransfer.dropEffect = 'move';
   }, []);
 
-  const saveJSONFile = (data, fileName) => {
-    const fileData = new Blob([JSON.stringify(data, null, 4)], { type: 'application/json' });
-    const url = URL.createObjectURL(fileData);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = fileName;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
+  const refresh_token = async () => {
+    await refreshToken();
+    print('process completed')
+  }
 
   const sendPipelineData = async () => {
 
