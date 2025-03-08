@@ -16,7 +16,6 @@ import { useNavigate } from 'react-router-dom';
 // import './CreateDatabase.css';
 
 import 'reactflow/dist/style.css';
-import { refreshToken } from './logic/auth';
 
 const gridSize = 10;
 const proOptions = { hideAttribution: true };
@@ -100,11 +99,6 @@ export const PipelineUI = () => {
     event.preventDefault();
     event.dataTransfer.dropEffect = 'move';
   }, []);
-
-  const refresh_token = async () => {
-    await refreshToken();
-    print('process completed')
-  }
 
   const sendPipelineData = async () => {
 

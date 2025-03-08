@@ -51,12 +51,6 @@ export async function loginUser(username, password) {
     }
 }
 
-export function logoutUser() {
-    clearAccessToken(); // Clear access token from sessionStorage
-    // Refresh token is cleared automatically if it's in an HTTP-only cookie
-    console.log("User logged out!");
-}
-
 export async function refreshToken() {
     try {
         const response = await fetch(`${BASE_URL}/refresh`, {
@@ -70,13 +64,35 @@ export async function refreshToken() {
         }
 
         const data = await response.json();
-        console.log(data);
+        console.log("Token refreshed");
         setAccessToken(data.access_token);
         return true;
     } catch (error) {
         clearAccessToken();
         console.log("Error refreshing token:", error);
         return false;
+    }
+}
+
+export async function logoutUser() {
+    try {
+        const response = await fetch(`${BASE_URL}/logout`, {
+            method: "POST",
+            credentials: "include", // Include cookies in the request
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json(); // Parse error details from the server
+            throw new Error(errorData.detail || "Logout failed!");
+        }
+
+        clearAccessToken(); 
+        console.log("Cleared access token");
+
+        console.log("Logout successful");
+    } catch (error) {
+        console.error("Error during logout:", error.message);
+        throw error; // Re-throw the error for higher-level handling
     }
 }
 
@@ -154,6 +170,32 @@ export async function signInWithGoogle() {
         setAccessToken(data.access_token);
     } catch (error) {
         console.error("Error during login:", error.message);
+        throw error; // Re-throw the error for higher-level handling
+    }
+}
+
+export async function get_google_refresh_token() {
+    try {
+        let token = getAccessToken();
+
+        const response = await fetch(`${BASE_URL}/auth/google/get_refresh_token`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            credentials: "include", // Include cookies in requests
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json(); // Parse error details from the server
+            throw new Error(errorData.detail || "Failed to create refresh google token");
+        }
+
+        const data = await response.json();
+        console.log("Response from refreshing google token: ", data);
+    } catch (error) {
+        console.error("Error during refreshing google token: ", error.message);
         throw error; // Re-throw the error for higher-level handling
     }
 }

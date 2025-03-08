@@ -9,7 +9,7 @@ import styles from './templates.module.css';
 // import { templateNodes } from './templateNodes';
 import { useStore } from '../store';
 import { shallow } from 'zustand/shallow';
-import { logoutUser, pushTemplate } from '../logic/auth';
+import { clearAccessToken, logoutUser, pushTemplate } from '../logic/auth';
 import arrowDown from '../assets/arrow-down.svg';
 import { useNavigate } from 'react-router-dom';
 
@@ -88,8 +88,8 @@ export const Templates = () => {
     }
 
     const navigate = useNavigate();
-    const handleLogout = () => {
-        logoutUser();
+    const handleLogout = async () => {
+        await logoutUser();
         handleClick2();
         navigate('/login');
     }

@@ -1,5 +1,5 @@
 import json
-from fastapi import FastAPI, Depends, HTTPException, status, Response, Request, Query, Cookie
+from fastapi import FastAPI, Depends, HTTPException, status, Response, Request, Query, Cookie, Header
 from fastapi.responses import RedirectResponse
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 # from backend.routers import google
@@ -247,14 +247,20 @@ async def register(user: UserCreate, response: Response):
     access_token = auth.create_access_token(data={"sub": user.username})
     refresh_token = auth.create_refresh_token(data={"sub": user.username})
     # Set the refresh token as an HTTP-only cookie
-    response.set_cookie(
-        key="refresh_token",
-        value=refresh_token,
-        httponly=True,
-        max_age=auth.REFRESH_TOKEN_EXPIRE_DAYS * 24 * 60 * 60, 
-        secure=True,  # Use True if using HTTPS
-        samesite="strict",  # Strict cookie policy
-    )
+    # response.set_cookie(
+    #     key="refresh_token",
+    #     value=refresh_token,
+    #     httponly=True,
+    #     max_age=auth.REFRESH_TOKEN_EXPIRE_DAYS * 24 * 60 * 60, 
+    #     secure=True,  # Use True if using HTTPS
+    #     samesite="strict",  # Strict cookie policy
+    # )
+
+    max_age = auth.REFRESH_TOKEN_EXPIRE_DAYS * 24 * 60 * 60
+
+    cookie_value = f"refresh_token={refresh_token}; HttpOnly; Secure; SameSite=None; Partitioned; Max-Age={max_age}; Path=/"
+    response.headers["Set-Cookie"] = cookie_value
+    
     return {"access_token": access_token, "token_type": "bearer"}
 
 @app.post("/token", response_model=Token)
@@ -265,15 +271,6 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), response: Resp
             raise HTTPException(status_code=400, detail="Incorrect username or password")
         access_token = auth.create_access_token(data={"sub": user["_id"]})
         refresh_token = auth.create_refresh_token(data={"sub": user["_id"]})
-        # Set the refresh token as an HTTP-only cookie
-        # response.set_cookie(
-        #     key="refresh_token",
-        #     value=refresh_token,
-        #     httponly=True,
-        #     max_age=auth.REFRESH_TOKEN_EXPIRE_DAYS * 24 * 60 * 60, 
-        #     secure=True,  # Use only for HTTPS
-        #     samesite="None",  # Strict cookie policy
-        # )
 
         # Calculate the expiry time
         max_age = auth.REFRESH_TOKEN_EXPIRE_DAYS * 24 * 60 * 60
@@ -315,24 +312,28 @@ def refresh(response: Response, refresh_token: str = Cookie(None)):
     access_token = auth.create_access_token(data={"sub": username})
     new_refresh_token = auth.create_refresh_token(data={"sub": username})
 
-    # Update the refresh token cookie
-    # response.set_cookie(
-    #     key="refresh_token",
-    #     value=new_refresh_token,
-    #     httponly=True,
-    #     max_age=auth.REFRESH_TOKEN_EXPIRE_DAYS * 24 * 60 * 60,
-    #     secure=True,  # Use True if using HTTPS
-    #     samesite="None",  # Strict cookie policy
-    # )
-
     # Calculate the expiry time
     max_age = auth.REFRESH_TOKEN_EXPIRE_DAYS * 24 * 60 * 60
     
     # Set the refresh token as an HTTP-only cookie with Partitioned attribute
-    cookie_value = f"refresh_token={refresh_token}; HttpOnly; Secure; SameSite=None; Partitioned; Max-Age={max_age}; Path=/"
+    cookie_value = f"refresh_token={new_refresh_token}; HttpOnly; Secure; SameSite=None; Partitioned; Max-Age={max_age}; Path=/"
     response.headers["Set-Cookie"] = cookie_value
 
     return {"access_token": access_token, "token_type": "bearer"}
+
+# Logout
+@app.post("/logout")
+async def logout(response: Response):
+    # Clear the refresh_token cookie
+    response.delete_cookie(
+        key="refresh_token",
+        path="/",
+        httponly=True,
+        secure=True,
+        samesite="none"
+    )
+    print("Logout successful")
+    return {"message": "Logged out successfully"}
 
 # Google Authentication
 @app.get("/auth/google")
@@ -356,7 +357,7 @@ async def google_callback(request: Request, response: Response):
     # if username not in auth.fake_users_db:
     if check_user is None:
         # Create a new user in your fake_users_db
-        hashed_password = auth.get_password_hash("google")  # Use a dummy password or handle separately
+        hashed_password = auth.get_password_hash(username)  # Use a dummy password or handle separately
         # auth.fake_users_db[username] = auth.User(username=username, hashed_password=hashed_password)
         result = await register_user(username, hashed_password)
         # if result["status"] != "success":
@@ -366,19 +367,38 @@ async def google_callback(request: Request, response: Response):
     access_token = auth.create_access_token(data={"sub": username})
     refresh_token = auth.create_refresh_token(data={"sub": username})
 
-    # Set the tokens as HTTP-only cookies
-    response.set_cookie(
-        key="refresh_token",
-        value=refresh_token,
-        httponly=True,
-        max_age=auth.REFRESH_TOKEN_EXPIRE_DAYS * 24 * 60 * 60,
-        secure=False,  # Use True if using HTTPS
-        samesite="lax",
-    )
+    # Calculate the expiry time
+    max_age = auth.REFRESH_TOKEN_EXPIRE_DAYS * 24 * 60 * 60
 
-    # Redirect to the frontend after setting cookies
+    # Create the redirect response
     redirect_url = f"http://localhost:3000/login?access_token={access_token}"
-    return RedirectResponse(redirect_url)
+    redirect_response = RedirectResponse(url=redirect_url)
+   
+    # Set cookie using the same format as your working endpoints
+    cookie_value = f"refresh_token={refresh_token}; HttpOnly; Secure; SameSite=None; Partitioned; Max-Age={max_age}; Path=/"
+    redirect_response.headers["Set-Cookie"] = cookie_value
+   
+    return redirect_response
+
+@app.post("/auth/google/get_refresh_token", response_model=Token)
+def get_refresh_token(response: Response, current_user = Depends(get_current_user)):
+    """
+    Takes an access token and returns a refresh token.
+    Expects the access token in the Authorization header as 'Bearer {token}'.
+    """
+    # Create a refresh token
+    username = current_user["username"]
+    refresh_token = auth.create_refresh_token(data={"sub": username})
+    
+    # Calculate the expiry time
+    max_age = auth.REFRESH_TOKEN_EXPIRE_DAYS * 24 * 60 * 60
+    
+    # Set the refresh token as an HTTP-only cookie with Partitioned attribute
+    cookie_value = f"refresh_token={refresh_token}; HttpOnly; Secure; SameSite=None; Partitioned; Max-Age={max_age}; Path=/"
+    response.headers["Set-Cookie"] = cookie_value
+    
+    print("refresh_token: ", refresh_token)
+    return {"access_token": "Refresh token created successfully", "token_type": "bearer"}
 
 # Google Integrations Auth
 @app.get("/auth/google/integration")

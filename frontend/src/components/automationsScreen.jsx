@@ -23,6 +23,7 @@ export const AutomationsScreen = () => {
       return data;
     } catch (error) {
       console.error("Error fetching data:", error.message);
+      setIsLoading(false);
       return null;
     }
   }
