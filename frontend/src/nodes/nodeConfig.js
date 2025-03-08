@@ -24,6 +24,7 @@ import meet from '../assets/meet.png';
 import sheet from '../assets/sheets.png';
 import forms from '../assets/forms.png';
 import airtable from '../assets/airtable.png';
+import connector from '../assets/connector.png';
 
 const newNodesConfig = [
   {
@@ -278,7 +279,7 @@ const newNodesConfig = [
     id: 'database-1',
     type: 'NodeNode',
     data: {
-      name: 'Database',
+      name: 'Database (RAG)',
       isInput: false,
       isType: false,
       rightHandles: 1,

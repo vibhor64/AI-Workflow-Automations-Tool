@@ -10,17 +10,17 @@ import base64
 from email.mime.text import MIMEText
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
-from google_auth_oauthlib.flow import InstalledAppFlow
+# from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from utils.database import fetch_google_creds, save_google_creds
 import asyncio
 from email.message import EmailMessage
-from email import message_from_bytes
+# from email import message_from_bytes
 from utils.validate import validate_emails
 from routers.airtable import fetch_airtable_creds, parse_airtable_url, update_airtable_creds, refresh_access_token, clean_airtable_data
 from routers.notion import fetch_notion_creds
-from urllib.parse import urlparse, parse_qs
+from urllib.parse import urlparse
 
 # Load environment variables
 load_dotenv()
@@ -38,7 +38,7 @@ DISCORD_BOT_TOKEN = os.getenv("DISCORD_BOT_TOKEN")
 def execute_pipeline(pipeline):
     # Create the graph
     G = nx.DiGraph()
-    global handleMap
+    global handleMap 
     handleMap = {} # handle id : source node id
     global resMap
     resMap = {} # node id : result
@@ -62,6 +62,8 @@ def execute_pipeline(pipeline):
             handle_input(node_id, node_data["fieldValue1"])
         elif node_type == "Database":
             handle_DB(node_id)
+        elif node_type == "Connector":
+            handle_connector(node_id)
 
         elif node_type == "OpenAI" or node_type == "Anthropic" or node_type == "Llama"or node_type == "Gemini" or node_type == "Perplexity" or node_type == "AWS":
             handle_llm(node_id, node_data["fieldValue1"], node_data["fieldValue2"], node_data["sources"])
@@ -111,6 +113,16 @@ def handle_input(id, fieldValue1):
 def handle_DB(id):
     query = resMap[handleMap[str(id + '-left-handle-0')]]
     resMap[id] = query
+
+def handle_connector(id):
+    for i in range(8):
+        input_handle = f"{id}-left-handle-{i}"
+        output_handle = f"{id}-right-handle-{i}"
+        
+        if input_handle in handleMap:
+            print(output_handle, handleMap[input_handle], resMap[handleMap[input_handle]])
+            handleMap[output_handle] = resMap[handleMap[input_handle]]
+    resMap[id] = resMap[handleMap[str(id + '-left-handle-0')]]
 
 def handle_llm(id, fieldValue1, fieldValue2, sources):
     if str(id + '-left-handle-0') in handleMap:

@@ -18,6 +18,7 @@ export const useStore = create((set, get) => ({
   nodes: defaultNodes,
   edges: defaultEdges,
   templateWorkflows: templateNodes,
+  templateAdded: false,
   deploymentVariables: {},
   database: [],
   nodeIDs: {},
@@ -76,6 +77,11 @@ export const useStore = create((set, get) => ({
     set({
       nodes: templateNodes,
       edges: templateEdges
+    });
+  },
+  setTemplateAdded: (value) => {
+    set({
+      templateAdded: value,
     });
   },
   addTemplate: (template) => {

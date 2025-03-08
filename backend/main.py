@@ -27,17 +27,15 @@ from utils.pipeline_db import save_pipeline, get_pipeline, delete_pipeline, get_
 import asyncio
 
 """
-- Modify frontend deployment for showing errors when run
 - Webhook endpoint for discord to test payload details
-- This endpoint will then trigger the required pipeline, after sending the input to it
-- Save pipeline endpoint that will save pipelines in a new Mongo collection (already done by deepseek)
-- Return pipeline endpoint to user along with intructions to use it
 - Explore and complete google webhooks similarly
 - Add feature for deploying normal pipelines as well?
 - Resource: https://chat.deepseek.com/a/chat/s/2b1f814a-d95b-48ef-a5ba-5e9146163c49
 - https://chatgpt.com/share/67c04b7b-5fa4-8002-8cf6-cec2749d52a3
 - Test the public api: /pipelines/{pipeline_id}
 - Include Redis and Celery
+- Fix connector
+- Fix filedValues for all instances, not just integrations
 
 
 || Work on nodes UI

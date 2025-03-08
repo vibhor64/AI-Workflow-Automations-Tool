@@ -285,7 +285,7 @@ export const NewNode = ({ id, data }) => {
   return (
     <div
       style={{
-        width: 200,
+        width: name==="Connector" ? 110 : 200,
         minHeight: 60,
         border: "0px solid #ccc",
         display: "flex",
@@ -318,8 +318,8 @@ export const NewNode = ({ id, data }) => {
             key={index}
             style={{
               position: "absolute",
-              right: "210px",
-              top: `${(index + 1) * (100 / (leftHandles + 1)) - 5}%`,
+              right: name==="Connector" ? "120px" : "210px",
+              top: `${(index + 1) * (100 / (leftHandles + 1)) - 2}%`,
               color: "#7d7d7d",
               fontWeight: 400,
             }}
@@ -346,8 +346,8 @@ export const NewNode = ({ id, data }) => {
           onMouseLeave={() => setHoverClose(0)}
           style={{
             backgroundColor: hoverClose===1 ? "#e0e0e0" : "#fff",
-            height: "20px", // Fixed size to match the container
-            width: "20px", // Fixed size to match the container
+            height: "16px", // Fixed size to match the container
+            width: "16px", // Fixed size to match the container
             position: "absolute",
             top: "15px", // Center vertically
             left: "92%", // Center horizontally
@@ -1106,7 +1106,11 @@ export const NewNode = ({ id, data }) => {
             </label>
           ) : null}
 
-          {category === "Knowledge Base" ? (
+          {name === "Connector" && (
+            <div style={{ height: "100px" }}></div>
+          )}
+
+          {name === "Database (RAG)" ? (
             <label
               style={{
                 display: "flex",
@@ -1148,7 +1152,7 @@ export const NewNode = ({ id, data }) => {
                 }
                 onBlur={(e) => (e.target.style.boxShadow = "none")}
               >
-                {name === "Databse" ? (
+                {name === "Database (RAG)" ? (
                   <>
                     <option value="ReactFlow Docs" style={{ fontWeight: 600 }}>
                       ReactFlow Docs
@@ -1196,7 +1200,7 @@ export const NewNode = ({ id, data }) => {
             key={index}
             style={{
               position: "absolute",
-              left: "209px",
+              left: name==="Connector" ? "119px" : "209px",
               top: `${(index + 1) * (100 / (rightHandles + 1)) - 2}%`,
               color: "#7d7d7d",
               fontWeight: 400,

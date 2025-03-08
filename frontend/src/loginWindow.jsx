@@ -22,6 +22,9 @@ const selector = (state) => ({
     nodes: state.nodes,
     edges: state.edges,
     addBooks: state.addBooks,
+    database: state.database,
+    templateAdded: state.templateAdded,
+    setTemplateAdded: state.setTemplateAdded
 });
 
 export const LoginWindow = () => {
@@ -33,7 +36,7 @@ export const LoginWindow = () => {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
-    const { addTemplate, addBooks } = useStore(selector, shallow);
+    const { addTemplate, addBooks, database, templateAdded, setTemplateAdded } = useStore(selector, shallow);
 
     async function fetchData() {
         try {
@@ -42,14 +45,15 @@ export const LoginWindow = () => {
 
             if (
                 Array.isArray(data["templates"]) &&
-                data["templates"].length > 0
+                data["templates"].length > 0 && templateAdded===false
             ) {
                 for (let i = 0; i < data["templates"].length; i++) {
                     addTemplate(data["templates"][i]["template"]);
                 }
+                setTemplateAdded(true);
             }
 
-            if (Array.isArray(data["books"]) && data["books"].length > 0) {
+            if (Array.isArray(data["books"]) && data["books"].length > 0 && database.length === 0) {
                 addBooks(data["books"]);
             }
             return data;
