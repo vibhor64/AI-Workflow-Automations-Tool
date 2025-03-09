@@ -74,7 +74,7 @@ async def delete_pipeline(pipeline_id: str, username: str):
 
 async def get_all_pipelines(username: str):
     try:
-        pipelines = epic_db.find_one({"_id": username})["pipelines"]
+        pipelines = epic_db.find_one({"_id": username}).get("pipelines", [])
         return {"status": "success", "pipelines": pipelines}
     except Exception as e:
         return {"status": "error", "message": str(e)}

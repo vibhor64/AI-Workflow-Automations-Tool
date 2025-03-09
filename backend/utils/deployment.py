@@ -58,8 +58,10 @@ def execute_pipeline(pipeline):
         node_data = G.nodes[node_id]
         node_type = node_data["type"]
         # Handle each node type (input, LLM, output, etc.)
-        if node_type == "Input" or node_type == "File" or node_type == "Text" or node_type == "Trigger":
+        if node_type == "Input" or node_type == "File" or node_type == "Trigger":
             handle_input(node_id, node_data["fieldValue1"])
+        elif node_type == "Text":
+            handle_text(node_id, node_data["fieldValue1"], node_data["sources"])
         elif node_type == "Database":
             handle_DB(node_id)
         elif node_type == "Connector":
@@ -71,28 +73,28 @@ def execute_pipeline(pipeline):
             handle_vision_llm(node_id, node_data["fieldValue1"], node_data["fieldValue2"])
         
         elif node_type == "Discord":
-            res = send_discord_message(node_id, node_data["fieldValue1"])
+            res = send_discord_message(node_id, node_data["fieldValue1"], node_data.get("sources", []))
         elif node_type == "GForms":
-            res = handle_read_form(node_id, node_data["fieldValue1"], node_data["username"])
+            res = handle_read_form(node_id, node_data["fieldValue1"], node_data["username"], node_data.get("sources", []))
         elif node_type == "GSheets":
-            res = handle_read_google_sheet(node_id, node_data["fieldValue1"], node_data["username"])
+            res = handle_read_google_sheet(node_id, node_data["fieldValue1"], node_data["username"], node_data.get("sources", []))
         elif node_type == "Google Meet":
-            res = handle_read_google_meet(node_id, node_data["fieldValue1"], node_data["username"])
+            res = handle_read_google_meet(node_id, node_data["fieldValue1"], node_data["username"], node_data.get("sources", []))
         elif node_type == "Airtable":
-            resMap[id] = handle_read_airtable(node_id, node_data["fieldValue1"], node_data["username"])
+            resMap[id] = handle_read_airtable(node_id, node_data["fieldValue1"], node_data["username"], node_data.get("sources", []))
             print("res: ", resMap[id])
         elif node_type == "Notion":
-            handle_read_notion(node_id, node_data["fieldValue1"], node_data["username"])
+            handle_read_notion(node_id, node_data["fieldValue1"], node_data["username"], node_data.get("sources", []))
 
         elif node_type == "Gmail":
             if node_data["rightHandles"] > 0:
-                handle_read_emails(node_id, node_data["fieldValue1"], node_data["username"])
+                handle_read_emails(node_id, node_data["fieldValue1"], node_data["username"], node_data.get("sources", []))
             else:
                 handle_gmail_output(node_id, node_data["fieldValue1"], node_data["username"])
                 res = "Successfully sent email to " + node_data["fieldValue1"]["1"]
         elif node_type == "GDocs":
             if node_data["rightHandles"] > 0:
-                handle_read_doc(node_id, node_data["fieldValue1"], node_data["username"])
+                handle_read_doc(node_id, node_data["fieldValue1"], node_data["username"], node_data.get("sources", []))
             else:
                 res = handle_create_doc(node_id, node_data["username"])
 
@@ -109,6 +111,15 @@ def execute_pipeline(pipeline):
 
 def handle_input(id, fieldValue1):
     resMap[id] = fieldValue1
+
+def handle_text(id, fieldValue1, sources):
+    prompt = fieldValue1
+    print(sources)
+    for i in range(len(sources)):
+        if str(id + '-left-handle-' + str(i)) in handleMap:
+            userVariable = resMap[handleMap[str(id + '-left-handle-' + str(i))]]
+            prompt = prompt.replace('{{' + sources[i] + '}}', userVariable)
+    resMap[id] = prompt
 
 def handle_DB(id):
     query = resMap[handleMap[str(id + '-left-handle-0')]]
@@ -174,7 +185,7 @@ def handle_output(id):
     return output
 
 
-def handle_read_emails(id, fieldValue1, username):
+def handle_read_emails(id, fieldValue1, username, sources):
     """Handle Gmail output node to send or draft an email."""
     creds_dict = asyncio.run(fetch_google_creds(username))
 
@@ -191,7 +202,16 @@ def handle_read_emails(id, fieldValue1, username):
 
     try:
         max_results = int(fieldValue1["1"])
-        labels = fieldValue1["2"]
+        labels = fieldValue1.get("2", "")
+        # labels = labels.upper()
+
+        for i in range(2, len(sources)):
+            if str(id + '-left-handle-' + str(i)) in handleMap:
+                userVariable = resMap[handleMap[str(id + '-left-handle-' + str(i))]]
+                labels = labels.replace('{{' + sources[i] + '}}', userVariable)
+        
+        print(labels)
+        
         # Check if the credentials are expired and refresh them if necessary
         if creds.expired and creds.refresh_token:
             creds.refresh(Request())
@@ -202,8 +222,8 @@ def handle_read_emails(id, fieldValue1, username):
         # Build the Gmail API client
         service = build("gmail", "v1", credentials=creds)
 
-        # label_list = [label.strip().upper() for label in labels.split(",") if label.strip()]
-        label_list = labels
+        label_list = [label.strip().upper() for label in labels.split(",") if label.strip()]
+        # label_list = labels
         # Convert standard labels to Gmail API format
         gmail_labels = []
         special_mappings = {
@@ -223,6 +243,7 @@ def handle_read_emails(id, fieldValue1, username):
                 gmail_labels.append(f"label:{label}")  # Default format for custom labels
     
         query = " ".join(gmail_labels)
+        print(query)
 
 
         results = (
@@ -339,7 +360,7 @@ def handle_gmail_output(id, fieldValue1, username):
         return {"status": "error", "message": f"An error occurred: {error}"}
 
 
-def handle_read_doc(id, fieldValue1, username):
+def handle_read_doc(id, fieldValue1, username, sources):
     """Handle Gmail output node to send or draft an email."""
     creds_dict = asyncio.run(fetch_google_creds(username))
 
@@ -355,6 +376,12 @@ def handle_read_doc(id, fieldValue1, username):
 
     try:
         doc_identifier = fieldValue1["1"]
+
+        for i in range(len(sources)):
+            if str(id + '-left-handle-' + str(i)) in handleMap:
+                userVariable = resMap[handleMap[str(id + '-left-handle-' + str(i))]]
+                doc_identifier = doc_identifier.replace('{{' + sources[i] + '}}', userVariable)
+
         # Check if the credentials are expired and refresh them if necessary
         if creds.expired and creds.refresh_token:
             creds.refresh(Request())
@@ -469,7 +496,7 @@ def handle_create_doc(id, username):
         return {"status": "error", "message": f"An error occurred: {error}"}
 
 
-def handle_read_form(id, form_identifier, username):
+def handle_read_form(id, form_identifier, username, sources):
     """Handle Gmail output node to send or draft an email."""
     creds_dict = asyncio.run(fetch_google_creds(username))
 
@@ -482,8 +509,11 @@ def handle_read_form(id, form_identifier, username):
         scopes=creds_dict["scopes"],
     )
 
-
     try:
+        for i in range(len(sources)):
+            if str(id + '-left-handle-' + str(i)) in handleMap:
+                userVariable = resMap[handleMap[str(id + '-left-handle-' + str(i))]]
+                form_identifier = form_identifier.replace('{{' + sources[i] + '}}', userVariable)
         # Check if the credentials are expired and refresh them if necessary
         if creds.expired and creds.refresh_token:
             creds.refresh(Request())
@@ -548,7 +578,7 @@ def handle_read_form(id, form_identifier, username):
         return {"status": "error", "message": f"An error occurred: {error}"}
 
 
-def handle_read_google_sheet(id, fieldValue1, username):
+def handle_read_google_sheet(id, fieldValue1, username, sources):
     """Handle Gmail output node to send or draft an email."""
     creds_dict = asyncio.run(fetch_google_creds(username))
 
@@ -564,6 +594,12 @@ def handle_read_google_sheet(id, fieldValue1, username):
     try:
         sheet_identifier = fieldValue1["1"]
         sheet_range = fieldValue1["2"]
+
+        for i in range(len(sources)):
+            if str(id + '-left-handle-' + str(i)) in handleMap:
+                userVariable = resMap[handleMap[str(id + '-left-handle-' + str(i))]]
+                sheet_range = sheet_range.replace('{{' + sources[i] + '}}', userVariable)
+            
         # Check if the credentials are expired and refresh them if necessary
         if creds.expired and creds.refresh_token:
             creds.refresh(Request())
@@ -609,7 +645,7 @@ def handle_read_google_sheet(id, fieldValue1, username):
         return {"status": "error", "message": f"An error occurred: {error}"}
 
 
-def handle_read_google_meet(id, meet_title, username):
+def handle_read_google_meet(id, meet_title, username, sources):
     """Handle Gmail Meet input node to read meeting transcript"""
     creds_dict = asyncio.run(fetch_google_creds(username))
 
@@ -623,6 +659,11 @@ def handle_read_google_meet(id, meet_title, username):
     )
 
     try:
+        for i in range(len(sources)):
+            if str(id + '-left-handle-' + str(i)) in handleMap:
+                userVariable = resMap[handleMap[str(id + '-left-handle-' + str(i))]]
+                meet_title = meet_title.replace('{{' + sources[i] + '}}', userVariable)
+            
         # Check if the credentials are expired and refresh them if necessary
         if creds.expired and creds.refresh_token:
             creds.refresh(Request())
@@ -663,8 +704,13 @@ def handle_read_google_meet(id, meet_title, username):
         print(f"An error occurred: {error}")
         return {"status": "error", "message": f"An error occurred: {error}"}
 
-def send_discord_message(id, channel_id):
+def send_discord_message(id, channel_id, sources):
     try:
+        for i in range(len(sources)):
+            if str(id + '-left-handle-' + str(i)) in handleMap:
+                userVariable = resMap[handleMap[str(id + '-left-handle-' + str(i))]]
+                channel_id = channel_id.replace('{{' + sources[i] + '}}', userVariable)
+    
         message = str(resMap[handleMap[str(id + '-left-handle-0')]])
         # todo: validate channel_id
         async def _send_message():
@@ -693,7 +739,7 @@ def send_discord_message(id, channel_id):
         print(f"Failed to send message: {error}")
         return {"status": "error", "message": f"Failed to send message: {error}"}
 
-def handle_read_airtable(id, fieldValue1, username):
+def handle_read_airtable(id, fieldValue1, username, sources):
     # todo: 
     # 1. handle refresh token
     # 2. better output format
@@ -701,6 +747,11 @@ def handle_read_airtable(id, fieldValue1, username):
         print(fieldValue1)
         url = fieldValue1["1"]
         columns = fieldValue1["2"]
+        for i in range(len(sources)):
+            if str(id + '-left-handle-' + str(i)) in handleMap:
+                userVariable = resMap[handleMap[str(id + '-left-handle-' + str(i))]]
+                columns = columns.replace('{{' + sources[i] + '}}', userVariable)
+
         if len(columns) <2:
             columns = ""
         # Parse the URL to extract base_id and table_name
@@ -760,8 +811,13 @@ def handle_read_airtable(id, fieldValue1, username):
     except Exception as e:
         return {"status": "error", "message": f"An unexpected error occurred: {str(e)}"}
 
-def handle_read_notion(id, notion_url, username):
+def handle_read_notion(id, notion_url, username, sources):
     try:
+        for i in range(len(sources)):
+            if str(id + '-left-handle-' + str(i)) in handleMap:
+                userVariable = resMap[handleMap[str(id + '-left-handle-' + str(i))]]
+                notion_url = notion_url.replace('{{' + sources[i] + '}}', userVariable)
+
         if not notion_url.startswith("https://www.notion.so/"):
             return {"status": "error", "message": "Invalid Notion URL format"}
         

@@ -16,7 +16,6 @@ import obsidian from '../assets/obsidian.png';
 import openai from '../assets/openai.png';
 import perplexity from '../assets/perplexity.png';
 import postgresql from '../assets/postgresql.png';
-import s3 from '../assets/s3.png';
 import meta from '../assets/meta.svg';
 import chat from '../assets/chat.png';
 import slack from '../assets/slack.png';
@@ -24,7 +23,7 @@ import meet from '../assets/meet.png';
 import sheet from '../assets/sheets.png';
 import forms from '../assets/forms.png';
 import airtable from '../assets/airtable.png';
-import connector from '../assets/connector.png';
+import databaseLoader from '../assets/database.svg';
 
 const newNodesConfig = [
   {
@@ -34,7 +33,7 @@ const newNodesConfig = [
       name: 'Input',
       isInput: true,
       isType: true,
-      bgcolor: '#5b96f5',
+      bgcolor: '#498bf5',
       rightHandles: 1,
       leftHandles: 0,
       img: Input,
@@ -52,7 +51,7 @@ const newNodesConfig = [
       name: 'Output',
       isInput: true,
       isType: true,
-      bgcolor: '#76c965',
+      bgcolor: '#58c742',
       rightHandles: 0,
       leftHandles: 1,
       img: Output,
@@ -69,7 +68,7 @@ const newNodesConfig = [
       name: 'Text',
       isInput: true,
       isType: false,
-      bgcolor: '#5b96f5',
+      bgcolor: '#498bf5',
       rightHandles: 1,
       leftHandles: 0,
       img: text,
@@ -86,7 +85,7 @@ const newNodesConfig = [
       name: 'File',
       isInput: true,
       isType: false,
-      bgcolor: '#5b96f5',
+      bgcolor: '#498bf5',
       rightHandles: 1,
       leftHandles: 0,
       img: file,
@@ -107,7 +106,7 @@ const newNodesConfig = [
       leftHandles: 2,
       bgcolor: '#ffe682',
       headColor: '#f5d65b',
-      
+
       img: openai,
       category: 'LLMs',
       sources: ['system', 'prompt'],
@@ -127,7 +126,7 @@ const newNodesConfig = [
       leftHandles: 2,
       bgcolor: '#ffe682',
       headColor: '#f5d65b',
-      
+
       img: Anthropic,
       category: 'LLMs',
       sources: ['system', 'prompt'],
@@ -147,7 +146,7 @@ const newNodesConfig = [
       leftHandles: 2,
       bgcolor: '#ffe682',
       headColor: '#f5d65b',
-      
+
       img: meta,
       category: 'LLMs',
       sources: ['system', 'prompt'],
@@ -167,7 +166,7 @@ const newNodesConfig = [
       leftHandles: 2,
       bgcolor: '#ffe682',
       headColor: '#f5d65b',
-      
+
       img: google,
       category: 'LLMs',
       sources: ['system', 'prompt'],
@@ -187,7 +186,7 @@ const newNodesConfig = [
       leftHandles: 2,
       bgcolor: '#ffe682',
       headColor: '#f5d65b',
-      
+
       img: perplexity,
       category: 'LLMs',
       sources: ['system', 'prompt'],
@@ -207,7 +206,7 @@ const newNodesConfig = [
       leftHandles: 2,
       bgcolor: '#ffe682',
       headColor: '#f5d65b',
-      
+
       img: aws,
       category: 'LLMs',
       sources: ['system', 'prompt'],
@@ -227,7 +226,7 @@ const newNodesConfig = [
       rightHandles: 1,
       leftHandles: 3,
       bgcolor: '#c382ff',
-      
+
       img: openai,
       category: 'Multi-Modal',
       sources: ['system', 'prompt', 'image'],
@@ -246,7 +245,7 @@ const newNodesConfig = [
       rightHandles: 1,
       leftHandles: 3,
       bgcolor: '#c382ff',
-      
+
       img: Anthropic,
       category: 'Multi-Modal',
       sources: ['system', 'prompt', 'image'],
@@ -265,7 +264,7 @@ const newNodesConfig = [
       rightHandles: 1,
       leftHandles: 3,
       bgcolor: '#c382ff',
-      
+
       img: google,
       category: 'Multi-Modal',
       sources: ['system', 'prompt', 'image'],
@@ -274,7 +273,24 @@ const newNodesConfig = [
       fieldValue2: ''
     },
   },
-
+  {
+    id: 'database-3',
+    type: 'NodeNode',
+    data: {
+      name: 'Database Loader',
+      isInput: false,
+      isType: false,
+      rightHandles: 1,
+      leftHandles: 0,
+      bgcolor: '#f57e2a',
+      img: databaseLoader,
+      category: 'Knowledge Base',
+      sources: [],
+      targets: ['Database'],
+      fieldValue1: '',
+      fieldValue2: ''
+    },
+  },
   {
     id: 'database-1',
     type: 'NodeNode',
@@ -284,7 +300,7 @@ const newNodesConfig = [
       isType: false,
       rightHandles: 1,
       leftHandles: 1,
-      bgcolor: '#ff9382',
+      bgcolor: '#f57e2a',
       img: database,
       category: 'Knowledge Base',
       sources: ['query'],
@@ -302,7 +318,7 @@ const newNodesConfig = [
       isType: false,
       rightHandles: 1,
       leftHandles: 0,
-      bgcolor: '#ff9382',
+      bgcolor: '#f57e2a',
       img: chat,
       category: 'Knowledge Base',
       sources: [],
@@ -330,7 +346,7 @@ const newNodesConfig = [
       category: 'Integrations',
     },
   },
-  
+
   {
     id: 'newNode-1',
     type: 'NodeNode',
@@ -632,7 +648,7 @@ const newNodesConfig = [
       category: 'Triggers',
     },
   },
-  
+
 ];
 
 export { newNodesConfig };

@@ -34,8 +34,8 @@ class User(BaseModel):
     hashed_password: str
     disabled: bool = False
 
-class BookName(BaseModel):
-    book_name: str
+class BookID(BaseModel):
+    book_id: str
 
 class PipelineRequest(BaseModel):
     pipeline_id: str

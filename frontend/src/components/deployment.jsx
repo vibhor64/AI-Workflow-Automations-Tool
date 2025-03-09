@@ -141,7 +141,12 @@ export const Deployment = (props) => {
       const { pipelineOutput } = response.data;
       let displayOutput;
 
-      if (typeof pipelineOutput === "object" && pipelineOutput !== null) {
+      if (pipelineOutput?.status === "error") {
+        displayOutput = "An unexpected error occurred while processing the pipeline! This is likely because your pipeline inputs are invalid. If the problem persists, re-authenticate all your inbound integrations. <div>Error message from server: ";
+        displayOutput += pipelineOutput["message"];
+        displayOutput += "</div>";
+      }
+      else if (typeof pipelineOutput === "object" && pipelineOutput !== null) {
         // If pipelineOutput is an object, stringify it for display
         displayOutput = JSON.stringify(pipelineOutput, null, 2);
       } else {

@@ -66,6 +66,7 @@ async def remove_template(username: str, template_name: str):
 # Book operations
 async def add_book(username: str, book_data: dict):
     try:
+        print(book_data)
         result = collection_name.update_one(
             {"_id": username},  
             {"$push": {"books": book_data}},
@@ -76,12 +77,12 @@ async def add_book(username: str, book_data: dict):
     except Exception as e:
         return {"status": "error", "message": str(e)}
 
-async def remove_book(username: str, book_name: str):
+async def remove_book(username: str, book_id: str):
     try:
-        print(username, book_name)
+        print(username, book_id)
         result = collection_name.update_one(
             {"_id": username},
-            {"$pull": {"books": {"name": book_name}}}  
+            {"$pull": {"books": {"id": book_id}}}  
         )
         if result.modified_count == 0:
             return {"status": "error", "message": "Book not found or user does not exist"}

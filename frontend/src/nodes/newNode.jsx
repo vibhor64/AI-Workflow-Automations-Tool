@@ -31,6 +31,7 @@ const selector = (state) => ({
   onConnect: state.onConnect,
   updateNodeField: state.updateNodeField,
   deleteNode: state.deleteNode,
+  database: state.database,
 });
 
 export const NewNode = ({ id, data }) => {
@@ -51,7 +52,7 @@ export const NewNode = ({ id, data }) => {
     fieldValue2,
   } = data;
 
-  const { updateNodeField, deleteNode } = useStore(selector, shallow);
+  const { updateNodeField, deleteNode, database } = useStore(selector, shallow);
 
   const [status, setStatus] = useState(null);
   const [nodeState, setNodeState] = useState();
@@ -59,7 +60,8 @@ export const NewNode = ({ id, data }) => {
     name === "GForms" ||
     name === "Google Meet" ||
     name === "Notion" ||
-    name === "Discord"
+    name === "Discord" ||
+    category === "Knowledge Base"
       ? ""
       : fieldValue1 || `Node-${id.split("-")[1]}`;
   const initialName2 = fieldValue2 || `Node-${id.split("-")[1]}`;
@@ -109,6 +111,11 @@ export const NewNode = ({ id, data }) => {
     updateNodeField(id, "fieldValue2", `${e.target.value}`);
   };
 
+  const handleDatabaseNameChange = (e) => {
+    setInputType(e.target.value);
+    updateNodeField(id, "fieldValue1", `${e.target.value}`);
+  };
+
   const updateNodeInternals = useUpdateNodeInternals();
   const [handleCount, setHandleCount] = useState(0);
   const updateHandleCount = useCallback(
@@ -143,6 +150,7 @@ export const NewNode = ({ id, data }) => {
     } else if (
       name === "GDocs" ||
       name === "GSheets" ||
+      name === "GForms" ||
       name === "Google Meet" ||
       name === "Gmail"
     ) {
@@ -210,6 +218,7 @@ export const NewNode = ({ id, data }) => {
         if (
           name === "GDocs" ||
           name === "GSheets" ||
+          name === "GForms" ||
           name === "Google Meet" ||
           name === "Gmail"
         ) {
@@ -1110,7 +1119,7 @@ export const NewNode = ({ id, data }) => {
             <div style={{ height: "100px" }}></div>
           )}
 
-          {name === "Database (RAG)" ? (
+          {name === "Database (RAG)" || name === "Database Loader" ? (
             <label
               style={{
                 display: "flex",
@@ -1133,7 +1142,7 @@ export const NewNode = ({ id, data }) => {
               </span>
               <select
                 value={inputType}
-                onChange={handleTypeChange}
+                onChange={handleDatabaseNameChange}
                 style={{
                   padding: "3px 2px",
                   borderRadius: "4px",
@@ -1152,20 +1161,16 @@ export const NewNode = ({ id, data }) => {
                 }
                 onBlur={(e) => (e.target.style.boxShadow = "none")}
               >
-                {name === "Database (RAG)" ? (
+                {name === "Database (RAG)" || name === "Database Loader" ? (
                   <>
-                    <option value="ReactFlow Docs" style={{ fontWeight: 600 }}>
-                      ReactFlow Docs
+                    <option value={"Select database"} style={{ fontWeight: 600 }} key={database.id}>
+                      Select database
                     </option>
-                    <option value="IBM QnA" style={{ fontWeight: 600 }}>
-                      IBM QnA
+                  {database?.map((database) => (
+                    <option value={database.name} style={{ fontWeight: 600 }} key={database.id}>
+                      {database.name}
                     </option>
-                    <option
-                      value="U.S.A. Presidents Wiki"
-                      style={{ fontWeight: 600 }}
-                    >
-                      U.S.A. Presidents Wiki
-                    </option>
+                  ))}
                   </>
                 ) : (
                   <>

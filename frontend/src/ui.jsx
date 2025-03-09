@@ -50,12 +50,6 @@ export const PipelineUI = () => {
     createDeployment,
   } = useStore(selector, shallow);
 
-  // const navigate = useNavigate();
-  // let accessToken = sessionStorage.getItem("access_token");
-  // if (!accessToken) {
-  //   navigate('/login');
-  // }
-
   const onDrop = useCallback(
     (event) => {
       event.preventDefault();
@@ -123,8 +117,8 @@ export const PipelineUI = () => {
     }));
 
     // console.log(JSON.stringify({ formattedNodes, formattedEdges }, null, 2));
-    // console.log(edges);
-    // console.log(nodes);
+    console.log(formattedNodes);
+    // console.log(formattedEdges);
     // saveJSONFile(nodes, 'nodes.json');
     // saveJSONFile(edges, 'edges.json');
 

@@ -15,7 +15,7 @@ from google_auth_oauthlib.flow import Flow
 from google.auth.transport.requests import Request as GoogleRequest
 from googleapiclient.discovery import build
 from utils.validate import checkDAG, isConnected, countIONodes
-from models import Node, Edge, Pipeline, PipelineInputs, UserCreate, Token, Epic_DB, BookName, PipelineRequest, ModifyBook, DocumentCreate
+from models import Node, Edge, Pipeline, PipelineInputs, UserCreate, Token, Epic_DB, BookID, PipelineRequest, ModifyBook, DocumentCreate
 from utils.database import find_user, register_user, add_template, add_book, modify_book, remove_book, fetch_google_creds, save_google_creds
 import base64
 from email.message import EmailMessage
@@ -203,8 +203,6 @@ async def execute_pipeline_endpoint(pipeline_id: str, request: Request):
 @app.get('/server/pipelines/fetch_all')
 async def fetch_pipelines(current_user = Depends(get_current_user)):
     data = await get_all_pipelines(current_user["username"])
-    # add a 2 second waiting timer
-    # await asyncio.sleep(2)
     return data
 
 @app.post('/server/pipelines/fetch_one')
@@ -292,6 +290,16 @@ def read_users_me(current_user: Epic_DB = Depends(get_current_user)):
 def read_users_me(current_user: Epic_DB = Depends(get_current_user)):
     ans = current_user["username"]
     return {"username" : ans}
+
+# Get Books
+@app.get("/users/books")
+def read_users_me(current_user: Epic_DB = Depends(get_current_user)):
+    return current_user.get('books', [])
+
+# Get Templates
+@app.get("/users/templates")
+def read_users_me(current_user: Epic_DB = Depends(get_current_user)):
+    return current_user.get("templates", [])
 
 @app.post("/refresh", response_model=Token)
 def refresh(response: Response, refresh_token: str = Cookie(None)):
@@ -547,8 +555,8 @@ async def call_add_book(book_data: dict, current_user = Depends(get_current_user
 
 # Remove book
 @app.delete('/database/remove_book')
-async def call_remove_book(book_name: BookName, current_user = Depends(get_current_user)):
-    result = await remove_book(current_user["username"], book_name.book_name)
+async def call_remove_book(book_id: BookID, current_user = Depends(get_current_user)):
+    result = await remove_book(current_user["username"], book_id.book_id)
     if result["status"] == "success":
         return result
     else:

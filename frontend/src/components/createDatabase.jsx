@@ -3,6 +3,7 @@ import Close from '../assets/close.png';
 import Delete from '../assets/delete.png';
 import info from '../assets/info.png';
 import { pushBook, deleteBook as removeBook, modifyBook as editBook } from '../logic/auth';
+import deleteStyles from "./templates.module.css"
 
 export const CreateDatabase = ({ onClose, type, id, name, text, urls, addBooks, modifyBook, deleteBook }) => {
     const [hoverClose, setHoverClose] = useState(false);
@@ -17,12 +18,18 @@ export const CreateDatabase = ({ onClose, type, id, name, text, urls, addBooks, 
     const [hoverInput3, setHoverInput3] = useState(false);
     const [hoverInput4, setHoverInput4] = useState(false);
     const [hoverInput5, setHoverInput5] = useState(false);
-    // console.log(id);
+    const [deletePipe, setDeletePipe] = useState(0);
+    const [hoverDeleteClose, setHoverDeleteClose] = useState(-1);
 
     const handleButtonClick = (e) => {
         e.stopPropagation();
         onClose();
     };
+
+    const handleDeleteModalClose = () => {
+        setDeletePipe(0);
+        setHoverDeleteClose(-1);
+      };
 
     const handleUrlChange = (e, index) => {
         // set URL with index = index as e.target.value
@@ -41,13 +48,11 @@ export const CreateDatabase = ({ onClose, type, id, name, text, urls, addBooks, 
 
     const saveBook = (e) => {
         if (type === 'create' && bookName !== '') {
-            // pushBook({"id": id, "name": bookName, "text": bookText, "urls": bookUrl });
             addBooks([{ "id": id, "name": bookName, "text": bookText, "urls": bookUrl }]);
             console.log("Created book with id: ", id);
             handleButtonClick(e);
         }
         else if (bookName !== '') {
-            // editBook(bookName, {"id": id, "name": bookName, "text": bookText, "urls": bookUrl });
             modifyBook({ "id": id, "name": bookName, "text": bookText, "urls": bookUrl });
             handleButtonClick(e);
         }
@@ -55,9 +60,10 @@ export const CreateDatabase = ({ onClose, type, id, name, text, urls, addBooks, 
 
     const DeleteBook = async (e) => {
         if (accessToken) {
-            await removeBook(bookName);
+            await removeBook(id);
         }
-        await deleteBook({ "id": id, "name": bookName, "text": bookText, "urls": bookUrl });
+        await deleteBook(id);
+        handleDeleteModalClose();
         handleButtonClick(e);
     }
 
@@ -104,7 +110,8 @@ export const CreateDatabase = ({ onClose, type, id, name, text, urls, addBooks, 
                         borderRadius: '50%',
                         transition: 'background-color 0.2s ease', // Only animate background color
                       }}
-                    onClick={DeleteBook}><img src={Delete} alt="Close" style={{ width: '22px', height: '22px' }} /></button>
+                      title="Delete Book"
+                    onClick={()=>setDeletePipe(1)}><img src={Delete} alt="Delete Book" style={{ width: '22px', height: '22px' }} /></button>
             ) : null}
             <button onMouseEnter={() => setHoverInput5(true)} onMouseLeave={() => setHoverInput5(false)}
                 style={{ backgroundColor: hoverInput5 ? '#526bd1' : '#2D4ECF', height: '26px', width: '50px', position: 'absolute', bottom: '10px', right: '20px', border: 'none', cursor: 'pointer', alignItems: 'center', justifyContent: 'center', display: 'flex', borderRadius: '6px', transition: 'all 0.2s ease', color: '#fff', fontWeight: 'bold' }}
@@ -168,6 +175,70 @@ export const CreateDatabase = ({ onClose, type, id, name, text, urls, addBooks, 
                     <div style={{ height: '10px' }}></div>
                 </div>
             </div>
+
+            {/* Delete Modal */}
+                  {deletePipe != 0 && (
+                    <div
+                      style={{ opacity: deletePipe != 0 ? 1 : 0 }}
+                      className={deleteStyles.save}
+                    >
+                      <span
+                        style={{
+                          fontSize: "26px",
+                          fontWeight: "bold",
+                          color: "#000",
+                          marginLeft: "15px",
+                          marginTop: "10px",
+                        }}
+                      >
+                        Delete Database?
+                      </span>
+                      <div
+                        style={{
+                          fontSize: "12px",
+                          // fontWeight: "600",
+                          color: "#000",
+                          marginLeft: "15px",
+                          marginTop: "14px",
+                          marginBottom: "21px",
+                        }}
+                      >
+                        Are you sure you want to delete {bookName}? This
+                        is an irreversible action.
+                      </div>
+                      <button onClick={DeleteBook} className={deleteStyles.saveButton}>
+                        Delete
+                      </button>
+            
+                      <button
+                        onMouseEnter={() => setHoverDeleteClose(1)}
+                        onMouseLeave={() => setHoverDeleteClose(-1)}
+                        style={{
+                          backgroundColor: hoverDeleteClose === 1 ? "#d1d1d1" : "#fff",
+                          height: "30px", // Fixed size to match the container
+                          width: "30px", // Fixed size to match the container
+                          position: "absolute",
+                          top: "14%", // Center vertically
+                          left: "93%", // Center horizontally
+                          transform: "translate(-50%, -50%)", // Adjust for exact centering
+                          border: "none",
+                          cursor: "pointer",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          display: "flex",
+                          borderRadius: "50%",
+                          transition: "background-color 0.2s ease", // Only animate background color
+                        }}
+                        onClick={() => handleDeleteModalClose()}
+                      >
+                        <img
+                          src={Close}
+                          alt="Close"
+                          style={{ width: "22px", height: "22px" }}
+                        />
+                      </button>
+                    </div>
+                  )}
         </div>
 
     )

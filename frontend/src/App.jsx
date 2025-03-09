@@ -28,7 +28,7 @@ function App() {
     }}>
       {/* Category Selector */}
       <div style={{ display: 'flex', gap: '10px', marginBottom: '10px', marginLeft: '15px' }}>
-        <select defaultValue={pathAfterBaseURL} onChange={(e) => changePage(e.target.value)}
+        <select defaultValue={'Pipelines'} onChange={(e) => changePage(e.target.value)}
           onMouseEnter={() => setHover(true)}
           onMouseLeave={() => setHover(false)}
           style={{

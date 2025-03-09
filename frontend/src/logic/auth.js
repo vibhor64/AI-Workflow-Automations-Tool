@@ -322,7 +322,7 @@ export async function pushBook(book) {
 }
 
 // Delete Book
-export async function deleteBook(book_name) {
+export async function deleteBook(book_id) {
     try {
         let token = getAccessToken();
 
@@ -336,7 +336,7 @@ export async function deleteBook(book_name) {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${token}`,
             },
-            body: JSON.stringify({book_name}),
+            body: JSON.stringify({book_id}),
             credentials: "include", // Include cookies in requests
         });
 

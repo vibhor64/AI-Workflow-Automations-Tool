@@ -141,18 +141,22 @@ export const useStore = create((set, get) => ({
       console.warn(`Book with name "${book.name}" does not exist.`);
     }
   },
-  deleteBook: (book) => {
+  deleteBook: (book_id) => {
     const currentDatabase = get().database;
-    const bookExists = currentDatabase.some((b) => b.id === book.id);
+    const bookExists = currentDatabase.some((b) => b.id === book_id);
 
     if (bookExists) {
       set({
-        database: currentDatabase.filter((b) => b.id !== book.id),
+        database: currentDatabase.filter((b) => b.id !== book_id),
       });
-      // removeBook(book.name);
     } else {
-      console.warn(`Book with id "${book.id}" does not exist.`);
+      console.warn(`Book with id "${book_id}" does not exist.`);
     }
+  },
+  clearBooks: () => {
+    set({
+      database: [],
+    })
   },
   onNodesChange: (changes) => {
     set({

@@ -40,23 +40,10 @@ export const LoginWindow = () => {
 
     async function fetchData() {
         try {
-            const data = await requestWithAuth("/users/me");
+            const data = await requestWithAuth("/users/username");
             console.log(data);
+            return data
 
-            if (
-                Array.isArray(data["templates"]) &&
-                data["templates"].length > 0 && templateAdded===false
-            ) {
-                for (let i = 0; i < data["templates"].length; i++) {
-                    addTemplate(data["templates"][i]["template"]);
-                }
-                setTemplateAdded(true);
-            }
-
-            if (Array.isArray(data["books"]) && data["books"].length > 0 && database.length === 0) {
-                addBooks(data["books"]);
-            }
-            return data;
         } catch (error) {
             console.error("Error fetching data:", error.message);
             return null;
@@ -195,7 +182,6 @@ export const LoginWindow = () => {
         try {
             await registerUser(username, password);
             console.log("Logged in!");
-            await fetchData();
         } catch (error) {
             console.error("Error:", error.message);
             setIncorrect("Username already exists");
@@ -452,10 +438,6 @@ export const LoginWindow = () => {
                         onClick={() => handleRegister(username, pass)}>
                         Register
                     </button>
-                    {/* <button
-                        style={hover === 5 ? { ...styles.autoButton2, backgroundColor: '#454545' } : styles.autoButton2}
-                        onMouseEnter={() => setHover(5)} onMouseLeave={() => setHover(0)}
-                        onClick={() => fetchData()}>fetch data</button> */}
                 </div>
             </div>
             <div
@@ -531,7 +513,7 @@ const styles = {
         padding: "10px 2px",
         width: "18rem",
         textAlign: "center",
-        transition: "all 200ms",
+        transition: "all 0.15s",
         listStyle: "none",
         verticalAlign: "baseline",
         whiteSpace: "nowrap",
@@ -557,7 +539,7 @@ const styles = {
         padding: "10px 28px",
         width: "18rem",
         textAlign: "center",
-        transition: "all 200ms",
+        transition: "all 0.15s",
         verticalAlign: "baseline",
         whiteSpace: "nowrap",
         userSelect: "none",
@@ -581,7 +563,7 @@ const styles = {
         padding: "8px 28px",
         width: "18rem",
         textAlign: "center",
-        transition: "all 200ms",
+        transition: "all 0.15s",
         justifyContent: "center",
         alignItems: "center",
         WebkitFontSmoothing: "antialiased",
@@ -605,7 +587,7 @@ const styles = {
         width: "17rem",
         // height: '14px',
         padding: "8px 8px",
-        transition: "all 0.2s",
+        transition: "all 0.15s",
         lineHeight: "1",
         outline: "none",
         overflow: "hidden",
