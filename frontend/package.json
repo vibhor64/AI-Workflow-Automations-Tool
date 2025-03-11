@@ -17,6 +17,7 @@
     "react-dom": "^18.2.0",
     "react-loading-indicators": "^1.0.0",
     "react-router-dom": "^7.1.5",
+    "react-select": "^5.10.1",
     "react-transition-group": "^4.4.5",
     "reactflow": "^11.8.3",
     "web-vitals": "^2.1.4"

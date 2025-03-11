@@ -18,10 +18,12 @@ export const DraggableNode = ({ type, label, configId, img, name }) => {
       onDragStart={(event) => onDragStart(event, type)}
       onDragEnd={(event) => (event.target.style.cursor = 'grab')}
       style={{
+        position: 'relative',
         cursor: name=== 'Coming Soon' ? 'not-allowed' : 'grab',
         paddingLeft: '10px',
         paddingRight: '10px',
-        minWidth: '60px',
+        minWidth: '70px',
+        fontFamily: 'Inter',
         height: '55px',
         display: 'flex',
         alignItems: 'center',
@@ -42,11 +44,11 @@ export const DraggableNode = ({ type, label, configId, img, name }) => {
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
     >
-      <img src={img} alt={type} style={{ width: '20px', marginTop: '5px', marginBottom: '10px', 
+      <img src={img} alt={type} style={{ width: '20px', marginTop: '5px', marginBottom: '10px', transform: 'translate(-0%, -35%)', 
         cursor: name=== 'Coming Soon' ? 'not-allowed' : 'grab', 
         pointerEvents: name=== 'Coming Soon' ? 'none' : 'auto'
         }} />
-      <span style={{ color: name=== 'Coming Soon' ? '#ccc' : '#000', position: 'relative', bottom: '3px'}}>{label}</span>
+      <span style={{ color: name=== 'Coming Soon' ? '#ccc' : '#000', position: 'absolute', bottom: '6px'}}>{label}</span>
     </div>
   );
 };

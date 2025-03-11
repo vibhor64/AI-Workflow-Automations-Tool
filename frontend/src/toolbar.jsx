@@ -25,16 +25,29 @@ export const PipelineToolbar = () => {
                 {categories.map((category) => (
                     <button
                         key={category}
+                        // style={{
+                        //     backgroundColor: 'transparent',
+                        //     // color: selectedCategory === category ? '#000' : '#fff',
+                        //     color: hoveredCategory === category ? '#d1d1d1' : selectedCategory === category ? '#1a4aa3' : '#fff',
+                        //     border: 'none',
+                        //     borderRadius: '5px',
+                        //     cursor: 'pointer',
+                        //     fontWeight: 600,
+                        //     transition: 'color 0.3s ease',
+                        // }}
                         style={{
-                            backgroundColor: 'transparent',
-                            // color: selectedCategory === category ? '#000' : '#fff',
-                            color: hoveredCategory === category ? '#000' : selectedCategory === category ? '#1a4aa3' : '#fff',
-                            border: 'none',
-                            borderRadius: '5px',
+                            padding: '6px 12px',
+                            fontFamily: 'Inter',
+                            fontSize: '12px',
+                            fontWeight: '600',
+                            borderRadius: '20px',
                             cursor: 'pointer',
-                            fontWeight: 600,
-                            transition: 'color 0.3s ease',
-                        }}
+                            transition: 'all 0.3s ease',
+                            border: 'none',
+                            backgroundColor: selectedCategory === category ? '#2d4ecf' : '#f1f1f1',
+                            color: selectedCategory === category ? '#fff' : '#333',
+                            boxShadow: selectedCategory === category ? ' rgba(17, 12, 46, 0.15) 0px 48px 100px 0px' : 'none',
+                          }}
                         onMouseEnter={() => setHoveredCategory(category)}
                         onMouseLeave={() => setHoveredCategory(null)}
                         onClick={() => setSelectedCategory(category)}
@@ -45,7 +58,7 @@ export const PipelineToolbar = () => {
             </div>
                 
             {/* Filtered Node List */}
-            <div style={{ marginTop: '10px', marginLeft: '15px', display: 'flex', gap: '13px', marginBottom: '10px', overflowX: 'auto', whiteSpace: 'nowrap', WebkitOverflowScrolling: 'touch', scrollbarWidth: 'none', msOverflowStyle: 'none', }}>
+            <div style={{ marginTop: '10px', marginLeft: '15px', display: 'flex', gap: '13px', marginBottom: '10px', overflowX: 'auto', whiteSpace: 'nowrap', WebkitOverflowScrolling: 'touch', scrollbarWidth: 'none', msOverflowStyle: 'none',}}>
                 {newNodesConfig
                     .filter((config) => config.data.category === selectedCategory)
                     .map((config) => (

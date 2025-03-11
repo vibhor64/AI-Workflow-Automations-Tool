@@ -50,6 +50,8 @@ export const PipelineUI = () => {
     createDeployment,
   } = useStore(selector, shallow);
 
+  const [hover, setHover] = useState(false);
+
   const onDrop = useCallback(
     (event) => {
       event.preventDefault();
@@ -150,7 +152,7 @@ export const PipelineUI = () => {
 
   return (
     <>
-      <div ref={reactFlowWrapper} style={{ height: '82vh', backgroundColor: '#ffffff', borderRadius: '10px', display: 'flex', width: '99vw' }} className='big-man'>
+      <div ref={reactFlowWrapper} style={{ height: '80.8vh', backgroundColor: '#ffffff', borderRadius: '10px', display: 'flex', width: '99vw' }} className='big-man'>
         <ReactFlow
           nodes={nodes}
           edges={edges}
@@ -173,21 +175,24 @@ export const PipelineUI = () => {
       {/* Run 🚀 */}
         <div style={{ display: 'flex', position: 'absolute', bottom: '10px', height: '10vh', alignItems: 'center', justifyContent: 'center', transform: 'translate(-50%, -10%)', left: '50%' }}>
           <button
+          onMouseEnter={() => setHover(1)}
+          onMouseLeave={() => setHover(0)}
             style={{
-              backgroundColor: '#5b96f5',
+              background: `linear-gradient(to right,rgb(153, 183, 231),rgb(59, 128, 239))`,
               borderRadius: '10px',
-              border: '2px solid #5b96f5',
+              // border: '2px solid #5b96f5',
+              border: 'none',
               color: '#fff',
               cursor: 'pointer',
               display: 'inline-block',
-              // fontFamily: 'Poppins',
+              // fontFamily: 'Inter',
               fontSize: '18px',
               fontWeight: 700,
               listStyle: 'none',
               margin: '0',
-              padding: '11px 13px',
+              padding: hover ? '13px 16px' : '11px 13px',
               textAlign: 'center',
-              transition: 'all 200ms',
+              transition: 'all 0.1s',
               verticalAlign: 'baseline',
               whiteSpace: 'nowrap',
               userSelect: 'none',
@@ -195,7 +200,7 @@ export const PipelineUI = () => {
               touchAction: 'manipulation',
               display: 'flex',
               alignItems: 'center',
-              justifyContent: 'center'
+              justifyContent: 'center',
             }}
             onClick={sendPipelineData}
             type="submit">Run

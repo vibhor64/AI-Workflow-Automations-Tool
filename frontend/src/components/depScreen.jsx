@@ -25,7 +25,7 @@ export const DepScreen = () => {
         <>
             <div style={{display: 'flex', flexDirection: 'column', height: '95vh'}}>
             {/* Category Selector */}
-            <div style={{ display: 'flex', gap: '10px', marginBottom: '15px', marginLeft: '20px', color: '#ededed', fontWeight: 'normal'}}>
+            <div style={{ display: 'flex', gap: '10px', marginBottom: '15px', marginLeft: '20px', color: '#fff', fontWeight: 400, fontFamily: 'Inter'}}>
                 <span>Your deployed pipelines will appear here as a unit or automation.</span>
             </div>
 

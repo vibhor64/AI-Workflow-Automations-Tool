@@ -25,6 +25,7 @@ from email import message_from_bytes
 from routers import discord, google as google_integrations, notion, airtable
 from utils.pipeline_db import save_pipeline, get_pipeline, delete_pipeline, get_all_pipelines
 import asyncio
+from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
 
 """
 - Webhook endpoint for discord to test payload details
@@ -49,6 +50,7 @@ app.include_router(airtable.router)
 # oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 # oauth2_scheme = auth.oauth2_scheme
 
+# app.add_middleware(HTTPSRedirectMiddleware)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:3000"],
@@ -70,7 +72,7 @@ SCOPES = [
     "https://www.googleapis.com/auth/documents",
     "https://www.googleapis.com/auth/spreadsheets.readonly",
     "https://www.googleapis.com/auth/forms.body.readonly",
-    "openid"
+    "openid",
 ]
 # create new route for google integration to seperate code for auth and inte
 # 
@@ -414,7 +416,7 @@ async def google_integration_login(request: Request):
     try:
         redirect_uri = "http://127.0.0.1:8000/auth/google/integration/callback"  # Explicitly set redirect URI
         print(f"Redirect URI: {redirect_uri}")
-        return await oauth.google.authorize_redirect(request, redirect_uri, scope=SCOPES)
+        return await oauth.google.authorize_redirect(request, redirect_uri, scope=SCOPES, access_type="offline", prompt="consent")
     except Exception as e:
         print(f"Authorization error: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Failed to initiate OAuth: {str(e)}")
@@ -447,6 +449,7 @@ async def google_integration_callback(request: Request):
         "scopes": token.get("scope", "").split(),
     }
 
+    print("Google OAuth Credentials:", creds_dict)
     creds_json = json.dumps(creds_dict)
 
     # await save_google_creds(username, creds_dict)  # Store in DB securely

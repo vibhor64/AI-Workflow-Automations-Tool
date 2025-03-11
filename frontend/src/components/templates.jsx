@@ -146,15 +146,16 @@ export const Templates = () => {
                     onClick={OpenBox}
                     style={{
                         backgroundColor: hover ? "#3b59d1" : "#2d4ecf",
-                        borderRadius: "4px",
                         border: hover
-                            ? "2px solid #3b59d1"
-                            : "2px solid #2d4ecf",
-                        // color: '#9dadff',
+                        ? "2px solid #3b59d1"
+                        : "2px solid #2d4ecf",
+                        borderRadius: "12px",
+                        boxShadow: ' rgba(17, 12, 46, 0.15) 0px 48px 100px 0px',
                         color: "#fff",
                         cursor: "pointer",
                         // display: 'inline-block',
                         fontSize: "12px",
+                        fontFamily: 'Inter',
                         fontWeight: 600,
                         listStyle: "none",
                         margin: "0",
@@ -210,6 +211,8 @@ export const Templates = () => {
                                 ? "2px solid #3b59d1"
                                 : "2px solid #2d4ecf",
                         // color: '#9dadff',
+                        borderRadius: "20px",
+                        boxShadow: ' rgba(17, 12, 46, 0.15) 0px 48px 100px 0px',
                         color: "#fff",
                         cursor: "pointer",
                         display: "inline-block",
@@ -264,6 +267,8 @@ export const Templates = () => {
                                 ? "2px solid #3b59d1"
                                 : "2px solid #2d4ecf",
                         // color: '#9dadff',
+                        borderRadius: "20px",
+                        boxShadow: ' rgba(17, 12, 46, 0.15) 0px 48px 100px 0px',
                         color: "#fff",
                         cursor: "pointer",
                         display: "inline-block",
@@ -271,7 +276,7 @@ export const Templates = () => {
                         fontWeight: 600,
                         listStyle: "none",
                         margin: "0",
-                        padding: "6px 6px",
+                        padding: "8px 8px",
                         textAlign: "center",
                         transition: "all 200ms",
                         verticalAlign: "baseline",
@@ -288,7 +293,7 @@ export const Templates = () => {
                     <img
                         src={logout}
                         alt="Add"
-                        style={{ width: "26px", height: "26px" }}
+                        style={{ width: "24px", height: "24px" }}
                     />
                 </button>
             </div>

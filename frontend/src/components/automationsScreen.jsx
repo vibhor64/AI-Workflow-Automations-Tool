@@ -42,7 +42,7 @@ export const AutomationsScreen = () => {
             gap: "10px",
             marginBottom: "15px",
             marginLeft: "20px",
-            color: "#ededed",
+            color: "#fff",
             fontWeight: "normal",
           }}
         >

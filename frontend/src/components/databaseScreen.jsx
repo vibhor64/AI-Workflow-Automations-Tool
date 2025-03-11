@@ -63,12 +63,11 @@ export const DatabaseScreen = () => {
                         gap: "10px",
                         marginBottom: "15px",
                         marginLeft: "20px",
-                        color: "#ededed",
+                        color: "#fff",
                         fontWeight: "normal",
                     }}>
                     <span>
-                        Create a custom database for training, assisting and
-                        boosting your AI models.
+                    Databases can store vast amount of data, and can be loaded either fully or query-based.
                     </span>
                 </div>
 
