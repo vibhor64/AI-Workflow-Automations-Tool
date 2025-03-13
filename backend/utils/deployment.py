@@ -13,7 +13,7 @@ from google.oauth2.credentials import Credentials
 # from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
-from utils.database import fetch_google_creds, save_google_creds
+from utils.database import fetch_google_creds, save_google_creds, modify_book_by_name
 import asyncio
 from email.message import EmailMessage
 # from email import message_from_bytes
@@ -21,6 +21,8 @@ from utils.validate import validate_emails
 from routers.airtable import fetch_airtable_creds, parse_airtable_url, update_airtable_creds, refresh_access_token, clean_airtable_data
 from routers.notion import fetch_notion_creds
 from urllib.parse import urlparse
+import requests
+from bson import ObjectId
 
 # Load environment variables
 load_dotenv()
@@ -85,6 +87,8 @@ def execute_pipeline(pipeline):
             print("res: ", resMap[id])
         elif node_type == "Notion":
             handle_read_notion(node_id, node_data["fieldValue1"], node_data["username"], node_data.get("sources", []))
+        elif node_type == "API":
+            res = handle_read_API(node_id, node_data["fieldValue1"], node_data.get("sources", []))
 
         elif node_type == "Gmail":
             if node_data["rightHandles"] > 0:
@@ -101,6 +105,9 @@ def execute_pipeline(pipeline):
         elif node_type == "Output":
             print("********* Output Node Now************")
             res = handle_output(node_id)
+        elif node_type == "Database Output":
+            print("********* Output Node Now************")
+            res = handle_database_output(node_id, node_data["fieldValue1"], node_data["username"])
         else:
             print("Unknown node type:", node_type)
             resMap[id] = node_data["fieldValue1"]
@@ -184,6 +191,20 @@ def handle_output(id):
     resMap[id] = output
     return output
 
+def handle_database_output(id, db_name, username):
+    output = resMap[handleMap[str(id + '-left-handle-0')]]
+
+    db_id = str(ObjectId())[:-4]
+    db_data = {
+        "id" : db_id,
+        "name" : db_name,
+        "text" : output,
+        "urls" : []
+    }
+
+    asyncio.run(modify_book_by_name(username, db_name, db_data))
+    resMap[id] = output
+    return output
 
 def handle_read_emails(id, fieldValue1, username, sources):
     """Handle Gmail output node to send or draft an email."""
@@ -861,3 +882,74 @@ def handle_read_notion(id, notion_url, username, sources):
         return {"status": "error", "message": f"Failed to fetch Notion page: {error}"}
     except Exception as e:
         return {"status": "error", "message": f"An unexpected error occurred: {str(e)}"}
+
+def handle_read_API(id, input_data, sources):
+    """
+    Fetches data from a dynamically constructed URL based on user-provided inputs.
+
+    Args:
+        id (str): Identifier used to locate variables in `handleMap`.
+        url (str): Base URL template with placeholders like '{{source}}'.
+        sources (list): List of source keys to replace placeholders in the URL.
+
+    Returns:
+        dict: JSON response from the API if successful.
+        str: Error message if an exception occurs.
+    """
+    try:
+        for i in range(len(sources)):
+            if str(id + '-left-handle-' + str(i)) in handleMap:
+                userVariable = resMap[handleMap[str(id + '-left-handle-' + str(i))]]
+                input_data = input_data.replace('{{' + sources[i] + '}}', userVariable)
+        
+        print(input_data)
+        input_data = json.loads(input_data)
+        url = input_data.get("url")
+        params = input_data.get("params", {})
+        headers = input_data.get("headers", {})
+        method = input_data.get("method", "GET")
+        payload = input_data.get("payload", {})
+        timeout = input_data.get("timeout", 30)
+        
+        # Send a GET request to the constructed URL
+        response = requests.get(method, url, params=params, headers=headers, json=payload, timeout=timeout)
+        
+        # Raise an exception if the response contains an HTTP error status code
+        response.raise_for_status()
+        
+        # Parse and return the JSON response
+        resMap[id] = response.json()
+        return response.json()
+    
+    except requests.exceptions.Timeout:
+        msg = "Error: The request timed out. Please check the URL and try again."
+        resMap[id] = msg
+        return msg
+    except json.JSONDecodeError:
+        msg = '''Error: Invalid JSON format in input data. Example input: \n {
+    "base_url": "https://api.example.com",
+    "params": {"anime": "ReLIFE"},
+    "headers": {"x-api-key": "YOUR_API_KEY"}
+} \n Make sure to use double quotes (") around keys and values, not single quotes (').'''
+        resMap[id] = msg
+        return msg
+    except requests.exceptions.ConnectionError:
+        msg = "Error: Unable to connect to the server. Please verify the URL."
+        resMap[id] = msg
+        return msg
+    except requests.exceptions.HTTPError as http_err:
+        msg =  f"HTTP error occurred: {http_err}"
+        resMap[id] = msg
+        return msg
+    except ValueError:
+        msg = "Error: Invalid JSON response received from the server."
+        resMap[id] = msg
+        return msg
+    except KeyError as key_err:
+        msg = f"KeyError: Missing key in handleMap or resMap - {key_err}"
+        resMap[id] = msg
+        return msg
+    except Exception as e:
+        msg = f"An unexpected error occurred: {e}"
+        resMap[id] = msg
+        return msg

@@ -238,7 +238,7 @@ export const NewNode = ({ id, data }) => {
         setStatus(false);
       }
 
-      if (category==="Integrations"){
+      if (category==="Integrations" || name === "Database Output"){
         const curr_username = await getUsername();
         updateNodeField(id, "username", curr_username);
       }
@@ -971,6 +971,10 @@ export const NewNode = ({ id, data }) => {
                   ? "Page URL:"
                   : name === "Google Meet"
                   ? "Meet Title:"
+                  : name === "API"
+                  ? "Request Parameters:"
+                  : name === "Database Output"
+                  ? "Database Name:"
                   : "Field Name:"}
               </span>
               <textarea
@@ -990,6 +994,8 @@ export const NewNode = ({ id, data }) => {
                     ? "Eg. 987654321098765432"
                     : name === "Notion"
                     ? "https://www.notion.so/..."
+                    : name === "Database Output"
+                    ? "Must be Unique!"
                     : "Enter here"
                 }
                 style={{
@@ -1146,6 +1152,7 @@ export const NewNode = ({ id, data }) => {
                 style={{
                   padding: "3px 2px",
                   borderRadius: "4px",
+                  width: "96%",
                   border: `2px solid ${bgcolor}`,
                   color: bgcolor ? bgcolor : "#3c859e",
                   backgroundColor: "#fff",

@@ -1,6 +1,5 @@
 // depScreen.js
 import { React, useEffect, useState } from "react";
-import { Deployment } from "./deployment";
 import { BlankAutomation } from "./blankAutomation";
 import { Automation } from "./automation";
 import { requestWithAuth } from "../logic/auth";

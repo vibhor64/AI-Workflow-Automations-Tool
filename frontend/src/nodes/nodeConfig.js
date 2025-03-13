@@ -23,6 +23,8 @@ import meet from '../assets/meet.png';
 import sheet from '../assets/sheets.png';
 import forms from '../assets/forms.png';
 import airtable from '../assets/airtable.png';
+import api from '../assets/api.png';
+import databaseRes from '../assets/database-res.png';
 import databaseLoader from '../assets/database.svg';
 
 const newNodesConfig = [
@@ -310,6 +312,25 @@ const newNodesConfig = [
     },
   },
   {
+    id: 'database-4',
+    type: 'NodeNode',
+    data: {
+      name: 'Database Output',
+      desc: 'Save pipeline output in a new database',
+      isInput: true,
+      isType: false,
+      rightHandles: 0,
+      leftHandles: 1,
+      bgcolor: '#f57e2a',
+      img: databaseRes,
+      category: 'Knowledge Base',
+      sources: ['results'],
+      // targets: ['results'],
+      fieldValue1: '',
+      fieldValue2: ''
+    },
+  },
+  {
     id: 'database-2',
     type: 'NodeNode',
     data: {
@@ -463,6 +484,23 @@ const newNodesConfig = [
       targets: ['Form Data'],
       fieldValue1: '',
       img: forms,
+      category: 'Integrations',
+    },
+  },
+  {
+    id: 'newNode-59',
+    type: 'NodeNode',
+    data: {
+      name: 'API',
+      desc: 'Connect to any external API. The input should be a dictionary like: {"url" : "", "method" : "", "headers" : "", etc.} Tip: You can use an LLM to further process and format the data.',
+      isInput: true,
+      isType: false,
+      bgcolor: '#1e76fa',
+      rightHandles: 1,
+      leftHandles: 0,
+      targets: ['API Data'],
+      fieldValue1: '',
+      img: api,
       category: 'Integrations',
     },
   },

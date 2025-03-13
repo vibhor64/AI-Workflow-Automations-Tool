@@ -87,6 +87,8 @@ export const Templates = () => {
     const handleLogout = async () => {
         // Clear refresh token
         await logoutUser();
+        // Clear access token
+        sessionStorage.removeItem("access_token");
 
         // Clear zustand store
         clearBooks();

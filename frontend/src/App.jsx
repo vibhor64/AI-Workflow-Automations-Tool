@@ -107,6 +107,7 @@ function App() {
 
                 <Select
                     value={selectedOption}
+                    defaultValue={'pipelines'}
                     onChange={(e)=>changePage2(e)}
                     options={options}
                     className="dropdown"
@@ -115,11 +116,14 @@ function App() {
 
             <Routes>
                 <Route path="/" element={<Navigate to="/login" replace />} />
-                <Route path="/login" element={<LoginWindow />} />
+                <Route path="/login" element={<LoginWindow setSelectedOption={setSelectedOption}/>} />
                 <Route
                     path="/pipelines"
                     element={
                         <>
+                            {()=>setSelectedOption({
+                                value: "pipelines",
+                                label: "Pipelines",})}
                             <PipelineToolbar />
                             <PipelineUI />
                         </>

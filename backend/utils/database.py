@@ -99,7 +99,35 @@ async def modify_book(username: str, book_id: str, new_data: dict):
             {"$set": {"books.$": new_data}}
         )
         if result.modified_count == 0:
-            return {"status": "error", "message": "Book not found or user does not exist"}
+            # If the book does not exist, add it as a new book
+            result = collection_name.update_one(
+                {"_id": username},
+                {"$push": {"books": new_data}}
+            )
+            if result.modified_count == 0:
+                return {"status": "error", "message": "User does not exist"}
+        return {"status": "success", "message": "Book modified successfully"}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
+# modify book by name (for database output node)
+async def modify_book_by_name(username: str, book_name: str, new_data: dict):
+    try:
+        print(username, book_name, new_data)
+        result = collection_name.update_one(
+            {"_id": username, "books.name": book_name},  # Query by book name instead of ID
+            {"$set": {"books.$": new_data}}  # Update the matched book
+        )
+        if result.modified_count == 0:
+            # If the book does not exist, add it as a new book
+            print("Book does not exist, adding new book")
+            result = collection_name.update_one(
+                {"_id": username},
+                {"$push": {"books": new_data}}  # Add the new book to the user's books array
+            )
+            if result.modified_count == 0:
+                print("User does not exist")
+                return {"status": "error", "message": "User does not exist"}
         return {"status": "success", "message": "Book modified successfully"}
     except Exception as e:
         return {"status": "error", "message": str(e)}

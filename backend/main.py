@@ -24,7 +24,6 @@ from googleapiclient.errors import HttpError
 from email import message_from_bytes
 from routers import discord, google as google_integrations, notion, airtable
 from utils.pipeline_db import save_pipeline, get_pipeline, delete_pipeline, get_all_pipelines
-import asyncio
 from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
 
 """
@@ -53,7 +52,7 @@ app.include_router(airtable.router)
 # app.add_middleware(HTTPSRedirectMiddleware)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=["http://localhost:3000", "http://localhost:3001"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

@@ -1,14 +1,20 @@
 // toolbar.js
 
-import { DraggableNode } from './draggableNode';
-import { newNodesConfig } from './nodes/nodeConfig';
-import { useState } from 'react';
+import { DraggableNode } from "./draggableNode";
+import { newNodesConfig } from "./nodes/nodeConfig";
+import { useState } from "react";
 
 export const PipelineToolbar = () => {
-
-    const [selectedCategory, setSelectedCategory] = useState('General');
+    const [selectedCategory, setSelectedCategory] = useState("General");
     const [hoveredCategory, setHoveredCategory] = useState(null);
-    const categories = ['General', 'LLMs', 'Knowledge Base', 'Multi-Modal','Triggers', 'Integrations'];
+    const categories = [
+        "General",
+        "LLMs",
+        "Knowledge Base",
+        "Multi-Modal",
+        "Triggers",
+        "Integrations",
+    ];
 
     return (
         // <div style={{ padding: '10px', backgroundColor: '#e0e0e0' }}>
@@ -21,7 +27,14 @@ export const PipelineToolbar = () => {
 
         <div>
             {/* Category Selector */}
-            <div style={{ display: 'flex', flexDirection: 'row', gap: '10px', marginBottom: '10px', marginLeft: '15px',}}>
+            <div
+                style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    gap: "10px",
+                    marginBottom: "10px",
+                    marginLeft: "15px",
+                }}>
                 {categories.map((category) => (
                     <button
                         key={category}
@@ -36,31 +49,52 @@ export const PipelineToolbar = () => {
                         //     transition: 'color 0.3s ease',
                         // }}
                         style={{
-                            padding: '6px 12px',
-                            fontFamily: 'Inter',
-                            fontSize: '12px',
-                            fontWeight: '600',
-                            borderRadius: '20px',
-                            cursor: 'pointer',
-                            transition: 'all 0.3s ease',
-                            border: 'none',
-                            backgroundColor: selectedCategory === category ? '#2d4ecf' : '#f1f1f1',
-                            color: selectedCategory === category ? '#fff' : '#333',
-                            boxShadow: selectedCategory === category ? ' rgba(17, 12, 46, 0.15) 0px 48px 100px 0px' : 'none',
-                          }}
+                            padding: "6px 12px",
+                            fontFamily: "Inter",
+                            fontSize: "12px",
+                            fontWeight: "600",
+                            borderRadius: "20px",
+                            cursor: "pointer",
+                            transition: "all 0.3s ease",
+                            border: "none",
+                            backgroundColor:
+                                selectedCategory === category
+                                    ? "#2d4ecf"
+                                    : "#f1f1f1",
+                            color:
+                                selectedCategory === category ? "#fff" : "#333",
+                            boxShadow:
+                                selectedCategory === category
+                                    ? " rgba(17, 12, 46, 0.15) 0px 48px 100px 0px"
+                                    : "none",
+                        }}
                         onMouseEnter={() => setHoveredCategory(category)}
                         onMouseLeave={() => setHoveredCategory(null)}
-                        onClick={() => setSelectedCategory(category)}
-                    >
+                        onClick={() => setSelectedCategory(category)}>
                         {category}
                     </button>
                 ))}
             </div>
-                
+
             {/* Filtered Node List */}
-            <div style={{ marginTop: '10px', marginLeft: '15px', display: 'flex', gap: '13px', marginBottom: '10px', overflowX: 'auto', whiteSpace: 'nowrap', WebkitOverflowScrolling: 'touch', scrollbarWidth: 'none', msOverflowStyle: 'none',}}>
+            <div
+                style={{
+                    marginTop: "10px",
+                    marginLeft: "15px",
+                    display: "flex",
+                    gap: "13px",
+                    marginBottom: "10px",
+                    overflowX: "auto",
+                    whiteSpace: "nowrap",
+                    WebkitOverflowScrolling: "touch",
+                    scrollbarWidth: "none",
+                    msOverflowStyle: "none",
+                    boxShadow: ''
+                }}>
                 {newNodesConfig
-                    .filter((config) => config.data.category === selectedCategory)
+                    .filter(
+                        (config) => config.data.category === selectedCategory
+                    )
                     .map((config) => (
                         <DraggableNode
                             key={config.id}

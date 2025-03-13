@@ -14,6 +14,7 @@ import { useStore } from "./store";
 import { shallow } from "zustand/shallow";
 import "./index.css";
 import { useNavigate } from "react-router-dom";
+import { OrbitProgress } from "react-loading-indicators";
 
 const selector = (state) => ({
     loadTemplate: state.loadTemplate,
@@ -24,10 +25,10 @@ const selector = (state) => ({
     addBooks: state.addBooks,
     database: state.database,
     templateAdded: state.templateAdded,
-    setTemplateAdded: state.setTemplateAdded
+    setTemplateAdded: state.setTemplateAdded,
 });
 
-export const LoginWindow = () => {
+export const LoginWindow = ({setSelectedOption}) => {
     const [username, setUsername] = useState("");
     const [pass, setPass] = useState("");
     const [hover, setHover] = useState(0);
@@ -36,14 +37,14 @@ export const LoginWindow = () => {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
-    const { addTemplate, addBooks, database, templateAdded, setTemplateAdded } = useStore(selector, shallow);
+    const { addTemplate, addBooks, database, templateAdded, setTemplateAdded } =
+        useStore(selector, shallow);
 
     async function fetchData() {
         try {
             const data = await requestWithAuth("/users/username");
             console.log(data);
-            return data
-
+            return data;
         } catch (error) {
             console.error("Error fetching data:", error.message);
             return null;
@@ -80,7 +81,7 @@ export const LoginWindow = () => {
                 window.history.replaceState({}, document.title, newUrl);
 
                 // Get refresh token
-                await get_google_refresh_token()
+                await get_google_refresh_token();
             }
             setLoading(false);
         }
@@ -207,6 +208,9 @@ export const LoginWindow = () => {
     const gotoWeb = () => {
         // Successfully logs in user, navigate to the web page
         setLoading(false);
+        setSelectedOption({
+            value: "pipelines",
+            label: "Pipelines",})
         navigate("/pipelines");
     };
 
@@ -458,6 +462,18 @@ export const LoginWindow = () => {
                     <button style={styles.tos}>Privacy Policy.</button>
                 </div>
             </div>
+
+            {/* Loading spinner */}
+            {loading && (
+                <div style={{ position: "absolute", }}>
+                    <OrbitProgress
+                        color="#2D4ECF"
+                        size="medium"
+                        text=""
+                        textColor=""
+                    />
+                </div>
+            )}
         </div>
     );
 };
