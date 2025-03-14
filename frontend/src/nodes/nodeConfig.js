@@ -308,7 +308,23 @@ const newNodesConfig = [
       sources: ['query'],
       targets: ['results'],
       fieldValue1: '',
-      fieldValue2: ''
+      fieldValue2: '',
+      constantValueList : [{
+        name: 'Max Chunk Size',
+        value: 1000,
+        placeholder: 'Exactly what it says',
+      },
+      {
+        name: 'Chunk Overlap',
+        value: 200,
+        placeholder: 'Overlap between chunks',
+      },
+      {
+        name: 'Number of Chunks',
+        value: 5,
+        placeholder: 'Total number of chunks',
+      }
+    ]
     },
   },
   {
@@ -327,7 +343,7 @@ const newNodesConfig = [
       sources: ['results'],
       // targets: ['results'],
       fieldValue1: '',
-      fieldValue2: ''
+      fieldValue2: '',
     },
   },
   {

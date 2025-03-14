@@ -23,6 +23,7 @@ from routers.notion import fetch_notion_creds
 from urllib.parse import urlparse
 import requests
 from bson import ObjectId
+from utils.rag_utils import chunk_text, retrieve_relevant_chunks
 
 # Load environment variables
 load_dotenv()
@@ -60,12 +61,12 @@ def execute_pipeline(pipeline):
         node_data = G.nodes[node_id]
         node_type = node_data["type"]
         # Handle each node type (input, LLM, output, etc.)
-        if node_type == "Input" or node_type == "File" or node_type == "Trigger":
+        if node_type == "Input" or node_type == "File" or node_type == "Trigger" or node_type == "Database Loader":
             handle_input(node_id, node_data["fieldValue1"])
         elif node_type == "Text":
             handle_text(node_id, node_data["fieldValue1"], node_data["sources"])
-        elif node_type == "Database":
-            handle_DB(node_id)
+        elif node_type == "Database (RAG)":
+            res = handle_rag_database(node_id, node_data["fieldValue1"], node_data["fieldValue2"], node_data["sources"])
         elif node_type == "Connector":
             handle_connector(node_id)
 
@@ -131,6 +132,33 @@ def handle_text(id, fieldValue1, sources):
 def handle_DB(id):
     query = resMap[handleMap[str(id + '-left-handle-0')]]
     resMap[id] = query
+
+def handle_rag_database(id, data, fieldValue2, sources):
+    print("data: ", data)
+    chunk_size = int(fieldValue2.get('0', 1000))
+    overlap = int(fieldValue2.get('1', 200))
+    top_k = int(fieldValue2.get('2', 5))
+    query = resMap[handleMap[str(id + '-left-handle-0')]]
+
+    for i in range(1, len(sources)):
+        if str(id + '-left-handle-' + str(i)) in handleMap:
+            userVariable = resMap[handleMap[str(id + '-left-handle-' + str(i))]]
+            chunk_size = chunk_size.replace('{{' + sources[i] + '}}', userVariable)
+            overlap = overlap.replace('{{' + sources[i] + '}}', userVariable)
+            top_k = top_k.replace('{{' + sources[i] + '}}', userVariable)
+    
+    print("chunk_size: ", chunk_size, "\n overlap: ", overlap, "\n top_k: ", top_k)
+    # Process the text data into chunks for retrieval
+    chunks = chunk_text(data, chunk_size, overlap)
+    
+    # Get the most relevant chunks based on the query
+    relevant_chunks = retrieve_relevant_chunks(query, chunks, top_k)
+    print("relevant_chunks: ", relevant_chunks)
+    
+    # Set the RAG result
+    resMap[id] = relevant_chunks
+    
+    return relevant_chunks
 
 def handle_connector(id):
     for i in range(8):

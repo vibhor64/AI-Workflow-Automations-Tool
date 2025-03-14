@@ -10,9 +10,8 @@ class Node(BaseModel):
     leftHandles: int
     sources: List[str] = []
     targets: List[str] = []
-    # fieldValue1: str = ''
     fieldValue1: Union[str, Dict[Any, Any]] = ''
-    fieldValue2: str = ''
+    fieldValue2: Union[str, Dict[Any, Any]] = ''
 
 class Edge(BaseModel):
     id: str

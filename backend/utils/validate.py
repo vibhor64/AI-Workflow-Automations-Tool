@@ -62,7 +62,7 @@ def countIONodes(nodes):
             input.append(node.fieldValue1)
         elif node.name == "Output" or node.name == "Database Output":
             output.append(node.fieldValue1)
-        elif node.name == "Gmail" or node.name == "Discord" or node.name == "Slack" or node.name == "GDocs" or node.name == "GSheets" or node.name == "Google Meet" or node.name == "GForms" or node.name == "Airtable" or node.name == "Notion" or node.name == "API":
+        elif node.name == "Gmail" or node.name == "Discord" or node.name == "Slack" or node.name == "GDocs" or node.name == "GSheets" or node.name == "Google Meet" or node.name == "GForms" or node.name == "Airtable" or node.name == "Notion" or node.name == "API"  or node.name == "Database Loader":
             if node.rightHandles > 0:
                 integration_input.append(node.name)
             else:
