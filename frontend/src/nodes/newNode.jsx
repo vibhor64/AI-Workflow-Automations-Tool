@@ -34,7 +34,7 @@ const selector = (state) => ({
     database: state.database,
 });
 
-export const NewNode = ({ id, data }) => {
+export const NewNode = ({ id, data, position }) => {
     const {
         name,
         isInput,
@@ -97,6 +97,12 @@ export const NewNode = ({ id, data }) => {
         updateNodeField(id, "fieldValue2", initialName2);
     }, [id, initialName, initialName2]);
 
+    // useEffect(() => {
+    //     setTimeout(() => {
+    //         updateNodeField(id, "position", position);
+    //     }, 50);
+    // }, [leftHandles]);
+
     const handleNameChange = (e) => {
         setCurrName(e.target.value);
         autoResize(e.target);
@@ -127,7 +133,6 @@ export const NewNode = ({ id, data }) => {
     const handleDatabaseNameChange = (e) => {
         setInputType(e.target.value);
         updateNodeField(id, "fieldValue1", `${e.target.value}`);
-        console.log("from handleDatabaseNameChange, fieldValue1: ", fieldValue1);
     };
 
     const updateNodeInternals = useUpdateNodeInternals();
@@ -139,6 +144,25 @@ export const NewNode = ({ id, data }) => {
         },
         [id, updateNodeInternals]
     );
+
+    useEffect(() => {
+        // This ensures React Flow updates its internal representation
+        // whenever any of these handle-related values change
+        updateNodeInternals(id);
+    }, [id, leftHandles, sources, valueArray, updateNodeInternals]);
+    
+    // You might also want to check that your position update works properly
+    useEffect(() => {
+        // Small delay to ensure the DOM has updated before recalculating positions
+        const timer = setTimeout(() => {
+            updateNodeField(id, "position", position);
+            updateNodeInternals(id);
+        }, 50);
+        
+        return () => clearTimeout(timer);
+    }, [id, leftHandles, position]);
+    
+    
 
     const autoResize = (textarea) => {
         textarea.style.height = "auto";
@@ -216,7 +240,6 @@ export const NewNode = ({ id, data }) => {
                 updateNodeField(id, "targets", ["Content"]);
             }
         }
-        console.log(fieldValue1);
     };
 
     const isValidCache = useRef(null);
@@ -296,36 +319,90 @@ export const NewNode = ({ id, data }) => {
         }
     };
 
+    // const handleValueList = (index, s) => {
+    //     // setValueArray((prev) => ({ ...prev, [index]: s }));
+    //     // updateNodeField(id, "fieldValue2", { ...fieldValue2, [index]: s });
+
+    //     setValueArray((prev) => {
+    //         const updatedValueArray = { ...prev, [index]: s };
+    //         updateNodeField(id, "fieldValue2", updatedValueArray);
+    //         return updatedValueArray;
+    //     });
+
+    //     // Identify user-defined variables in the new input
+    //     const matches = getVariableCount(s.trim());
+    //     const newVariableSet = new Set(matches);
+
+    //     // Retrieve previous variables for this index
+    //     const prevMatches = leftHandleCounterArray[index] || [];
+    //     const prevVariableSet = new Set(prevMatches);
+
+    //     // Calculate variables added and removed
+    //     const addedVariables = [...newVariableSet].filter(
+    //         (v) => !prevVariableSet.has(v)
+    //     );
+    //     const removedVariables = [...prevVariableSet].filter(
+    //         (v) => !newVariableSet.has(v)
+    //     );
+
+    //     // Update leftHandles count
+    //     const newLeftHandles =
+    //         leftHandles + addedVariables.length - removedVariables.length;
+    //     updateHandleCount(newLeftHandles);
+    //     updateNodeField(id, "leftHandles", newLeftHandles);
+
+    //     // Update sources array
+    //     const updatedSources = [
+    //         ...sources.filter((v) => !removedVariables.includes(v)), // Remove old variables
+    //         ...addedVariables, // Add new variables
+    //     ];
+    //     updateNodeField(id, "sources", updatedSources);
+
+    //     // Store the updated variable list for this index
+    //     leftHandleCounterArray[index] = matches;
+    // };
+
+    // Claude's version
     const handleValueList = (index, s) => {
+        // Update value array and fieldValue2
         setValueArray((prev) => {
             const updatedValueArray = { ...prev, [index]: s };
+            updateNodeField(id, "fieldValue2", updatedValueArray);
             return updatedValueArray;
         });
-        updateNodeField(id, "fieldValue2", { ...fieldValue2, [index]: s });
     
         // Identify user-defined variables in the new input
-        const matches = getVariableCount(s.trim());
-        const newVariableSet = new Set(matches);
+        const matches = getVariableCount(s.trim()) || [];
         
-        // Retrieve previous variables for this index
-        const prevMatches = leftHandleCounterArray[index] || [];
-        const prevVariableSet = new Set(prevMatches);
-    
+        // Create a new copy of the counter array to ensure React detects changes
+        const newLeftHandleCounterArray = [...leftHandleCounterArray];
+        
+        // Get previous variables for this index (default to empty array if undefined)
+        const prevMatches = newLeftHandleCounterArray[index] || [];
+        
         // Calculate variables added and removed
-        const addedVariables = [...newVariableSet].filter(v => !prevVariableSet.has(v));
-        const removedVariables = [...prevVariableSet].filter(v => !newVariableSet.has(v));
-    
+        const addedVariables = matches.filter(v => !prevMatches.includes(v));
+        const removedVariables = prevMatches.filter(v => !matches.includes(v));
+        
         // Update leftHandles count
-        updateNodeField(id, "leftHandles", leftHandles + addedVariables.length - removedVariables.length);
-    
-        // Update sources array
-        updateNodeField(id, "sources", [
-            ...sources.filter(v => !removedVariables.includes(v)), // Remove old variables
-            ...addedVariables // Add new variables
-        ]);
-    
+        const newLeftHandles = leftHandles + addedVariables.length - removedVariables.length;
+        
+        // Update the sources array - filter out removed variables and add new ones
+        const updatedSources = [
+            ...sources.filter(v => !removedVariables.includes(v)),
+            ...addedVariables
+        ];
+        
         // Store the updated variable list for this index
-        leftHandleCounterArray[index] = matches;
+        newLeftHandleCounterArray[index] = matches;
+        setLeftHandleCounterArray(newLeftHandleCounterArray);
+        
+        // Update all the node fields at once to ensure consistency
+        updateNodeField(id, "leftHandles", newLeftHandles);
+        updateNodeField(id, "sources", updatedSources);
+        
+        // Important: Always call updateHandleCount to notify React Flow of changes
+        updateHandleCount(newLeftHandles);
     };
 
     const textareaRef = useRef(null);
@@ -390,6 +467,7 @@ export const NewNode = ({ id, data }) => {
                         id={`${id}-left-handle-${index}`}
                         style={{
                             top: `${(index + 1) * (100 / (leftHandles + 1))}%`,
+                            border: `2px solid ${bgcolor}`,
                         }}
                     />
                 ))}
@@ -1318,7 +1396,7 @@ export const NewNode = ({ id, data }) => {
                                 style={{
                                     padding: "3px 2px",
                                     borderRadius: "4px",
-                                    width: "96%",
+                                    // width: "96%",
                                     border: `2px solid ${bgcolor}`,
                                     color: bgcolor ? bgcolor : "#3c859e",
                                     backgroundColor: "#fff",
@@ -1483,6 +1561,7 @@ export const NewNode = ({ id, data }) => {
                         id={`${id}-right-handle-${index}`}
                         style={{
                             top: `${(index + 1) * (100 / (rightHandles + 1))}%`,
+                            border: `2px solid ${bgcolor}`,
                         }}
                     />
                 ))}
