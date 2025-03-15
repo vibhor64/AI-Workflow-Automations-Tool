@@ -135,9 +135,9 @@ def handle_DB(id):
 
 def handle_rag_database(id, data, fieldValue2, sources):
     print("data: ", data)
-    chunk_size = int(fieldValue2.get('0', 1000))
-    overlap = int(fieldValue2.get('1', 200))
-    top_k = int(fieldValue2.get('2', 5))
+    chunk_size = fieldValue2.get('0', 1000)
+    overlap = fieldValue2.get('1', 200)
+    top_k = fieldValue2.get('2', 5)
     query = resMap[handleMap[str(id + '-left-handle-0')]]
 
     for i in range(1, len(sources)):
@@ -149,10 +149,10 @@ def handle_rag_database(id, data, fieldValue2, sources):
     
     print("chunk_size: ", chunk_size, "\n overlap: ", overlap, "\n top_k: ", top_k)
     # Process the text data into chunks for retrieval
-    chunks = chunk_text(data, chunk_size, overlap)
+    chunks = chunk_text(data, int(chunk_size), int(overlap))
     
     # Get the most relevant chunks based on the query
-    relevant_chunks = retrieve_relevant_chunks(query, chunks, top_k)
+    relevant_chunks = retrieve_relevant_chunks(query, chunks, int(top_k))
     print("relevant_chunks: ", relevant_chunks)
     
     # Set the RAG result

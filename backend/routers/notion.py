@@ -10,7 +10,7 @@ import base64
 import requests
 import os
 from dotenv import load_dotenv
-from main import get_current_user
+from private_api import get_current_user
 from utils.database import fetch_notion_creds, save_notion_creds
 
 # Load environment variables

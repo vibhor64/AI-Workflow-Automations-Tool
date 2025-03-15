@@ -5,7 +5,7 @@ import httpx
 import os
 from datetime import datetime
 from dotenv import load_dotenv
-from main import get_current_user
+from private_api import get_current_user
 from utils.database import fetch_discord_creds, save_discord_creds
 # Load environment variables
 load_dotenv()

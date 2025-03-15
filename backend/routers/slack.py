@@ -4,7 +4,7 @@ from fastapi.security import OAuth2AuthorizationCodeBearer
 import httpx
 import os
 from dotenv import load_dotenv
-from main import get_current_user  # Assuming this function exists in your project
+from private_api import get_current_user  # Assuming this function exists in your project
 from utils.database import fetch_slack_creds, save_slack_creds  # Assuming these functions exist in your project
 
 # Load environment variables

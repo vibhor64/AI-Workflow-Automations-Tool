@@ -7,7 +7,7 @@ import secrets
 import base64
 import hashlib
 from dotenv import load_dotenv
-from main import get_current_user 
+from private_api import get_current_user 
 from utils.database import save_airtable_creds, fetch_airtable_creds, update_airtable_creds
 import time
 from urllib.parse import urlparse, unquote
