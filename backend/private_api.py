@@ -117,6 +117,8 @@ def parse_deployment(pipeline: Pipeline):
 
 @private_app.post('/automation/execute')
 async def execute_automation(pipeline: Pipeline, request: Request):
+    if isinstance(pipeline, dict):  
+        pipeline = Pipeline(**pipeline)
     # Extract query parameters from the request
     query_params = dict(request.query_params)
     
@@ -142,13 +144,8 @@ async def execute_automation(pipeline: Pipeline, request: Request):
                 detail=f"No query parameter found for input node: {node.fieldValue1}"
             )
     
-    # Check if the pipeline is a DAG and fully connected
-    is_dag = checkDAG(pipeline.formattedNodes, pipeline.formattedEdges)
-    is_con = isConnected(pipeline.formattedNodes, pipeline.formattedEdges)
-    if not is_dag or not is_con:
-        raise HTTPException( status_code=400, detail="Invalid Pipeline! Your pipeline is either not fully connected, or contains a cycle.")
-    
     # Execute the pipeline
+    print("Executing pipeline...")
     pipelineOutput = execute_pipeline(pipeline)
     return {"pipelineOutput": pipelineOutput}
 

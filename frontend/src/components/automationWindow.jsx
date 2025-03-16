@@ -12,7 +12,7 @@ export default function AutomationWindow({ setAutomationWindow, creds_dict }) {
     async function handleGoogleIntegration() {
         try {
             console.log("Requesting Google Integration Access...");
-            window.location.href = "http://127.0.0.1:8000/auth/google/integration";
+            window.location.href = "http://127.0.0.1:8000/private/auth/google/integration";
         } catch (error) {
             console.error("Error:", error.message);
         }

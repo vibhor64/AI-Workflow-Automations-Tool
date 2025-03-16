@@ -1396,7 +1396,7 @@ export const NewNode = ({ id, data, position }) => {
                                 style={{
                                     padding: "3px 2px",
                                     borderRadius: "4px",
-                                    // width: "96%",
+                                    width: "96%",
                                     border: `2px solid ${bgcolor}`,
                                     color: bgcolor ? bgcolor : "#3c859e",
                                     backgroundColor: "#fff",

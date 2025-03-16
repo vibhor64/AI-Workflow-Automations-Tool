@@ -196,7 +196,7 @@ export const LoginWindow = ({setSelectedOption}) => {
     async function handleGoogleLogin() {
         try {
             console.log("Logging in with Google...");
-            window.location.href = "http://127.0.0.1:8000/auth/google";
+            window.location.href = "http://127.0.0.1:8000/private/auth/google";
             // await signInWithGoogle();
         } catch (error) {
             console.error("Error:", error.message);

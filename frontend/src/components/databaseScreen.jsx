@@ -71,7 +71,7 @@ export const DatabaseScreen = () => {
                         fontWeight: "normal",
                     }}>
                     <span>
-                        Databases can store vast amount of data, and can be
+                        Databases can store vast amounts of data, and can be
                         loaded either fully or query-based.
                     </span>
                 </div>

@@ -51,7 +51,7 @@ export const Automation = ({ pipe }) => {
     // Setup for deployment
     try {
       console.log('Sent information to backend');
-      const response = await axios.post('http://127.0.0.1:8000/pipelines/parse', {
+      const response = await axios.post('http://127.0.0.1:8000/private/pipelines/parse', {
         formattedNodes,
         formattedEdges
       });

@@ -3,6 +3,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from utils.pipeline_db import get_pipeline
 from private_api import execute_pipeline
 from models import Pipeline
+import asyncio
+from concurrent.futures import ThreadPoolExecutor
+from slowapi import Limiter
+from slowapi.util import get_remote_address
 
 public_app = FastAPI(title="Public API")
 
@@ -14,6 +18,8 @@ public_app.add_middleware(
     allow_methods=["POST"],
     allow_headers=["*"],
 )
+
+limiter = Limiter(key_func=get_remote_address)
 
 @public_app.post('/{pipeline_id}')
 async def execute_pipeline_endpoint(pipeline_id: str, request: Request):
@@ -28,7 +34,12 @@ async def execute_pipeline_endpoint(pipeline_id: str, request: Request):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error executing pipeline: {str(e)}")
 
+
+@public_app.post('/automation/execute')
+@limiter.limit("45 per minute")  # Limit to 45 requests per minute per IP
 async def execute_automation(pipeline: Pipeline, request: Request):
+    if isinstance(pipeline, dict):  
+        pipeline = Pipeline(**pipeline)
     # Extract query parameters from the request
     query_params = dict(request.query_params)
     
@@ -55,5 +66,11 @@ async def execute_automation(pipeline: Pipeline, request: Request):
             )
     
     # Execute the pipeline
-    pipelineOutput = execute_pipeline(pipeline)
-    return {"pipelineOutput": pipelineOutput}
+    print("Executing pipeline...")
+    # pipelineOutput = execute_pipeline(pipeline)
+    
+    # Run execute_pipeline in a separate thread to avoid asyncio issues
+    loop = asyncio.get_running_loop()
+    with ThreadPoolExecutor() as pool:
+        pipeline_output = await loop.run_in_executor(pool, execute_pipeline, pipeline)
+    return {"pipelineOutput": pipeline_output}

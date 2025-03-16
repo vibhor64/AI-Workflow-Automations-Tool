@@ -3,7 +3,7 @@ import { Mosaic, OrbitProgress } from "react-loading-indicators";
 import axios from "axios";
 import "./deploy.css";
 import AutomationWindow from "./automationWindow";
-import { CopyBlock, atomOneLight } from "react-code-blocks";
+import { CopyBlock, dracula } from "react-code-blocks";
 import LottieAnimation from "./sub/lottie";
 
 export const Deployment = (props) => {
@@ -131,9 +131,9 @@ export const Deployment = (props) => {
 
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/deployment/parse",
+        "http://127.0.0.1:8000/private/deployment/parse",
         {
-          // const response = await axios.post('http://127.0.0.1:8000/automation/parse?hello=whaterverrrr', {
+          // const response = await axios.post('http://127.0.0.1:8000/private/automation/parse?hello=whaterverrrr', {
           formattedNodes,
           formattedEdges,
         }
@@ -193,7 +193,7 @@ export const Deployment = (props) => {
     setIsLoading(false);
 
     try {
-      // const response = await axios.post("http://127.0.0.1:8000/automate", {
+      // const response = await axios.post("private/automate", {
       //   formattedNodes,
       //   formattedEdges,
       // }, );
@@ -205,7 +205,7 @@ export const Deployment = (props) => {
       }
       let name = pipeName;
       const response = await fetch(
-        `http://127.0.0.1:8000/automate?name=${encodeURIComponent(name)}`,
+        `http://127.0.0.1:8000/private/automate?name=${encodeURIComponent(name)}`,
         {
           method: "POST",
           headers: {
@@ -775,7 +775,7 @@ async fn main() {
                   text={codeSnippets[language]}
                   language={language}
                   showLineNumbers={false}
-                  theme={atomOneLight}
+                  theme={dracula}
                   wrapLongLines={true}
                   customStyle={{
                     overflowX: "auto",
@@ -844,6 +844,21 @@ async fn main() {
                   </code>
                 </pre>
                 This occurs if the specified pipeline does not exist in the database.
+                <div
+          style={{
+            marginTop: "2.4vh",
+            marginBottom: "1vh",
+            maxWidth: "38rem",
+            fontSize: "18px",
+            color: "#fff",
+            fontWeight: "bold",
+            backgroundColor: "#f23d3d",
+            borderRadius: "6px",
+            padding: "5px 10px",
+          }}
+        >
+          Rate limit is set to 45 requests per minute!
+        </div>
               </div>
             </div>
           )}

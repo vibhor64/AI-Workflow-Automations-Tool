@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Close from '../../assets/close.png';
-import { CopyBlock, atomOneLight } from "react-code-blocks";
+import { CopyBlock, dracula } from "react-code-blocks";
 
 export const ApiModal = ({ pipe_id, setApiPage }) => {
   const [language, setLanguage] = useState("TypeScript");
@@ -395,7 +395,7 @@ export const ApiModal = ({ pipe_id, setApiPage }) => {
           text={codeSnippets[language]}
           language={language}
           showLineNumbers={false}
-          theme={atomOneLight}
+          theme={dracula}
           wrapLongLines={true}
           customStyle={{
             overflowX: "auto",
@@ -495,6 +495,21 @@ export const ApiModal = ({ pipe_id, setApiPage }) => {
           </code>
         </pre>
         This occurs if the specified pipeline does not exist in the database.
+        <div
+          style={{
+            marginTop: "2.4vh",
+            marginBottom: "1vh",
+            maxWidth: "38rem",
+            fontSize: "18px",
+            color: "#fff",
+            fontWeight: "bold",
+            backgroundColor: "#f23d3d",
+            borderRadius: "6px",
+            padding: "5px 10px",
+          }}
+        >
+          Rate limit is set to 45 requests per minute!
+        </div>
       </div>
     </div>
   );
