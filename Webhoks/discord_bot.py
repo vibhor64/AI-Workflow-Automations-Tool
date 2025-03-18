@@ -2,8 +2,8 @@ import discord
 import requests
 import re
 from dotenv import load_dotenv
-import os 
 
+import os 
 load_dotenv()
 TOKEN = os.getenv("DISCORD_BOT_TOKEN")
 WEBHOOK_URL = "http://127.0.0.1:8000/private/auth/discord/webhook"  # Your FastAPI endpoint
