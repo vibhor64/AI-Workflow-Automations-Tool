@@ -1,16 +1,21 @@
 // templates.js
-import Add from "../assets/add.png";
-import save from "../assets/save.png";
-import Close from "../assets/close.png";
-import logout from "../assets/logout.png";
-import select from "../assets/select.png";
+import Add from "/add.webp";
+import save from "/save.png";
+import Close from "/close.png";
+import logout from "/logout.webp";
+import select from "/select.webp";
 import { useEffect, useState } from "react";
 import styles from "./templates.module.css";
 // import { templateNodes } from './templateNodes';
 import { useStore } from "../store";
 import { shallow } from "zustand/shallow";
-import { clearAccessToken, logoutUser, pushTemplate, requestWithAuth } from "../logic/auth";
-import arrowDown from "../assets/arrow-down.svg";
+import {
+    clearAccessToken,
+    logoutUser,
+    pushTemplate,
+    requestWithAuth,
+} from "../logic/auth";
+import arrowDown from "/arrow-down.svg";
 import { useNavigate } from "react-router-dom";
 
 const selector = (state) => ({
@@ -21,7 +26,7 @@ const selector = (state) => ({
     edges: state.edges,
     templateAdded: state.templateAdded,
     setTemplateAdded: state.setTemplateAdded,
-    clearBooks: state.clearBooks
+    clearBooks: state.clearBooks,
 });
 
 export const Templates = () => {
@@ -36,8 +41,16 @@ export const Templates = () => {
     const [tempName, setTempName] = useState("My template-1");
     const [logoutBox, setLogoutBox] = useState(false);
 
-    const { loadTemplate, addTemplate, templateWorkflows, nodes, edges, templateAdded, setTemplateAdded, clearBooks } =
-        useStore(selector, shallow);
+    const {
+        loadTemplate,
+        addTemplate,
+        templateWorkflows,
+        nodes,
+        edges,
+        templateAdded,
+        setTemplateAdded,
+        clearBooks,
+    } = useStore(selector, shallow);
 
     const handleClick = () => {
         setHoverClose(false);
@@ -81,6 +94,19 @@ export const Templates = () => {
 
         pushTemplate(newTemplate);
         addTemplate(newTemplate);
+
+        // Convert to JSON and trigger download
+        const jsonString = JSON.stringify(newTemplate, null, 2); // Pretty print JSON
+        const blob = new Blob([jsonString], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `${newTemplate.templateName || "template"}.json`; // Filename
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url); // Cleanup
     };
 
     const navigate = useNavigate();
@@ -115,7 +141,6 @@ export const Templates = () => {
                 }
                 setTemplateAdded(true);
             }
-
         } catch (error) {
             console.error("Error fetching data:", error.message);
             return null;
@@ -149,15 +174,15 @@ export const Templates = () => {
                     style={{
                         backgroundColor: hover ? "#3b59d1" : "#2d4ecf",
                         border: hover
-                        ? "2px solid #3b59d1"
-                        : "2px solid #2d4ecf",
+                            ? "2px solid #3b59d1"
+                            : "2px solid #2d4ecf",
                         borderRadius: "12px",
-                        boxShadow: ' rgba(17, 12, 46, 0.15) 0px 48px 100px 0px',
+                        boxShadow: " rgba(17, 12, 46, 0.15) 0px 48px 100px 0px",
                         color: "#fff",
                         cursor: "pointer",
                         // display: 'inline-block',
                         fontSize: "12px",
-                        fontFamily: 'Inter',
+                        fontFamily: "Inter",
                         fontWeight: 600,
                         listStyle: "none",
                         margin: "0",
@@ -214,7 +239,7 @@ export const Templates = () => {
                                 : "2px solid #2d4ecf",
                         // color: '#9dadff',
                         borderRadius: "20px",
-                        boxShadow: ' rgba(17, 12, 46, 0.15) 0px 48px 100px 0px',
+                        boxShadow: " rgba(17, 12, 46, 0.15) 0px 48px 100px 0px",
                         color: "#fff",
                         cursor: "pointer",
                         display: "inline-block",
@@ -270,7 +295,7 @@ export const Templates = () => {
                                 : "2px solid #2d4ecf",
                         // color: '#9dadff',
                         borderRadius: "20px",
-                        boxShadow: ' rgba(17, 12, 46, 0.15) 0px 48px 100px 0px',
+                        boxShadow: " rgba(17, 12, 46, 0.15) 0px 48px 100px 0px",
                         color: "#fff",
                         cursor: "pointer",
                         display: "inline-block",
@@ -630,7 +655,7 @@ export const Templates = () => {
                                                 marginLeft: "8px",
                                                 marginRight: "8px",
                                                 marginBottom: "15px",
-                                                fontFamily: "monospace",
+                                                fontFamily: "Inter",
                                             }}>
                                             {template.templateName}
                                         </p>

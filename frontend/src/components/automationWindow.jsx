@@ -1,4 +1,4 @@
-import Close from '../assets/close.png';
+import Close from '/close.png';
 import { useState } from 'react';
 import { airtable_authentication, create_doc, discord_authentication, read_airtable, read_doc, read_emails, read_google_forms, read_google_sheets, send_discord_message, send_draft } from '../logic/auth';
 

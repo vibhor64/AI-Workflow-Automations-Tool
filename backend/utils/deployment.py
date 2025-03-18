@@ -24,6 +24,7 @@ from urllib.parse import urlparse
 import requests
 from bson import ObjectId
 from utils.rag_utils import chunk_text, retrieve_relevant_chunks
+from bs4 import BeautifulSoup
 
 # Load environment variables
 load_dotenv()
@@ -111,14 +112,14 @@ def execute_pipeline(pipeline):
             res = handle_database_output(node_id, node_data["fieldValue1"], node_data["username"])
         else:
             print("Unknown node type:", node_type)
-            resMap[id] = node_data["fieldValue1"]
+            resMap[id] = str(node_data["fieldValue1"])
 
     print(res)
     return res
 
 
 def handle_input(id, fieldValue1):
-    resMap[id] = fieldValue1
+    resMap[id] = str(fieldValue1)
 
 def handle_text(id, fieldValue1, sources):
     prompt = fieldValue1
@@ -127,11 +128,11 @@ def handle_text(id, fieldValue1, sources):
         if str(id + '-left-handle-' + str(i)) in handleMap:
             userVariable = resMap[handleMap[str(id + '-left-handle-' + str(i))]]
             prompt = prompt.replace('{{' + sources[i] + '}}', userVariable)
-    resMap[id] = prompt
+    resMap[id] = str(prompt)
 
 def handle_DB(id):
     query = resMap[handleMap[str(id + '-left-handle-0')]]
-    resMap[id] = query
+    resMap[id] = str(query)
 
 def handle_rag_database(id, data, fieldValue2, sources):
     print("data: ", data)
@@ -156,7 +157,7 @@ def handle_rag_database(id, data, fieldValue2, sources):
     print("relevant_chunks: ", relevant_chunks)
     
     # Set the RAG result
-    resMap[id] = relevant_chunks
+    resMap[id] = str(relevant_chunks)
     
     return relevant_chunks
 
@@ -168,7 +169,7 @@ def handle_connector(id):
         if input_handle in handleMap:
             print(output_handle, handleMap[input_handle], resMap[handleMap[input_handle]])
             handleMap[output_handle] = resMap[handleMap[input_handle]]
-    resMap[id] = resMap[handleMap[str(id + '-left-handle-0')]]
+    resMap[id] = str(resMap[handleMap[str(id + '-left-handle-0')]])
 
 def handle_llm(id, fieldValue1, fieldValue2, sources):
     if str(id + '-left-handle-0') in handleMap:
@@ -184,13 +185,14 @@ def handle_llm(id, fieldValue1, fieldValue2, sources):
     for i in range(2, len(sources)):
         if str(id + '-left-handle-' + str(i)) in handleMap:
             userVariable = resMap[handleMap[str(id + '-left-handle-' + str(i))]]
+            print("userVariable", userVariable)
             prompt = prompt.replace('{{' + sources[i] + '}}', userVariable)
     
     print('waiting for LLM')
     print(system + prompt)
     LLMOut = model.generate_content(system+prompt)
     res= markdown.markdown(LLMOut.text, extensions=['markdown.extensions.tables'])
-    resMap[id] = res
+    resMap[id] = str(res)
 
 def handle_vision_llm(id, fieldValue1, fieldValue2):
     if str(id + '-left-handle-0') in handleMap:
@@ -208,15 +210,15 @@ def handle_vision_llm(id, fieldValue1, fieldValue2):
     else:
         image = None
     
-    LLMImage = PIL.Image.open("/path/to/organ.png")
-    LLMOut = model.generate_content([system+prompt, LLMImage])
+    LLMImage = image
+    LLMOut = model.generate_content([system+prompt, "/myimg.png"])
     # print("LLM OUTPUT: ", LLMOut.text)
     res=markdown.markdown(LLMOut.text, extensions=['markdown.extensions.tables'])
-    resMap[id] = res
+    resMap[id] = str(res)
     
 def handle_output(id):
     output = resMap[handleMap[str(id + '-left-handle-0')]]
-    resMap[id] = output
+    resMap[id] = str(output)
     return output
 
 def handle_database_output(id, db_name, username):
@@ -231,7 +233,7 @@ def handle_database_output(id, db_name, username):
     }
 
     asyncio.run(modify_book_by_name(username, db_name, db_data))
-    resMap[id] = output
+    resMap[id] = str(output)
     return output
 
 def handle_read_emails(id, fieldValue1, username, sources):
@@ -318,7 +320,7 @@ def handle_read_emails(id, fieldValue1, username, sources):
             })
         
         print(email_data)
-        resMap[id] = email_data
+        resMap[id] = str(email_data)
     
     except HttpError as error:
         print(f"An error occurred: {error}")
@@ -389,7 +391,7 @@ def handle_gmail_output(id, fieldValue1, username):
                 .create(userId="me", body=create_message)
                 .execute()
             )
-            resMap[id] = draft
+            resMap[id] = str(draft)
             return draft
         else:
             create_message = {"raw": encoded_message}
@@ -399,7 +401,7 @@ def handle_gmail_output(id, fieldValue1, username):
                 .send(userId="me", body=create_message)
                 .execute()
             )
-            resMap[id] = message
+            resMap[id] = str(message)
             return message
 
 
@@ -477,7 +479,7 @@ def handle_read_doc(id, fieldValue1, username, sources):
                     if "textRun" in text_run:
                         plain_text += text_run["textRun"]["content"]
         
-        resMap[id] = plain_text
+        resMap[id] = str(plain_text)
     
     except HttpError as error:
         print(f"An error occurred: {error}")
@@ -620,7 +622,7 @@ def handle_read_form(id, form_identifier, username, sources):
             
             form_info["questions"].append(question)
         
-        resMap[id] = form_info
+        resMap[id] = str(form_info)
     
     except HttpError as error:
         print(f"An error occurred: {error}")
@@ -687,7 +689,7 @@ def handle_read_google_sheet(id, fieldValue1, username, sources):
         result = sheets_service.spreadsheets().values().get(spreadsheetId=sheet_id, range=sheet_range).execute()
         values = result.get("values", [])
         
-        resMap[id] = values
+        resMap[id] = str(values)
     
     except HttpError as error:
         print(f"An error occurred: {error}")
@@ -747,7 +749,7 @@ def handle_read_google_meet(id, meet_title, username, sources):
                     if "textRun" in text_run:
                         transcript_text += text_run["textRun"]["content"]
         
-        resMap[id] = transcript_text
+        resMap[id] = str(transcript_text)
     
     except HttpError as error:
         print(f"An error occurred: {error}")
@@ -761,6 +763,8 @@ def send_discord_message(id, channel_id, sources):
                 channel_id = channel_id.replace('{{' + sources[i] + '}}', userVariable)
     
         message = str(resMap[handleMap[str(id + '-left-handle-0')]])
+
+        message = html_to_discord_markdown(message)
         # todo: validate channel_id
         async def _send_message():
             url = f"{DISCORD_API_URL}/channels/{channel_id}/messages"
@@ -781,12 +785,40 @@ def send_discord_message(id, channel_id, sources):
         # Run the asynchronous function in an event loop
         result = asyncio.run(_send_message())
         # resMap[id] = message
-        resMap[id] = message
+        resMap[id] = str(message)
         return "Message sent successfully: " + message
     
     except httpx.HTTPStatusError as error:
         print(f"Failed to send message: {error}")
         return {"status": "error", "message": f"Failed to send message: {error}"}
+
+def html_to_discord_markdown(html_text):
+    # Handle plain text
+    if not any(tag in html_text for tag in ["<p", "<ul", "<li", "<strong>"]):
+        return html_text.strip()  # Return as-is if no HTML tags are found
+    
+    soup = BeautifulSoup(html_text, "html.parser")
+
+    # Extract paragraphs and lists
+    output = []
+    
+    for element in soup.children:
+        if element.name == "p":
+            output.append(element.get_text(strip=True))
+        elif element.name == "ul":
+            for li in element.find_all("li"):
+                # Extract strong tag for sender name
+                sender = li.find("strong")
+                if sender:
+                    sender_text = f"**{sender.get_text(strip=True)}**"
+                    sender.extract()  # Remove it so it doesn't repeat
+                else:
+                    sender_text = ""
+
+                message_text = li.get_text(strip=True)
+                output.append(f"- {sender_text} {message_text}")
+
+    return "\n".join(output)
 
 def handle_read_airtable(id, fieldValue1, username, sources):
     # todo: 
@@ -850,7 +882,7 @@ def handle_read_airtable(id, fieldValue1, username, sources):
         
         # data = clean_airtable_data(data)
         print("data: ", data)
-        resMap[id] = data
+        resMap[id] = str(data)
         return data
 
     except ValueError as e:
@@ -904,7 +936,7 @@ def handle_read_notion(id, notion_url, username, sources):
         
         page_data = asyncio.run(_read_notion_page(page_id))
         print(page_data)
-        resMap[id] = page_data
+        resMap[id] = str(page_data)
     
     except httpx.HTTPStatusError as error:
         return {"status": "error", "message": f"Failed to fetch Notion page: {error}"}
@@ -946,12 +978,12 @@ def handle_read_API(id, input_data, sources):
         response.raise_for_status()
         
         # Parse and return the JSON response
-        resMap[id] = response.json()
-        return response.json()
+        resMap[id] = str(response.json())
+        return str(response.json())
     
     except requests.exceptions.Timeout:
         msg = "Error: The request timed out. Please check the URL and try again."
-        resMap[id] = msg
+        resMap[id] = str(msg)
         return msg
     except json.JSONDecodeError:
         msg = '''Error: Invalid JSON format in input data. Example input: \n {
@@ -959,25 +991,25 @@ def handle_read_API(id, input_data, sources):
     "params": {"anime": "ReLIFE"},
     "headers": {"x-api-key": "YOUR_API_KEY"}
 } \n Make sure to use double quotes (") around keys and values, not single quotes (').'''
-        resMap[id] = msg
+        resMap[id] = str(msg)
         return msg
     except requests.exceptions.ConnectionError:
         msg = "Error: Unable to connect to the server. Please verify the URL."
-        resMap[id] = msg
+        resMap[id] = str(msg)
         return msg
     except requests.exceptions.HTTPError as http_err:
         msg =  f"HTTP error occurred: {http_err}"
-        resMap[id] = msg
+        resMap[id] = str(msg)
         return msg
     except ValueError:
         msg = "Error: Invalid JSON response received from the server."
-        resMap[id] = msg
+        resMap[id] = str(msg)
         return msg
     except KeyError as key_err:
         msg = f"KeyError: Missing key in handleMap or resMap - {key_err}"
-        resMap[id] = msg
+        resMap[id] = str(msg)
         return msg
     except Exception as e:
         msg = f"An unexpected error occurred: {e}"
-        resMap[id] = msg
+        resMap[id] = str(msg)
         return msg

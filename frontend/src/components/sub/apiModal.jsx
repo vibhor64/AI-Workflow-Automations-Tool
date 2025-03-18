@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Close from '../../assets/close.png';
+import Close from '/close.png';
 import { CopyBlock, dracula } from "react-code-blocks";
 
 export const ApiModal = ({ pipe_id, setApiPage }) => {
@@ -338,8 +338,7 @@ export const ApiModal = ({ pipe_id, setApiPage }) => {
         >
           <code>http://127.0.0.1:8000/pipelines/{pipe_id}</code>
         </pre>
-        Make sure to send ALL input field values as query parameters. You can
-        leave them as blank. For example,
+        Make sure to send ALL input field values as query parameters, otherwise they will default to empty string. For example,
         <pre
           style={{
             background: "#d9d9d9",
@@ -352,7 +351,7 @@ export const ApiModal = ({ pipe_id, setApiPage }) => {
         >
           <code>
             http://127.0.0.1:8000/pipelines/{pipe_id}
-            ?name=John+Pork&age=25&city=New+York&work=&education=
+            ?name=John+Pork&age=25&city=New+York&work+experience=Software+Engineer
           </code>
         </pre>
         <div
@@ -406,8 +405,7 @@ export const ApiModal = ({ pipe_id, setApiPage }) => {
           }}
         />
         <div style={{ marginTop: "2vh" }}>
-          Note that the code snippets are AI generated and may not be 100%
-          accurate. Except TypeScript & JavaScript.
+        Note that all code snippets (except TypeScript & JavaScript) are AI generated and hence prone to bugs.
         </div>
         <div
           style={{
@@ -508,7 +506,7 @@ export const ApiModal = ({ pipe_id, setApiPage }) => {
             padding: "5px 10px",
           }}
         >
-          Rate limit is set to 45 requests per minute!
+          Rate limit is set to 15 requests per minute!
         </div>
       </div>
     </div>

@@ -11,9 +11,8 @@ export const PipelineToolbar = () => {
         "General",
         "LLMs",
         "Knowledge Base",
-        "Multi-Modal",
-        "Triggers",
         "Integrations",
+        "Multi-Modal",
     ];
 
     return (

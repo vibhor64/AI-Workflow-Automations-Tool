@@ -65,3 +65,7 @@ class Token(BaseModel):
 class DocumentCreate(BaseModel):
     title: str | None = None  # Title is optional
     text: str | None = None  
+
+class DiscordMessage(BaseModel):
+    content: str
+    author: str

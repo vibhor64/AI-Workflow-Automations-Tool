@@ -22,6 +22,7 @@ public_app.add_middleware(
 limiter = Limiter(key_func=get_remote_address)
 
 @public_app.post('/{pipeline_id}')
+@limiter.limit("15 per minute")  # Limit to 15 requests per minute per IP
 async def execute_pipeline_endpoint(pipeline_id: str, request: Request):
     pipeline_result = await get_pipeline(pipeline_id)
     if pipeline_result["status"] != "success":
@@ -36,7 +37,6 @@ async def execute_pipeline_endpoint(pipeline_id: str, request: Request):
 
 
 @public_app.post('/automation/execute')
-@limiter.limit("45 per minute")  # Limit to 45 requests per minute per IP
 async def execute_automation(pipeline: Pipeline, request: Request):
     if isinstance(pipeline, dict):  
         pipeline = Pipeline(**pipeline)
@@ -45,25 +45,29 @@ async def execute_automation(pipeline: Pipeline, request: Request):
     
     # Filter nodes where name == "Input"
     input_nodes = [node for node in pipeline.formattedNodes if node.name == "Input"]
-    
-    # Validate that the number of query parameters matches the number of input nodes
-    if len(query_params) != len(input_nodes):
-        raise HTTPException(
-            status_code=400,
-            detail="Mismatch between the number of query parameters and input nodes. You may leave some query parameters blank."
-        )
-    
+
     # Replace fieldValue1 in input nodes with corresponding query parameter values
-    query_param_keys = set(query_params.keys())
     for node in input_nodes:
-        if node.fieldValue1 in query_param_keys:
-            node.fieldValue1 = query_params[node.fieldValue1]
-            # query_param_keys.remove(node.fieldValue1)
-        else:
-            raise HTTPException(
-                status_code=400,
-                detail=f"No query parameter found for input node: {node.fieldValue1}"
-            )
+        node.fieldValue1 = query_params.get(node.fieldValue1, "")  # Default to ""
+    
+    # # Mandate that the number of query parameters matches the number of input nodes:
+    # if len(query_params) != len(input_nodes):
+    #     raise HTTPException(
+    #         status_code=400,
+    #         detail="Mismatch between the number of query parameters and input nodes. You may leave some query parameters blank."
+    #     )
+    
+    # # Replace fieldValue1 in input nodes with corresponding query parameter values
+    # query_param_keys = set(query_params.keys())
+    # for node in input_nodes:
+    #     if node.fieldValue1 in query_param_keys:
+    #         node.fieldValue1 = query_params[node.fieldValue1]
+    #         # query_param_keys.remove(node.fieldValue1)
+    #     else:
+    #         raise HTTPException(
+    #             status_code=400,
+    #             detail=f"No query parameter found for input node: {node.fieldValue1}"
+    #         )
     
     # Execute the pipeline
     print("Executing pipeline...")

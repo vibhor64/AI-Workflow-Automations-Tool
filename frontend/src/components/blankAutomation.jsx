@@ -1,4 +1,4 @@
-import myimg from '../assets/asking.png'
+import myimg from '/asking.png'
 
 export const BlankAutomation = () => {
     return (

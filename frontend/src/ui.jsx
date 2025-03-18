@@ -3,13 +3,13 @@
 // --------------------------------------------------
 
 import { useState, useRef, useCallback, useEffect } from "react";
-import ReactFlow, { Controls, Background, MiniMap } from "reactflow";
+import ReactFlow, { Controls, Background, MiniMap, useUpdateNodeInternals } from "reactflow";
 import { useStore } from "./store";
 import { shallow } from "zustand/shallow";
 import { NewNode } from "./nodes/newNode";
 import { newNodesConfig } from "./nodes/nodeConfig";
-import RocketImg from "./assets/rocket.png";
-import Reset from "./assets/reset.png";
+import RocketImg from "/rocket.png";
+import Reset from "/reset.png";
 import axios from "axios";
 import { Templates } from "./components/templates";
 import { useNavigate } from "react-router-dom";
@@ -160,7 +160,7 @@ export const PipelineUI = () => {
                 (out.length < 1 && integration_output.length < 1)
             )
                 alert(
-                    ` Invalid pipeline! You need at least 1 input and 1 output node. \n Number of input nodes: ${inp.length} \n Number of output nodes: ${out.length} \n Make sure you have named all your input and output nodes`
+                    ` Invalid pipeline! You need at least 1 input and 1 output node (or integrations with 1 input or 1 output). \n Number of input nodes: ${inp.length} \n Number of output nodes: ${out.length} \n Make sure you have named all your input and output nodes`
                 );
             // alert(` Number of Nodes: ${num_nodes} \n Number of Edges: ${num_edges} \n No cycle found in graph! \n Output: ${output}`);
             else
@@ -199,6 +199,8 @@ export const PipelineUI = () => {
                     nodeTypes={nodeTypes}
                     proOptions={proOptions}
                     snapGrid={[gridSize, gridSize]}
+                    deleteKeyCode={["Delete"]}
+                    onAnimationEnd={useUpdateNodeInternals}
                     connectionLineType="smoothstep">
                     <Background color="#808080" gap={gridSize} />
                     <Controls />

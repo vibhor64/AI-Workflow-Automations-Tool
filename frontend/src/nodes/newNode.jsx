@@ -8,7 +8,7 @@ import { Handle, Position, useUpdateNodeInternals } from "reactflow";
 import { useStore } from "../store";
 import { shallow } from "zustand/shallow";
 import { useRef } from "react";
-import Close from "../assets/close.png";
+import Close from "/close.png";
 import {
     airtable_authentication,
     discord_authentication,
@@ -1259,7 +1259,7 @@ export const NewNode = ({ id, data, position }) => {
                     ) : null}
 
                     {(category === "Integrations" ||
-                        category === "Triggers") && (
+                        category === "Triggers") && (name!='API') && (
                         <>
                             <div>
                                 <button

@@ -1,7 +1,7 @@
 import { useState } from "react";
-import Close from '../assets/close.png';
-import Delete from '../assets/delete.png';
-import info from '../assets/info.png';
+import Close from '/close.png';
+import Delete from '/delete.webp';
+import info from '/info.png';
 import { pushBook, deleteBook as removeBook, modifyBook as editBook } from '../logic/auth';
 import deleteStyles from "./templates.module.css"
 

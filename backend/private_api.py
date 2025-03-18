@@ -343,7 +343,8 @@ async def logout(response: Response):
 @private_app.get("/auth/google")
 async def google_login(request: Request):
     """Handles Google login for authentication purposes (not integrations)."""
-    redirect_uri = request.url_for("google_callback")
+    # redirect_uri = request.url_for("google_callback")
+    redirect_uri = "http://127.0.0.1:8000/private/auth/google/callback"
     return await oauth.google.authorize_redirect(request, redirect_uri, scope="openid email profile")
 
 @private_app.get("/auth/google/callback")
@@ -410,7 +411,7 @@ async def google_integration_login(request: Request):
     """Starts Google OAuth for API integrations."""
 
     try:
-        redirect_uri = "http://127.0.0.1:8000/auth/google/integration/callback"  # Explicitly set redirect URI
+        redirect_uri = "http://127.0.0.1:8000/private/auth/google/integration/callback"  # Explicitly set redirect URI
         print(f"Redirect URI: {redirect_uri}")
         return await oauth.google.authorize_redirect(request, redirect_uri, scope=SCOPES, access_type="offline", prompt="consent")
     except Exception as e:

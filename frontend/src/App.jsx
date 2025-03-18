@@ -129,7 +129,15 @@ function App() {
                         </>
                     }
                 />
-                <Route path="/deployment" element={<DepScreen />} />
+                <Route path="/deployment" element={
+                    <>
+                    {()=>setSelectedOption({
+                                value: "deployment",
+                                label: "Deployment",})}
+                    <DepScreen />
+                    </>
+                    
+                    } />
                 <Route path="/knowledge" element={<DatabaseScreen />} />
                 <Route path="/automations" element={<AutomationsScreen />} />
             </Routes>

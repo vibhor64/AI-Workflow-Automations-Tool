@@ -1,31 +1,31 @@
-import Input from '../assets/input.png';
-import Output from '../assets/output.png';
-import Anthropic from '../assets/anthropic.png';
-import aws from '../assets/aws.png';
-import azure from '../assets/azure.png';
-import database from '../assets/database.png';
-import text from '../assets/text.png';
-import discord from '../assets/discord.png';
-import file from '../assets/file.png';
-import gdocs from '../assets/gdocs.png';
-import gdrive from '../assets/gdrive.png';
-import gmail from '../assets/gmail.png';
-import google from '../assets/google.png';
-import notion from '../assets/notion.png';
-import obsidian from '../assets/obsidian.png';
-import openai from '../assets/openai.png';
-import perplexity from '../assets/perplexity.png';
-import postgresql from '../assets/postgresql.png';
-import meta from '../assets/meta.svg';
-import chat from '../assets/chat.png';
-import slack from '../assets/slack.png';
-import meet from '../assets/meet.png';
-import sheet from '../assets/sheets.png';
-import forms from '../assets/forms.png';
-import airtable from '../assets/airtable.png';
-import api from '../assets/api.png';
-import databaseRes from '../assets/database-res.png';
-import databaseLoader from '../assets/database.svg';
+import Input from '/input.png';
+import Output from '/output.png';
+import Anthropic from '/anthropic.png';
+import aws from '/aws.png';
+import azure from '/azure.png';
+import database from '/database.png';
+import text from '/text.webp';
+import discord from '/discord.png';
+import file from '/file.webp';
+import gdocs from '/gdocs.png';
+import gdrive from '/gdrive.png';
+import gmail from '/gmail.png';
+import google from '/google.png';
+import notion from '/notion.png';
+import obsidian from '/obsidian.webp';
+import openai from '/openai.png';
+import perplexity from '/perplexity.png';
+import postgresql from '/postgresql.webp';
+import meta from '/meta.svg';
+import chat from '/chat.png';
+import slack from '/slack.png';
+import meet from '/meet.png';
+import sheet from '/sheets.png';
+import forms from '/forms.png';
+import airtable from '/airtable.png';
+import api from '/api.png';
+import databaseRes from '/database-res.png';
+import databaseLoader from '/database.webp';
 
 const newNodesConfig = [
   {
@@ -618,91 +618,6 @@ const newNodesConfig = [
       category: 'Integrations',
     },
   },
-  {
-    id: 'newNode-1',
-    type: 'NodeNode',
-    data: {
-      name: 'Coming Soon',
-      isInput: false,
-      isType: false,
-      bgcolor: '#e76f51',
-      rightHandles: 0,
-      leftHandles: 0,
-      img: discord,
-      category: 'Triggers',
-    },
-  },
-  {
-    id: 'newNode-2',
-    type: 'NodeNode',
-    data: {
-      name: 'Coming Soon',
-      isInput: false,
-      isType: false,
-      bgcolor: '#e76f51',
-      rightHandles: 1,
-      leftHandles: 1,
-      img: aws,
-      category: 'Triggers',
-    },
-  },
-  {
-    id: 'newNode-8',
-    type: 'NodeNode',
-    data: {
-      name: 'Coming Soon',
-      isInput: false,
-      isType: false,
-      bgcolor: '#e76f51',
-      rightHandles: 0,
-      leftHandles: 0,
-      img: notion,
-      category: 'Triggers',
-    },
-  },
-  {
-    id: 'newNode-5',
-    type: 'NodeNode',
-    data: {
-      name: 'Coming Soon',
-      isInput: false,
-      isType: false,
-      bgcolor: '#e76f51',
-      rightHandles: 0,
-      leftHandles: 0,
-      img: gdrive,
-      category: 'Triggers',
-    },
-  },
-  {
-    id: 'newNode-6',
-    type: 'NodeNode',
-    data: {
-      name: 'Coming Soon',
-      isInput: false,
-      isType: false,
-      bgcolor: '#e76f51',
-      rightHandles: 0,
-      leftHandles: 0,
-      img: gmail,
-      category: 'Triggers',
-    },
-  },
-  {
-    id: 'newNode-4',
-    type: 'NodeNode',
-    data: {
-      name: 'Coming Soon',
-      isInput: false,
-      isType: false,
-      bgcolor: '#e76f51',
-      rightHandles: 0,
-      leftHandles: 0,
-      img: gdocs,
-      category: 'Triggers',
-    },
-  },
-
 ];
 
 export { newNodesConfig };

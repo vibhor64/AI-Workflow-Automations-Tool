@@ -1,4 +1,4 @@
-import myimg from '../assets/construction.png'
+import myimg from '/construction.png'
 
 export const BlankDeployment = () => {
     return (

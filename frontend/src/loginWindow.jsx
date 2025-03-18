@@ -7,8 +7,8 @@ import {
     save_google_creds,
     get_google_refresh_token,
 } from "./logic/auth";
-import guest from "./assets/guest.png";
-import google from "./assets/google.png";
+import guest from "/guest.webp";
+import google from "/google.png";
 import queryString from "query-string";
 import { useStore } from "./store";
 import { shallow } from "zustand/shallow";

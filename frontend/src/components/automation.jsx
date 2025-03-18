@@ -6,10 +6,10 @@ import { shallow } from "zustand/shallow";
 import styles from "./templates.module.css";
 import { ApiModal } from "./sub/apiModal";
 import { delete_automated_pipeline, get_pipeline } from "../logic/auth";
-import Close from "../assets/close.png";
-import Trash from "../assets/trash.svg";
-import Code from "../assets/code.png";
-import Play from "../assets/play.png";
+import Close from "/close.png";
+import Trash from "/trash.webp";
+import Code from "/code.webp";
+import Play from "/play.webp";
 
 const selector = (state) => ({
   loadTemplate: state.loadTemplate,
@@ -63,7 +63,7 @@ export const Automation = ({ pipe }) => {
       else if (!is_con)
         alert(` Invalid pipeline! \n Graph is not connected! \n`);
       else if ((inp.length < 1 && integration_input.length < 1) || (out.length < 1 && integration_output.length < 1))
-        alert(` Invalid pipeline! You need at least 1 input and 1 output node. \n Number of input nodes: ${inp.length} \n Number of output nodes: ${out.length} \n Make sure you have named all your input and output nodes`);
+        alert(` Invalid pipeline! You need at least 1 input and 1 output node (or integrations with 1 input or 1 output). \n Number of input nodes: ${inp.length} \n Number of output nodes: ${out.length} \n Make sure you have named all your input and output nodes`);
       else
         createDeployment(inp, out, integration_input, integration_output);
       // navigate to deployment

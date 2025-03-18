@@ -1,6 +1,6 @@
 import { useState } from "react";
-import myimg from '../assets/books.png'
-// import add from '../assets/add2.png'
+import myimg from '/books.png'
+// import add from '/add2.png'
 import { CreateDatabase } from "./createDatabase";
 
 export const Database = (props) => {

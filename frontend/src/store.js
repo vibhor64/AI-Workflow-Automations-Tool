@@ -14,6 +14,7 @@ import {
   MarkerType,
 } from 'reactflow';
 
+
 export const useStore = create((set, get) => ({
   nodes: defaultNodes,
   edges: defaultEdges,
@@ -78,6 +79,7 @@ export const useStore = create((set, get) => ({
       nodes: templateNodes,
       edges: templateEdges
     });
+    
   },
   setTemplateAdded: (value) => {
     set({
