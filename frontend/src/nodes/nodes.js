@@ -1,159 +1,148 @@
 const defaultNodes = [
     {
-        id: "NodeNode-1",
-        type: "NodeNode",
-        position: {
-            x: 88,
-            y: 112.19999694824219,
-        },
-        data: {
-            name: "Input",
-            isInput: true,
-            isType: true,
-            bgcolor: "#498bf5",
-            rightHandles: 1,
-            leftHandles: 0,
-            img: "/input.png",
-            category: "General",
-            targets: ["Input"],
-            sources: [],
-            fieldValue1: "Node-1",
-            fieldValue2: "Node-1",
-        },
-        width: 204,
-        height: 108,
-        selected: false,
-        positionAbsolute: {
-            x: 88,
-            y: 112.19999694824219,
-        },
-        dragging: false,
+      "id": "NodeNode-102",
+      "type": "NodeNode",
+      "position": {
+        "x": 522,
+        "y": 445.1999969482422
+      },
+      "data": {
+        "name": "Input",
+        "isInput": true,
+        "isType": true,
+        "bgcolor": "#498bf5",
+        "rightHandles": 1,
+        "leftHandles": 0,
+        "img": "/input.png",
+        "category": "General",
+        "targets": [
+          "address"
+        ],
+        "sources": [],
+        "fieldValue1": "address",
+        "fieldValue2": "✨"
+      },
+      "width": 204,
+      "height": 108,
+      "selected": false,
+      "positionAbsolute": {
+        "x": 522,
+        "y": 445.1999969482422
+      },
+      "dragging": false
     },
     {
-        id: "NodeNode-2",
-        type: "NodeNode",
-        position: {
-            x: 682,
-            y: -41.80000305175781,
-        },
-        data: {
-            name: "OpenAI",
-            isInput: true,
-            isType: false,
-            rightHandles: 1,
-            leftHandles: 8,
-            bgcolor: "#ffe682",
-            headColor: "#f5d65b",
-            img: "/openai.png",
-            category: "LLMs",
-            sources: [
-                "system",
-                "prompt",
-                "query",
-                "context",
-                "query",
-                "context",
-                "query",
-                "context",
-            ],
-            targets: ["response"],
-            fieldValue1:
-                'Given the user query  and the context regarding the query , generate an appropriate email subject line and body. Use the following format:\n\n{\n  "subject": "Insert Subject Line Here",\n  "text": "Insert Email Body Here"\n}\n\nInstructions: \n\n    Analyze the user query to determine the intent and desired outcome.\n    Use the provided context to tailor the email content appropriately.\n    Maintain a tone consistent with the purpose of the email (e.g., professional, friendly, urgent).\n    Ensure clarity, conciseness, and relevance in both the subject line and body.\n    Avoid placeholders or vague language; provide complete and actionable content.\n     \n\nUser query: {{query}}\n\nContext: {{context}}',
-            fieldValue2:
-                'You are an AI assistant designed to help users create professional and engaging emails. Your task is to generate the subject line and body of an email based on the user\'s query and the provided context. Ensure that the tone and content align with the purpose of the communication, whether it’s formal, casual, or promotional. The output must be formatted as a JSON object with two keys: "subject" for the email subject line and "text" for the email body.',
-        },
-        width: 204,
-        height: 859,
-        selected: true,
-        positionAbsolute: {
-            x: 682,
-            y: -41.80000305175781,
-        },
-        dragging: false,
+      "id": "NodeNode-104",
+      "type": "NodeNode",
+      "position": {
+        "x": 186,
+        "y": 138.1999969482422
+      },
+      "data": {
+        "name": "Input",
+        "isInput": true,
+        "isType": true,
+        "bgcolor": "#498bf5",
+        "rightHandles": 1,
+        "leftHandles": 0,
+        "img": "/input.png",
+        "category": "General",
+        "targets": [
+          "query"
+        ],
+        "sources": [],
+        "fieldValue1": "query",
+        "fieldValue2": "✨"
+      },
+      "width": 204,
+      "height": 108,
+      "selected": false,
+      "positionAbsolute": {
+        "x": 186,
+        "y": 138.1999969482422
+      },
+      "dragging": false
     },
     {
-        id: "NodeNode-3",
-        type: "NodeNode",
-        position: {
-            x: 358,
-            y: 291.1999969482422,
-        },
-        data: {
-            name: "Database (RAG)",
-            isInput: false,
-            isType: false,
-            rightHandles: 1,
-            leftHandles: 1,
-            bgcolor: "#f57e2a",
-            img: "/database.png",
-            category: "Knowledge Base",
-            sources: ["query"],
-            targets: ["results"],
-            fieldValue1: "NodeNode-3",
-            fieldValue2: "Node-3",
-            constantValueList: [
-                {
-                    name: "Max Chunk Size",
-                    value: 1000,
-                    placeholder: "Exactly what it says",
-                },
-                {
-                    name: "Chunk Overlap",
-                    value: 200,
-                    placeholder: "Overlap between chunks",
-                },
-                {
-                    name: "Number of Chunks",
-                    value: 5,
-                    placeholder: "Total number of chunks",
-                },
-            ],
-        },
-        width: 204,
-        height: 301,
-        selected: false,
-        positionAbsolute: {
-            x: 358,
-            y: 291.1999969482422,
-        },
-        dragging: false,
+      "id": "NodeNode-105",
+      "type": "NodeNode",
+      "position": {
+        "x": 525,
+        "y": 113.19999694824219
+      },
+      "data": {
+        "name": "Gemini",
+        "isInput": true,
+        "isType": false,
+        "rightHandles": 1,
+        "leftHandles": 3,
+        "bgcolor": "#ffe682",
+        "headColor": "#f5d65b",
+        "img": "/google.png",
+        "category": "LLMs",
+        "sources": [
+          "system",
+          "prompt",
+          "query"
+        ],
+        "targets": [
+          "response"
+        ],
+        "fieldValue1": "User query: {{query}}",
+        "fieldValue2": "You are an expert AI email assistant. Generate a professional and effective email based *solely* on the user's query. Aim for clarity, conciseness, and a suitable tone. Output *only* the complete email."
+      },
+      "width": 204,
+      "height": 271,
+      "selected": false,
+      "positionAbsolute": {
+        "x": 525,
+        "y": 113.19999694824219
+      },
+      "dragging": false
     },
     {
-        id: "NodeNode-4",
-        type: "NodeNode",
-        position: {
-            x: 1055,
-            y: 110.19999694824219,
+      "id": "NodeNode-106",
+      "type": "NodeNode",
+      "position": {
+        "x": 891,
+        "y": 125.19999694824219
+      },
+      "data": {
+        "name": "Gmail",
+        "desc": "Read emails, create drafts or just send one!",
+        "Nodestate": [
+          "Create draft",
+          "Send email",
+          "Read emails"
+        ],
+        "isInput": false,
+        "isType": false,
+        "bgcolor": "#ea4335",
+        "rightHandles": 0,
+        "leftHandles": 2,
+        "sources": [
+          "Message",
+          "address"
+        ],
+        "targets": [],
+        "fieldValue1": {
+          "1": "{{address}}",
+          "isDraft": true
         },
-        data: {
-            name: "Gmail",
-            desc: "Read emails, create drafts or just send one!",
-            Nodestate: ["Create draft", "Send email", "Read emails"],
-            isInput: false,
-            isType: false,
-            bgcolor: "#ea4335",
-            rightHandles: 0,
-            leftHandles: 1,
-            sources: ["Message"],
-            targets: [],
-            fieldValue1: {
-                1: "",
-                isDraft: false,
-            },
-            img: "/gmail.png",
-            category: "Integrations",
-            fieldValue2: "Node-4",
-            username: false,
-        },
-        width: 204,
-        height: 200,
-        selected: false,
-        positionAbsolute: {
-            x: 1055,
-            y: 110.19999694824219,
-        },
-        dragging: false,
-    },
-]
+        "img": "/gmail.png",
+        "category": "Integrations",
+        "fieldValue2": "✨",
+        "username": "a@m.com"
+      },
+      "width": 204,
+      "height": 200,
+      "selected": false,
+      "positionAbsolute": {
+        "x": 891,
+        "y": 125.19999694824219
+      },
+      "dragging": false
+    }
+  ]
 
 export { defaultNodes };

@@ -96,7 +96,7 @@ def execute_pipeline(pipeline):
             if node_data["rightHandles"] > 0:
                 handle_read_emails(node_id, node_data["fieldValue1"], node_data["username"], node_data.get("sources", []))
             else:
-                handle_gmail_output(node_id, node_data["fieldValue1"], node_data["username"])
+                handle_gmail_output(node_id, node_data["fieldValue1"], node_data["username"], node_data["sources"])
                 res = "Successfully sent email to " + node_data["fieldValue1"]["1"]
         elif node_type == "GDocs":
             if node_data["rightHandles"] > 0:
@@ -252,16 +252,16 @@ def handle_read_emails(id, fieldValue1, username, sources):
 
 
     try:
-        max_results = int(fieldValue1["1"])
+        max_results = str(fieldValue1["1"])
         labels = fieldValue1.get("2", "")
         # labels = labels.upper()
 
         for i in range(2, len(sources)):
             if str(id + '-left-handle-' + str(i)) in handleMap:
                 userVariable = resMap[handleMap[str(id + '-left-handle-' + str(i))]]
-                labels = labels.replace('{{' + sources[i] + '}}', userVariable)
+                max_results = max_results.replace('{{' + sources[i] + '}}', userVariable)
         
-        print(labels)
+        max_results = int(max_results)
         
         # Check if the credentials are expired and refresh them if necessary
         if creds.expired and creds.refresh_token:
@@ -326,7 +326,7 @@ def handle_read_emails(id, fieldValue1, username, sources):
         print(f"An error occurred: {error}")
         return {"status": "error", "message": str(error)}
 
-def handle_gmail_output(id, fieldValue1, username):
+def handle_gmail_output(id, fieldValue1, username, sources):
     """Handle Gmail output node to send or draft an email."""
     creds_dict = asyncio.run(fetch_google_creds(username))
     user_email = creds_dict["user_email"]
@@ -356,6 +356,12 @@ def handle_gmail_output(id, fieldValue1, username):
     try:
         isDraft = fieldValue1["isDraft"]
         to = fieldValue1["1"]
+
+        for i in range(1, len(sources)):
+            if str(id + '-left-handle-' + str(i)) in handleMap:
+                userVariable = resMap[handleMap[str(id + '-left-handle-' + str(i))]]
+                to = to.replace('{{' + sources[i] + '}}', userVariable)
+        print("email: ", to)
 
         # Validate and format the 'to' field
         if isinstance(to, list):  # If a list of email addresses is provided

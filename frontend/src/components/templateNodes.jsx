@@ -1,139 +1,87 @@
 import gmail from "/gmail.png";
-import gdocs from "/gdocs.png";
-import youtube from "/youtube.png";
+import bot from "/bot.png";
+import star from "/star.png";
+import forms from "/forms.png";
+import discord from "/discord.png";
+import sheet from "/sheets.png";
 
 const templateNodes = [
     {
-        templateName: "Contextual Email Generator",
+        templateName: "Summarize Meetings Into Emails",
         displayImage: gmail,
-        templateId: "template-4",
-        tags: ["Gmail"],
+        templateId: "template-777123",
+        tags: ["Gen AI", "Gmail"],
         nodes: [
             {
-                id: "NodeNode-1",
+                id: "NodeNode-7",
                 type: "NodeNode",
                 position: {
-                    x: 88,
-                    y: 112.19999694824219,
+                    x: 584.0015135318521,
+                    y: 133.33684973465552,
                 },
                 data: {
-                    name: "Input",
-                    isInput: true,
-                    isType: true,
-                    bgcolor: "#498bf5",
-                    rightHandles: 1,
-                    leftHandles: 0,
-                    img: "/input.png",
-                    category: "General",
-                    targets: ["Input"],
-                    sources: [],
-                    fieldValue1: "Node-1",
-                    fieldValue2: "Node-1",
-                },
-                width: 204,
-                height: 108,
-                selected: false,
-                positionAbsolute: {
-                    x: 88,
-                    y: 112.19999694824219,
-                },
-                dragging: false,
-            },
-            {
-                id: "NodeNode-2",
-                type: "NodeNode",
-                position: {
-                    x: 682,
-                    y: -41.80000305175781,
-                },
-                data: {
-                    name: "OpenAI",
+                    name: "Gemini",
                     isInput: true,
                     isType: false,
                     rightHandles: 1,
-                    leftHandles: 8,
+                    leftHandles: 3,
                     bgcolor: "#ffe682",
                     headColor: "#f5d65b",
-                    img: "/openai.png",
+                    img: "/google.png",
                     category: "LLMs",
-                    sources: [
-                        "system",
-                        "prompt",
-                        "query",
-                        "context",
-                        "query",
-                        "context",
-                        "query",
-                        "context",
-                    ],
+                    sources: ["system", "prompt", "transcript"],
                     targets: ["response"],
                     fieldValue1:
-                        'Given the user query  and the context regarding the query , generate an appropriate email subject line and body. Use the following format:\n\n{\n  "subject": "Insert Subject Line Here",\n  "text": "Insert Email Body Here"\n}\n\nInstructions: \n\n    Analyze the user query to determine the intent and desired outcome.\n    Use the provided context to tailor the email content appropriately.\n    Maintain a tone consistent with the purpose of the email (e.g., professional, friendly, urgent).\n    Ensure clarity, conciseness, and relevance in both the subject line and body.\n    Avoid placeholders or vague language; provide complete and actionable content.\n     \n\nUser query: {{query}}\n\nContext: {{context}}',
+                        'Please generate a comprehensive yet concise summary of the following Google Meet transcript:\n\n{{transcript}}\n\nSummarize the meeting transcript and strictly output the result as a JSON object with the following keys:\n\n* `"subject"`: A concise title or subject for the meeting summary (string).\n* `"text"`: A detailed summary of the meeting, including:\n    * Meeting Title/Topic (if explicitly mentioned or can be inferred)\n    * Date and Time (if explicitly mentioned in the transcript)\n    * Attendees (List of individuals who participated, if identifiable)\n    * Key Discussion Points (Summarize the main topics discussed and the key takeaways from each)\n    * Decisions Made (Clearly list any concrete decisions that were reached during the meeting)\n    * Action Items (List all assigned tasks, including who is responsible and the due date if mentioned)\n    * Next Steps (Outline any planned follow-up actions or future meetings)\n    * Overall Sentiment/Tone (Briefly describe the general atmosphere and focus of the meeting) (string).\n\nEnsure the output is a single, valid JSON object. Do not include any introductory or concluding remarks outside of the JSON structure.',
                     fieldValue2:
-                        'You are an AI assistant designed to help users create professional and engaging emails. Your task is to generate the subject line and body of an email based on the user\'s query and the provided context. Ensure that the tone and content align with the purpose of the communication, whether it’s formal, casual, or promotional. The output must be formatted as a JSON object with two keys: "subject" for the email subject line and "text" for the email body.',
+                        "You are an expert AI assistant specializing in summarizing meeting transcripts. Your primary goal is to extract key information, decisions, action items, and overall sentiment from the provided text and present it in a concise and easily understandable summary. Pay close attention to speaker attributions to accurately reflect who said what and who is responsible for specific tasks. Maintain a professional and objective tone. **Crucially, your final output MUST be a valid JSON object conforming to the specified schema.**",
                 },
                 width: 204,
-                height: 859,
-                selected: true,
-                positionAbsolute: {
-                    x: 682,
-                    y: -41.80000305175781,
-                },
-                dragging: false,
-            },
-            {
-                id: "NodeNode-3",
-                type: "NodeNode",
-                position: {
-                    x: 358,
-                    y: 291.1999969482422,
-                },
-                data: {
-                    name: "Database (RAG)",
-                    isInput: false,
-                    isType: false,
-                    rightHandles: 1,
-                    leftHandles: 1,
-                    bgcolor: "#f57e2a",
-                    img: "/database.png",
-                    category: "Knowledge Base",
-                    sources: ["query"],
-                    targets: ["results"],
-                    fieldValue1: "NodeNode-3",
-                    fieldValue2: "Node-3",
-                    constantValueList: [
-                        {
-                            name: "Max Chunk Size",
-                            value: 1000,
-                            placeholder: "Exactly what it says",
-                        },
-                        {
-                            name: "Chunk Overlap",
-                            value: 200,
-                            placeholder: "Overlap between chunks",
-                        },
-                        {
-                            name: "Number of Chunks",
-                            value: 5,
-                            placeholder: "Total number of chunks",
-                        },
-                    ],
-                },
-                width: 204,
-                height: 301,
+                height: 179,
                 selected: false,
                 positionAbsolute: {
-                    x: 358,
-                    y: 291.1999969482422,
+                    x: 584.0015135318521,
+                    y: 133.33684973465552,
                 },
                 dragging: false,
             },
             {
-                id: "NodeNode-4",
+                id: "NodeNode-8",
                 type: "NodeNode",
                 position: {
-                    x: 1055,
-                    y: 110.19999694824219,
+                    x: 192.3076938041946,
+                    y: 167.53203645213102,
+                },
+                data: {
+                    name: "Google Meet",
+                    desc: "Reads the transcript of a Google Meet session based on the provided title or filename. You need a Google Workspace Business Standard or higher subscription.",
+                    isInput: true,
+                    isType: false,
+                    bgcolor: "#34d4ed",
+                    rightHandles: 1,
+                    leftHandles: 0,
+                    targets: ["Transcript"],
+                    fieldValue1: "",
+                    img: "/meet.png",
+                    category: "Integrations",
+                    fieldValue2: "Node-8",
+                    username: false,
+                },
+                width: 204,
+                height: 200,
+                selected: false,
+                positionAbsolute: {
+                    x: 192.3076938041946,
+                    y: 167.53203645213102,
+                },
+                dragging: false,
+            },
+            {
+                id: "NodeNode-13",
+                type: "NodeNode",
+                position: {
+                    x: 969.2627830888305,
+                    y: 122.51244251239089,
                 },
                 data: {
                     name: "Gmail",
@@ -147,30 +95,29 @@ const templateNodes = [
                     sources: ["Message"],
                     targets: [],
                     fieldValue1: {
-                        1: "",
-                        isDraft: false,
+                        isDraft: true,
                     },
                     img: "/gmail.png",
                     category: "Integrations",
-                    fieldValue2: "Node-4",
+                    fieldValue2: "Node-13",
                     username: false,
                 },
                 width: 204,
                 height: 200,
                 selected: false,
-                positionAbsolute: {
-                    x: 1055,
-                    y: 110.19999694824219,
-                },
                 dragging: false,
+                positionAbsolute: {
+                    x: 969.2627830888305,
+                    y: 122.51244251239089,
+                },
             },
         ],
         edges: [
             {
-                source: "NodeNode-1",
-                sourceHandle: "NodeNode-1-right-handle-0",
-                target: "NodeNode-3",
-                targetHandle: "NodeNode-3-left-handle-0",
+                source: "NodeNode-8",
+                sourceHandle: "NodeNode-8-right-handle-0",
+                target: "NodeNode-7",
+                targetHandle: "NodeNode-7-left-handle-2",
                 type: "smoothstep",
                 animated: true,
                 markerEnd: {
@@ -179,13 +126,13 @@ const templateNodes = [
                     width: "40px",
                     color: "#aaa",
                 },
-                id: "reactflow__edge-NodeNode-1NodeNode-1-right-handle-0-NodeNode-3NodeNode-3-left-handle-0",
+                id: "reactflow__edge-NodeNode-8NodeNode-8-right-handle-0-NodeNode-7NodeNode-7-left-handle-2",
             },
             {
-                source: "NodeNode-1",
-                sourceHandle: "NodeNode-1-right-handle-0",
-                target: "NodeNode-2",
-                targetHandle: "NodeNode-2-left-handle-4",
+                source: "NodeNode-7",
+                sourceHandle: "NodeNode-7-right-handle-0",
+                target: "NodeNode-13",
+                targetHandle: "NodeNode-13-left-handle-0",
                 type: "smoothstep",
                 animated: true,
                 markerEnd: {
@@ -194,45 +141,15 @@ const templateNodes = [
                     width: "40px",
                     color: "#aaa",
                 },
-                id: "reactflow__edge-NodeNode-1NodeNode-1-right-handle-0-NodeNode-2NodeNode-2-left-handle-4",
-            },
-            {
-                source: "NodeNode-3",
-                sourceHandle: "NodeNode-3-right-handle-0",
-                target: "NodeNode-2",
-                targetHandle: "NodeNode-2-left-handle-5",
-                type: "smoothstep",
-                animated: true,
-                markerEnd: {
-                    type: "arrow",
-                    height: "20px",
-                    width: "40px",
-                    color: "#aaa",
-                },
-                id: "reactflow__edge-NodeNode-3NodeNode-3-right-handle-0-NodeNode-2NodeNode-2-left-handle-5",
-            },
-            {
-                source: "NodeNode-2",
-                sourceHandle: "NodeNode-2-right-handle-0",
-                target: "NodeNode-4",
-                targetHandle: "NodeNode-4-left-handle-0",
-                type: "smoothstep",
-                animated: true,
-                markerEnd: {
-                    type: "arrow",
-                    height: "20px",
-                    width: "40px",
-                    color: "#aaa",
-                },
-                id: "reactflow__edge-NodeNode-2NodeNode-2-right-handle-0-NodeNode-4NodeNode-4-left-handle-0",
+                id: "reactflow__edge-NodeNode-7NodeNode-7-right-handle-0-NodeNode-13NodeNode-13-left-handle-0",
             },
         ],
     },
     {
-        templateName: "Personolized Blog Generator",
-        displayImage: "/select.webp",
+        templateName: "Personalized Blog Generator",
+        displayImage: star,
         templateId: "template-7",
-        tags: ["Saved"],
+        tags: ["Gen AI"],
         nodes: [
             {
                 id: "NodeNode-37",
@@ -802,188 +719,1107 @@ const templateNodes = [
         ],
     },
     {
-        templateName: "Chat with GForms",
-        displayImage: "/select.webp",
-        templateId: "template-9",
-        tags: ["Saved"],
-        nodes: [
-            {
-                id: "NodeNode-60",
-                type: "NodeNode",
-                position: {
-                    x: 198.66066437825123,
-                    y: 306.9573588427913,
-                },
-                data: {
-                    name: "Input",
-                    isInput: true,
-                    isType: true,
-                    bgcolor: "#498bf5",
-                    rightHandles: 1,
-                    leftHandles: 0,
-                    img: "/input.png",
-                    category: "General",
-                    targets: ["Query"],
-                    sources: [],
-                    fieldValue1: "Query",
-                    fieldValue2: "Node-60",
-                },
-                width: 204,
-                height: 108,
-                selected: false,
-                positionAbsolute: {
-                    x: 198.66066437825123,
-                    y: 306.9573588427913,
-                },
-                dragging: false,
-            },
-            {
-                id: "NodeNode-61",
-                type: "NodeNode",
-                position: {
-                    x: 198.66140338414112,
-                    y: 82.89238068267395,
-                },
-                data: {
-                    name: "GForms",
-                    desc: "Reads a Google Form based on the provided identifier (title, link, or form ID).",
-                    isInput: true,
-                    isType: false,
-                    bgcolor: "#9434ed",
-                    rightHandles: 1,
-                    leftHandles: 0,
-                    targets: ["Form Data"],
-                    fieldValue1: "",
-                    img: "/forms.png",
-                    category: "Integrations",
-                    fieldValue2: "Node-61",
-                    username: false,
-                },
-                width: 204,
-                height: 174,
-                selected: false,
-                positionAbsolute: {
-                    x: 198.66140338414112,
-                    y: 82.89238068267395,
-                },
-                dragging: false,
-            },
-            {
-                id: "NodeNode-63",
-                type: "NodeNode",
-                position: {
-                    x: 606.6694573634256,
-                    y: 125.4185561300315,
-                },
-                data: {
-                    name: "Gemini",
-                    isInput: true,
-                    isType: false,
-                    rightHandles: 1,
-                    leftHandles: 4,
-                    bgcolor: "#ffe682",
-                    headColor: "#f5d65b",
-                    img: "/google.png",
-                    category: "LLMs",
-                    sources: ["system", "prompt", "data", "query"],
-                    targets: ["response"],
-                    fieldValue1:
-                        "Here is the data collected from the Google Form:\n\n{{data}}\n\nUser query: {{query}}",
-                    fieldValue2:
-                        "You are a helpful and knowledgeable AI assistant designed to understand and answer questions based on data retrieved from the Google Forms API. You have access to structured data representing responses submitted through a Google Form. Each response consists of answers to the questions defined in the form. The structure of the data will be provided in the main prompt, typically as a list of dictionaries or a similar structured format, where each dictionary represents a single form submission and keys correspond to the form questions or their identifiers.\n\nYour primary goal is to accurately answer user questions by analyzing this structured data. You can perform various operations such as filtering responses based on specific answers, counting occurrences of certain responses, identifying trends, and summarizing the data.\n\nWhen answering, be concise and directly address the user's query. Clearly state the steps you took or the logic you applied to arrive at the answer. If a question cannot be answered based on the provided data, politely state that.\n\nPay close attention to the data types of the responses. Be mindful that some responses might be free-text answers, while others might be multiple-choice selections or numerical values.\n\nWhen presenting data, format it clearly and understandably, potentially using lists, tables, or summaries as appropriate. Avoid making assumptions or bringing in outside information unless explicitly asked to do so in relation to the provided form data.",
-                },
-                width: 204,
-                height: 1003,
-                selected: false,
-                positionAbsolute: {
-                    x: 606.6694573634256,
-                    y: 125.4185561300315,
-                },
-                dragging: false,
-            },
-            {
-                id: "NodeNode-65",
-                type: "NodeNode",
-                position: {
-                    x: 949.8514217393541,
-                    y: 169.84292997434642,
-                },
-                data: {
-                    name: "Output",
-                    isInput: true,
-                    isType: true,
-                    bgcolor: "#58c742",
-                    rightHandles: 0,
-                    leftHandles: 1,
-                    img: "/output.png",
-                    category: "General",
-                    sources: ["Output"],
-                    fieldValue1: "Node-65",
-                    fieldValue2: "Node-65",
-                },
-                width: 204,
-                height: 108,
-                selected: true,
-                positionAbsolute: {
-                    x: 949.8514217393541,
-                    y: 169.84292997434642,
-                },
-                dragging: false,
-            },
+        "templateName": "Write Emails in Your Style Through Discord",
+        "displayImage": discord,
+        "templateId": "template-21",
+        "tags": [
+          "Discord", "Gmail"
         ],
-        edges: [
-            {
-                source: "NodeNode-61",
-                sourceHandle: "NodeNode-61-right-handle-0",
-                target: "NodeNode-63",
-                targetHandle: "NodeNode-63-left-handle-2",
-                type: "smoothstep",
-                animated: true,
-                markerEnd: {
-                    type: "arrow",
-                    height: "20px",
-                    width: "40px",
-                    color: "#aaa",
-                },
-                id: "reactflow__edge-NodeNode-61NodeNode-61-right-handle-0-NodeNode-63NodeNode-63-left-handle-2",
+        "nodes": [
+          {
+            "id": "NodeNode-83",
+            "type": "NodeNode",
+            "position": {
+              "x": 59,
+              "y": 210.1999969482422
             },
-            {
-                source: "NodeNode-60",
-                sourceHandle: "NodeNode-60-right-handle-0",
-                target: "NodeNode-63",
-                targetHandle: "NodeNode-63-left-handle-3",
-                type: "smoothstep",
-                animated: true,
-                markerEnd: {
-                    type: "arrow",
-                    height: "20px",
-                    width: "40px",
-                    color: "#aaa",
-                },
-                id: "reactflow__edge-NodeNode-60NodeNode-60-right-handle-0-NodeNode-63NodeNode-63-left-handle-3",
+            "data": {
+              "name": "Input",
+              "isInput": true,
+              "isType": true,
+              "bgcolor": "#498bf5",
+              "rightHandles": 1,
+              "leftHandles": 0,
+              "img": "/input.png",
+              "category": "General",
+              "targets": [
+                "Query"
+              ],
+              "sources": [],
+              "fieldValue1": "Query",
+              "fieldValue2": "✨"
             },
-            {
-                source: "NodeNode-63",
-                sourceHandle: "NodeNode-63-right-handle-0",
-                target: "NodeNode-65",
-                targetHandle: "NodeNode-65-left-handle-0",
-                type: "smoothstep",
-                animated: true,
-                markerEnd: {
-                    type: "arrow",
-                    height: "20px",
-                    width: "40px",
-                    color: "#aaa",
-                },
-                id: "reactflow__edge-NodeNode-63NodeNode-63-right-handle-0-NodeNode-65NodeNode-65-left-handle-0",
+            "width": 204,
+            "height": 108,
+            "selected": false,
+            "positionAbsolute": {
+              "x": 59,
+              "y": 210.1999969482422
             },
+            "dragging": false
+          },
+          {
+            "id": "NodeNode-84",
+            "type": "NodeNode",
+            "position": {
+              "x": 459,
+              "y": 170.1999969482422
+            },
+            "data": {
+              "name": "Gemini",
+              "isInput": true,
+              "isType": false,
+              "rightHandles": 1,
+              "leftHandles": 4,
+              "bgcolor": "#ffe682",
+              "headColor": "#f5d65b",
+              "img": "/google.png",
+              "category": "LLMs",
+              "sources": [
+                "system",
+                "prompt",
+                "query",
+                "style"
+              ],
+              "targets": [
+                "response"
+              ],
+              "fieldValue1": "Here is the user query: {{query}}\n\nHere are the user's past emails that describe their writing style: {{style}}",
+              "fieldValue2": "You are an AI email drafter. Generate concise, professional emails based on the user's query and writing style (inferred from past emails).\n\n**Key Principles:**\n\n* **Direct:** State the email's purpose clearly and immediately.\n* **Concise:** Use minimal words while conveying all necessary information.\n* **Professional:** Maintain a respectful and appropriate tone.\n* **Action-Oriented (if applicable):** Clearly state any required actions from the recipient.\n\n**Input:** User query describing the email's content and desired recipient. User's past sent emails (for style reference).\n\n**Output:** A complete, ready-to-send email.\n\n**Process:**\n\n1.  **Analyze User Query:** Identify the core message, recipient, and desired outcome.\n2.  **Analyze Past Emails:** Infer the user's typical tone, formality level, sentence structure, and preferred closing.\n3.  **Draft Subject Line:** Create a brief, informative subject that reflects the email's purpose.\n4.  **Compose Body:** Write a short and focused email body addressing the query directly.\n5.  **Include Call to Action (if needed):** Clearly state what the recipient should do.\n6.  **Add Closing:** Use a professional closing consistent with the user's style.\n\n**Focus on clarity and brevity while mirroring the user's established communication style.**"
+            },
+            "width": 204,
+            "height": 991,
+            "selected": false,
+            "positionAbsolute": {
+              "x": 459,
+              "y": 170.1999969482422
+            },
+            "dragging": false
+          },
+          {
+            "id": "NodeNode-87",
+            "type": "NodeNode",
+            "position": {
+              "x": 57.913839346918024,
+              "y": 412.6964377967804
+            },
+            "data": {
+              "name": "GDocs",
+              "desc": "Create a doc (or database inside Weavebot) and store all your previously sent emails there.",
+              "Nodestate": [
+                "Read Doc",
+                "Create Doc"
+              ],
+              "isInput": false,
+              "isType": false,
+              "bgcolor": "#636ff2",
+              "rightHandles": 1,
+              "leftHandles": 0,
+              "img": "/gdocs.png",
+              "category": "Integrations",
+              "fieldValue1": "",
+              "fieldValue2": "✨",
+              "sources": [],
+              "targets": [
+                "Content"
+              ],
+              "username": false
+            },
+            "width": 204,
+            "height": 188,
+            "selected": false,
+            "positionAbsolute": {
+              "x": 57.913839346918024,
+              "y": 412.6964377967804
+            },
+            "dragging": false
+          },
+          {
+            "id": "NodeNode-88",
+            "type": "NodeNode",
+            "position": {
+              "x": 849.9388722232765,
+              "y": 200.72819983147286
+            },
+            "data": {
+              "name": "Discord",
+              "desc": "Our discord bot will send messages to your requested channel",
+              "isInput": true,
+              "isType": false,
+              "bgcolor": "#5865F2",
+              "rightHandles": 0,
+              "leftHandles": 1,
+              "fieldValue1": "",
+              "sources": [
+                "Message Content"
+              ],
+              "img": "/discord.png",
+              "category": "Integrations",
+              "fieldValue2": "✨",
+              "username": false
+            },
+            "width": 204,
+            "height": 162,
+            "selected": false,
+            "positionAbsolute": {
+              "x": 849.9388722232765,
+              "y": 200.72819983147286
+            },
+            "dragging": false
+          }
         ],
+        "edges": [
+          {
+            "source": "NodeNode-83",
+            "sourceHandle": "NodeNode-83-right-handle-0",
+            "target": "NodeNode-84",
+            "targetHandle": "NodeNode-84-left-handle-2",
+            "type": "smoothstep",
+            "animated": true,
+            "markerEnd": {
+              "type": "arrow",
+              "height": "20px",
+              "width": "40px",
+              "color": "#aaa"
+            },
+            "id": "reactflow__edge-NodeNode-83NodeNode-83-right-handle-0-NodeNode-84NodeNode-84-left-handle-2"
+          },
+          {
+            "source": "NodeNode-87",
+            "sourceHandle": "NodeNode-87-right-handle-0",
+            "target": "NodeNode-84",
+            "targetHandle": "NodeNode-84-left-handle-3",
+            "type": "smoothstep",
+            "animated": true,
+            "markerEnd": {
+              "type": "arrow",
+              "height": "20px",
+              "width": "40px",
+              "color": "#aaa"
+            },
+            "id": "reactflow__edge-NodeNode-87NodeNode-87-right-handle-0-NodeNode-84NodeNode-84-left-handle-3"
+          },
+          {
+            "source": "NodeNode-84",
+            "sourceHandle": "NodeNode-84-right-handle-0",
+            "target": "NodeNode-88",
+            "targetHandle": "NodeNode-88-left-handle-0",
+            "type": "smoothstep",
+            "animated": true,
+            "markerEnd": {
+              "type": "arrow",
+              "height": "20px",
+              "width": "40px",
+              "color": "#aaa"
+            },
+            "id": "reactflow__edge-NodeNode-84NodeNode-84-right-handle-0-NodeNode-88NodeNode-88-left-handle-0"
+          }
+        ]
     },
     {
-        templateName: "Summarize daily emails",
-        displayImage: "/select.webp",
-        templateId: "template-8",
-        tags: ["Saved"],
+        "templateName": "Deep Marketing Email Expert",
+        "displayImage": bot,
+        "templateId": "template-37",
+        "tags": [
+          "Gmail", "Assistant"
+        ],
+        "nodes": [
+          {
+            "id": "NodeNode-110",
+            "type": "NodeNode",
+            "position": {
+              "x": 461,
+              "y": 103.19999694824219
+            },
+            "data": {
+              "name": "Gemini",
+              "isInput": true,
+              "isType": false,
+              "rightHandles": 1,
+              "leftHandles": 6,
+              "bgcolor": "#ffe682",
+              "headColor": "#f5d65b",
+              "img": "/google.png",
+              "category": "LLMs",
+              "sources": [
+                "system",
+                "prompt",
+                "query",
+                "audience",
+                "tone",
+                "goal"
+              ],
+              "targets": [
+                "response"
+              ],
+              "fieldValue1": "User query: {{query}}\nTarget Audience: {{audience}}\nTone: {{tone}}\nContent Goal: {{goal}}",
+              "fieldValue2": "Tasks: \n\n- Identify the core objective of the user's request. What is the single most important action the user wants the recipient to take after reading the email? Output this as a concise statement.\n\n- Summarize the key characteristics and motivations of the target audience that will influence the email's messaging. Focus on aspects relevant to the user query.\n\n- Identify 3-5 keywords or short phrases that best represent the desired tone and will guide the language used in the email.\n\n- Articulate the primary call to action (CTA) that directly supports the content goal. This should be a clear and concise instruction for the recipient."
+            },
+            "width": 204,
+            "height": 583,
+            "selected": false,
+            "positionAbsolute": {
+              "x": 461,
+              "y": 103.19999694824219
+            },
+            "dragging": false
+          },
+          {
+            "id": "NodeNode-111",
+            "type": "NodeNode",
+            "position": {
+              "x": 462.2581982120571,
+              "y": 714.9709580207029
+            },
+            "data": {
+              "name": "Gemini",
+              "isInput": true,
+              "isType": false,
+              "rightHandles": 1,
+              "leftHandles": 4,
+              "bgcolor": "#ffe682",
+              "headColor": "#f5d65b",
+              "img": "/google.png",
+              "category": "LLMs",
+              "sources": [
+                "system",
+                "prompt",
+                "emails",
+                "context"
+              ],
+              "targets": [
+                "response"
+              ],
+              "fieldValue1": "List of previous emails: {{emails}}\nAdditional Context: {{context}}",
+              "fieldValue2": "Task: Analyze the provided emails and identify recurring patterns in:\n    - Sentence structure and length\n    - Word choice and vocabulary\n    - Use of persuasive language and techniques\n    - Overall flow and organization\n    - Branding elements and voice consistency\nOutput a summary of the key stylistic elements that should be incorporated into the new email.\n- Also identify the most crucial pieces of information from the additional context that must be included or considered when crafting the email message."
+            },
+            "width": 204,
+            "height": 487,
+            "selected": false,
+            "positionAbsolute": {
+              "x": 462.2581982120571,
+              "y": 714.9709580207029
+            },
+            "dragging": false
+          },
+          {
+            "id": "NodeNode-112",
+            "type": "NodeNode",
+            "position": {
+              "x": 962.4323477302476,
+              "y": 31.159335187700435
+            },
+            "data": {
+              "name": "Gemini",
+              "isInput": true,
+              "isType": false,
+              "rightHandles": 1,
+              "leftHandles": 4,
+              "bgcolor": "#ffe682",
+              "headColor": "#f5d65b",
+              "img": "/google.png",
+              "category": "LLMs",
+              "sources": [
+                "system",
+                "prompt",
+                "objectives",
+                "audience"
+              ],
+              "targets": [
+                "response"
+              ],
+              "fieldValue1": "Core Objectives, content goal CTA and Tone: {{objectives}}\n    Target Audience: {{audience}}",
+              "fieldValue2": "Task: Generate 3-5 distinct subject line options that are:\n    - Relevant to the core objective\n    - Appealing to the target audience\n    - Reflective of the desired tone\n    - Encourage opens and clicks (consider using power words, urgency, or personalization)"
+            },
+            "width": 204,
+            "height": 367,
+            "selected": false,
+            "dragging": false,
+            "positionAbsolute": {
+              "x": 962.4323477302476,
+              "y": 31.159335187700435
+            }
+          },
+          {
+            "id": "NodeNode-113",
+            "type": "NodeNode",
+            "position": {
+              "x": 963.0671980742884,
+              "y": 421.6137794790685
+            },
+            "data": {
+              "name": "Gemini",
+              "isInput": true,
+              "isType": false,
+              "rightHandles": 1,
+              "leftHandles": 5,
+              "bgcolor": "#ffe682",
+              "headColor": "#f5d65b",
+              "img": "/google.png",
+              "category": "LLMs",
+              "sources": [
+                "system",
+                "prompt",
+                "objectives",
+                "audience",
+                "style"
+              ],
+              "targets": [
+                "response"
+              ],
+              "fieldValue1": "Core Objectives, content goal CTA and Tone: {{objectives}}\n    Target Audience: {{audience}}\n    Stylistic elements: {{style}}",
+              "fieldValue2": "Task: Create 2-3 different opening sentences or short paragraphs that aim to immediately grab the reader's attention and connect with their needs or interests, while aligning with the desired tone and writing style."
+            },
+            "width": 204,
+            "height": 355,
+            "selected": false,
+            "positionAbsolute": {
+              "x": 963.0671980742884,
+              "y": 421.6137794790685
+            },
+            "dragging": false
+          },
+          {
+            "id": "NodeNode-114",
+            "type": "NodeNode",
+            "position": {
+              "x": 964.6604782668594,
+              "y": 797.6279049258636
+            },
+            "data": {
+              "name": "Gemini",
+              "isInput": true,
+              "isType": false,
+              "rightHandles": 1,
+              "leftHandles": 6,
+              "bgcolor": "#ffe682",
+              "headColor": "#f5d65b",
+              "img": "/google.png",
+              "category": "LLMs",
+              "sources": [
+                "system",
+                "prompt",
+                "objectives",
+                "audience",
+                "style",
+                "context"
+              ],
+              "targets": [
+                "response"
+              ],
+              "fieldValue1": "Core Objectives, content goal CTA and Tone: {{objectives}}\n    Target Audience: {{audience}}\n    Stylistic elements: {{style}}\nAdditional context: {{context}}",
+              "fieldValue2": "Task: Draft the main body of the email, ensuring it:\n    - Clearly communicates the core message\n    - Addresses the target audience's needs and interests\n    - Incorporates the desired tone and writing style\n    - Includes all necessary information from the additional context\n    - Generate 2-3 variations of the call to action that are:\n    - Clear and concise\n    - Action-oriented\n    - Enticing and encourage clicks\n    - Consistent with the overall tone and style.\n- Create 2-3 closing remarks that reinforce the brand identity and leave a positive final impression, aligning with the desired tone and style. Include standard elements like company name and optional contact information."
+            },
+            "width": 204,
+            "height": 619,
+            "selected": false,
+            "positionAbsolute": {
+              "x": 964.6604782668594,
+              "y": 797.6279049258636
+            },
+            "dragging": false
+          },
+          {
+            "id": "NodeNode-115",
+            "type": "NodeNode",
+            "position": {
+              "x": 1330.690760856686,
+              "y": 378.75059736396736
+            },
+            "data": {
+              "name": "Gemini",
+              "isInput": true,
+              "isType": false,
+              "rightHandles": 1,
+              "leftHandles": 5,
+              "bgcolor": "#ffe682",
+              "headColor": "#f5d65b",
+              "img": "/google.png",
+              "category": "LLMs",
+              "sources": [
+                "system",
+                "prompt",
+                "subject",
+                "hook",
+                "body"
+              ],
+              "targets": [
+                "response"
+              ],
+              "fieldValue1": "Subject: {{subject}}\nHook: {{hook}}\nMain body: {{body}}",
+              "fieldValue2": "Task: Combine one option from each of the generated elements (subject line, opening, body, CTA, closing) to create a complete initial draft of the marketing email. Choose the options that seem most cohesive and aligned with all previous outputs."
+            },
+            "width": 204,
+            "height": 319,
+            "selected": false,
+            "positionAbsolute": {
+              "x": 1330.690760856686,
+              "y": 378.75059736396736
+            },
+            "dragging": false
+          },
+          {
+            "id": "NodeNode-116",
+            "type": "NodeNode",
+            "position": {
+              "x": 1730.011513153076,
+              "y": 376.5387677655908
+            },
+            "data": {
+              "name": "Gemini",
+              "isInput": true,
+              "isType": false,
+              "rightHandles": 1,
+              "leftHandles": 5,
+              "bgcolor": "#ffe682",
+              "headColor": "#f5d65b",
+              "img": "/google.png",
+              "category": "LLMs",
+              "sources": [
+                "system",
+                "prompt",
+                "draft",
+                "first",
+                "style"
+              ],
+              "targets": [
+                "response"
+              ],
+              "fieldValue1": "Initial email draft: {{draft}}\nTarget Audience Summary, copntent goal CTA and Desired Tone Keywords: {{first}}\n    Stylistic Elements Summary: {{style}}",
+              "fieldValue2": "Task: Review and refine the initial email draft to ensure it is:\n    - **Hyper-optimized for marketing content:** Focus on clarity, conciseness, persuasive language, and a strong call to action.\n    - **Aligned with user's preferences:** Double-check that the tone, style, and messaging are consistent with the earlier defined parameters.\n    - **Engaging for the target audience:** Ensure the language and content resonate with their needs and interests.\n    - **Free of errors:** Check for grammar, spelling, and punctuation mistakes.\n    - **Mobile-friendly (consider this aspect in your refinement):** Suggest any formatting adjustments for better readability on mobile devices.\n\n- Strictly output the result as a JSON object with the following keys:\n`\"subject\"`: A concise title or subject for the email. `\"text\"`: Body of email\n\nOutput the final, refined marketing email."
+            },
+            "width": 204,
+            "height": 703,
+            "selected": false,
+            "positionAbsolute": {
+              "x": 1730.011513153076,
+              "y": 376.5387677655908
+            },
+            "dragging": false
+          },
+          {
+            "id": "NodeNode-117",
+            "type": "NodeNode",
+            "position": {
+              "x": -11.690344951358924,
+              "y": 170.65275751523006
+            },
+            "data": {
+              "name": "Input",
+              "isInput": true,
+              "isType": true,
+              "bgcolor": "#498bf5",
+              "rightHandles": 1,
+              "leftHandles": 0,
+              "img": "/input.png",
+              "category": "General",
+              "targets": [
+                "Query"
+              ],
+              "sources": [],
+              "fieldValue1": "Query",
+              "fieldValue2": "✨"
+            },
+            "width": 204,
+            "height": 108,
+            "selected": false,
+            "positionAbsolute": {
+              "x": -11.690344951358924,
+              "y": 170.65275751523006
+            },
+            "dragging": false
+          },
+          {
+            "id": "NodeNode-118",
+            "type": "NodeNode",
+            "position": {
+              "x": -9.947833352357364,
+              "y": 304.43744504449273
+            },
+            "data": {
+              "name": "Input",
+              "isInput": true,
+              "isType": true,
+              "bgcolor": "#498bf5",
+              "rightHandles": 1,
+              "leftHandles": 0,
+              "img": "/input.png",
+              "category": "General",
+              "targets": [
+                "Target Audience"
+              ],
+              "sources": [],
+              "fieldValue1": "Target Audience",
+              "fieldValue2": "✨"
+            },
+            "width": 204,
+            "height": 108,
+            "selected": false,
+            "positionAbsolute": {
+              "x": -9.947833352357364,
+              "y": 304.43744504449273
+            },
+            "dragging": false
+          },
+          {
+            "id": "NodeNode-119",
+            "type": "NodeNode",
+            "position": {
+              "x": -9.160929413378867,
+              "y": 441.6927170357754
+            },
+            "data": {
+              "name": "Input",
+              "isInput": true,
+              "isType": true,
+              "bgcolor": "#498bf5",
+              "rightHandles": 1,
+              "leftHandles": 0,
+              "img": "/input.png",
+              "category": "General",
+              "targets": [
+                "Tone"
+              ],
+              "sources": [],
+              "fieldValue1": "Tone",
+              "fieldValue2": "✨"
+            },
+            "width": 204,
+            "height": 108,
+            "selected": false,
+            "positionAbsolute": {
+              "x": -9.160929413378867,
+              "y": 441.6927170357754
+            },
+            "dragging": false
+          },
+          {
+            "id": "NodeNode-120",
+            "type": "NodeNode",
+            "position": {
+              "x": -8.182017378509457,
+              "y": 580.4374450444926
+            },
+            "data": {
+              "name": "Input",
+              "isInput": true,
+              "isType": true,
+              "bgcolor": "#498bf5",
+              "rightHandles": 1,
+              "leftHandles": 0,
+              "img": "/input.png",
+              "category": "General",
+              "targets": [
+                "Content goal"
+              ],
+              "sources": [],
+              "fieldValue1": "Content goal",
+              "fieldValue2": "✨"
+            },
+            "width": 204,
+            "height": 108,
+            "selected": false,
+            "positionAbsolute": {
+              "x": -8.182017378509457,
+              "y": 580.4374450444926
+            },
+            "dragging": false
+          },
+          {
+            "id": "NodeNode-121",
+            "type": "NodeNode",
+            "position": {
+              "x": -6.884569456965664,
+              "y": 727.18217305321
+            },
+            "data": {
+              "name": "Input",
+              "isInput": true,
+              "isType": true,
+              "bgcolor": "#498bf5",
+              "rightHandles": 1,
+              "leftHandles": 0,
+              "img": "/input.png",
+              "category": "General",
+              "targets": [
+                "Additional context"
+              ],
+              "sources": [],
+              "fieldValue1": "Additional context",
+              "fieldValue2": "✨"
+            },
+            "width": 204,
+            "height": 108,
+            "selected": false,
+            "positionAbsolute": {
+              "x": -6.884569456965664,
+              "y": 727.18217305321
+            },
+            "dragging": false
+          },
+          {
+            "id": "NodeNode-125",
+            "type": "NodeNode",
+            "position": {
+              "x": -0.08879987912415288,
+              "y": 909.1966117891931
+            },
+            "data": {
+              "name": "Database Loader",
+              "isInput": false,
+              "isType": false,
+              "rightHandles": 1,
+              "leftHandles": 0,
+              "bgcolor": "#f57e2a",
+              "img": "/database.webp",
+              "category": "Knowledge Base",
+              "sources": [],
+              "targets": [
+                "Database"
+              ],
+              "fieldValue1": "🖊️",
+              "fieldValue2": "✨"
+            },
+            "width": 204,
+            "height": 142,
+            "selected": false,
+            "positionAbsolute": {
+              "x": -0.08879987912415288,
+              "y": 909.1966117891931
+            },
+            "dragging": false
+          },
+          {
+            "id": "NodeNode-126",
+            "type": "NodeNode",
+            "position": {
+              "x": 2114.063312841882,
+              "y": 382.0489960332792
+            },
+            "data": {
+              "name": "Gmail",
+              "desc": "Read emails, create drafts or just send one!",
+              "Nodestate": [
+                "Create draft",
+                "Send email",
+                "Read emails"
+              ],
+              "isInput": false,
+              "isType": false,
+              "bgcolor": "#ea4335",
+              "rightHandles": 0,
+              "leftHandles": 2,
+              "sources": [
+                "Message",
+                "addresses"
+              ],
+              "targets": [],
+              "fieldValue1": {
+                "1": "{{addresses}}",
+                "isDraft": true
+              },
+              "img": "/gmail.png",
+              "category": "Integrations",
+              "fieldValue2": "✨",
+              "username": false
+            },
+            "width": 204,
+            "height": 200,
+            "selected": false,
+            "positionAbsolute": {
+              "x": 2114.063312841882,
+              "y": 382.0489960332792
+            },
+            "dragging": false
+          },
+          {
+            "id": "NodeNode-127",
+            "type": "NodeNode",
+            "position": {
+              "x": 2117.1354423761372,
+              "y": 651.0323408875801
+            },
+            "data": {
+              "name": "Input",
+              "isInput": true,
+              "isType": true,
+              "bgcolor": "#498bf5",
+              "rightHandles": 1,
+              "leftHandles": 0,
+              "img": "/input.png",
+              "category": "General",
+              "targets": [
+                "Email Addresses"
+              ],
+              "sources": [],
+              "fieldValue1": "Email Addresses",
+              "fieldValue2": "✨"
+            },
+            "width": 204,
+            "height": 108,
+            "selected": true,
+            "positionAbsolute": {
+              "x": 2117.1354423761372,
+              "y": 651.0323408875801
+            },
+            "dragging": false
+          }
+        ],
+        "edges": [
+          {
+            "source": "NodeNode-125",
+            "sourceHandle": "NodeNode-125-right-handle-0",
+            "target": "NodeNode-111",
+            "targetHandle": "NodeNode-111-left-handle-2",
+            "type": "smoothstep",
+            "animated": true,
+            "markerEnd": {
+              "type": "arrow",
+              "height": "20px",
+              "width": "40px",
+              "color": "#aaa"
+            },
+            "id": "reactflow__edge-NodeNode-125NodeNode-125-right-handle-0-NodeNode-111NodeNode-111-left-handle-2"
+          },
+          {
+            "source": "NodeNode-121",
+            "sourceHandle": "NodeNode-121-right-handle-0",
+            "target": "NodeNode-111",
+            "targetHandle": "NodeNode-111-left-handle-3",
+            "type": "smoothstep",
+            "animated": true,
+            "markerEnd": {
+              "type": "arrow",
+              "height": "20px",
+              "width": "40px",
+              "color": "#aaa"
+            },
+            "id": "reactflow__edge-NodeNode-121NodeNode-121-right-handle-0-NodeNode-111NodeNode-111-left-handle-3"
+          },
+          {
+            "source": "NodeNode-120",
+            "sourceHandle": "NodeNode-120-right-handle-0",
+            "target": "NodeNode-110",
+            "targetHandle": "NodeNode-110-left-handle-5",
+            "type": "smoothstep",
+            "animated": true,
+            "markerEnd": {
+              "type": "arrow",
+              "height": "20px",
+              "width": "40px",
+              "color": "#aaa"
+            },
+            "id": "reactflow__edge-NodeNode-120NodeNode-120-right-handle-0-NodeNode-110NodeNode-110-left-handle-5"
+          },
+          {
+            "source": "NodeNode-119",
+            "sourceHandle": "NodeNode-119-right-handle-0",
+            "target": "NodeNode-110",
+            "targetHandle": "NodeNode-110-left-handle-4",
+            "type": "smoothstep",
+            "animated": true,
+            "markerEnd": {
+              "type": "arrow",
+              "height": "20px",
+              "width": "40px",
+              "color": "#aaa"
+            },
+            "id": "reactflow__edge-NodeNode-119NodeNode-119-right-handle-0-NodeNode-110NodeNode-110-left-handle-4"
+          },
+          {
+            "source": "NodeNode-118",
+            "sourceHandle": "NodeNode-118-right-handle-0",
+            "target": "NodeNode-110",
+            "targetHandle": "NodeNode-110-left-handle-3",
+            "type": "smoothstep",
+            "animated": true,
+            "markerEnd": {
+              "type": "arrow",
+              "height": "20px",
+              "width": "40px",
+              "color": "#aaa"
+            },
+            "id": "reactflow__edge-NodeNode-118NodeNode-118-right-handle-0-NodeNode-110NodeNode-110-left-handle-3"
+          },
+          {
+            "source": "NodeNode-117",
+            "sourceHandle": "NodeNode-117-right-handle-0",
+            "target": "NodeNode-110",
+            "targetHandle": "NodeNode-110-left-handle-2",
+            "type": "smoothstep",
+            "animated": true,
+            "markerEnd": {
+              "type": "arrow",
+              "height": "20px",
+              "width": "40px",
+              "color": "#aaa"
+            },
+            "id": "reactflow__edge-NodeNode-117NodeNode-117-right-handle-0-NodeNode-110NodeNode-110-left-handle-2"
+          },
+          {
+            "source": "NodeNode-110",
+            "sourceHandle": "NodeNode-110-right-handle-0",
+            "target": "NodeNode-112",
+            "targetHandle": "NodeNode-112-left-handle-2",
+            "type": "smoothstep",
+            "animated": true,
+            "markerEnd": {
+              "type": "arrow",
+              "height": "20px",
+              "width": "40px",
+              "color": "#aaa"
+            },
+            "id": "reactflow__edge-NodeNode-110NodeNode-110-right-handle-0-NodeNode-112NodeNode-112-left-handle-2"
+          },
+          {
+            "source": "NodeNode-118",
+            "sourceHandle": "NodeNode-118-right-handle-0",
+            "target": "NodeNode-112",
+            "targetHandle": "NodeNode-112-left-handle-3",
+            "type": "smoothstep",
+            "animated": true,
+            "markerEnd": {
+              "type": "arrow",
+              "height": "20px",
+              "width": "40px",
+              "color": "#aaa"
+            },
+            "id": "reactflow__edge-NodeNode-118NodeNode-118-right-handle-0-NodeNode-112NodeNode-112-left-handle-3"
+          },
+          {
+            "source": "NodeNode-110",
+            "sourceHandle": "NodeNode-110-right-handle-0",
+            "target": "NodeNode-113",
+            "targetHandle": "NodeNode-113-left-handle-2",
+            "type": "smoothstep",
+            "animated": true,
+            "markerEnd": {
+              "type": "arrow",
+              "height": "20px",
+              "width": "40px",
+              "color": "#aaa"
+            },
+            "id": "reactflow__edge-NodeNode-110NodeNode-110-right-handle-0-NodeNode-113NodeNode-113-left-handle-2"
+          },
+          {
+            "source": "NodeNode-118",
+            "sourceHandle": "NodeNode-118-right-handle-0",
+            "target": "NodeNode-113",
+            "targetHandle": "NodeNode-113-left-handle-3",
+            "type": "smoothstep",
+            "animated": true,
+            "markerEnd": {
+              "type": "arrow",
+              "height": "20px",
+              "width": "40px",
+              "color": "#aaa"
+            },
+            "id": "reactflow__edge-NodeNode-118NodeNode-118-right-handle-0-NodeNode-113NodeNode-113-left-handle-3"
+          },
+          {
+            "source": "NodeNode-111",
+            "sourceHandle": "NodeNode-111-right-handle-0",
+            "target": "NodeNode-113",
+            "targetHandle": "NodeNode-113-left-handle-4",
+            "type": "smoothstep",
+            "animated": true,
+            "markerEnd": {
+              "type": "arrow",
+              "height": "20px",
+              "width": "40px",
+              "color": "#aaa"
+            },
+            "id": "reactflow__edge-NodeNode-111NodeNode-111-right-handle-0-NodeNode-113NodeNode-113-left-handle-4"
+          },
+          {
+            "source": "NodeNode-110",
+            "sourceHandle": "NodeNode-110-right-handle-0",
+            "target": "NodeNode-114",
+            "targetHandle": "NodeNode-114-left-handle-2",
+            "type": "smoothstep",
+            "animated": true,
+            "markerEnd": {
+              "type": "arrow",
+              "height": "20px",
+              "width": "40px",
+              "color": "#aaa"
+            },
+            "id": "reactflow__edge-NodeNode-110NodeNode-110-right-handle-0-NodeNode-114NodeNode-114-left-handle-2"
+          },
+          {
+            "source": "NodeNode-118",
+            "sourceHandle": "NodeNode-118-right-handle-0",
+            "target": "NodeNode-114",
+            "targetHandle": "NodeNode-114-left-handle-3",
+            "type": "smoothstep",
+            "animated": true,
+            "markerEnd": {
+              "type": "arrow",
+              "height": "20px",
+              "width": "40px",
+              "color": "#aaa"
+            },
+            "id": "reactflow__edge-NodeNode-118NodeNode-118-right-handle-0-NodeNode-114NodeNode-114-left-handle-3"
+          },
+          {
+            "source": "NodeNode-111",
+            "sourceHandle": "NodeNode-111-right-handle-0",
+            "target": "NodeNode-114",
+            "targetHandle": "NodeNode-114-left-handle-4",
+            "type": "smoothstep",
+            "animated": true,
+            "markerEnd": {
+              "type": "arrow",
+              "height": "20px",
+              "width": "40px",
+              "color": "#aaa"
+            },
+            "id": "reactflow__edge-NodeNode-111NodeNode-111-right-handle-0-NodeNode-114NodeNode-114-left-handle-4"
+          },
+          {
+            "source": "NodeNode-121",
+            "sourceHandle": "NodeNode-121-right-handle-0",
+            "target": "NodeNode-114",
+            "targetHandle": "NodeNode-114-left-handle-5",
+            "type": "smoothstep",
+            "animated": true,
+            "markerEnd": {
+              "type": "arrow",
+              "height": "20px",
+              "width": "40px",
+              "color": "#aaa"
+            },
+            "id": "reactflow__edge-NodeNode-121NodeNode-121-right-handle-0-NodeNode-114NodeNode-114-left-handle-5"
+          },
+          {
+            "source": "NodeNode-112",
+            "sourceHandle": "NodeNode-112-right-handle-0",
+            "target": "NodeNode-115",
+            "targetHandle": "NodeNode-115-left-handle-2",
+            "type": "smoothstep",
+            "animated": true,
+            "markerEnd": {
+              "type": "arrow",
+              "height": "20px",
+              "width": "40px",
+              "color": "#aaa"
+            },
+            "id": "reactflow__edge-NodeNode-112NodeNode-112-right-handle-0-NodeNode-115NodeNode-115-left-handle-2"
+          },
+          {
+            "source": "NodeNode-113",
+            "sourceHandle": "NodeNode-113-right-handle-0",
+            "target": "NodeNode-115",
+            "targetHandle": "NodeNode-115-left-handle-3",
+            "type": "smoothstep",
+            "animated": true,
+            "markerEnd": {
+              "type": "arrow",
+              "height": "20px",
+              "width": "40px",
+              "color": "#aaa"
+            },
+            "id": "reactflow__edge-NodeNode-113NodeNode-113-right-handle-0-NodeNode-115NodeNode-115-left-handle-3"
+          },
+          {
+            "source": "NodeNode-114",
+            "sourceHandle": "NodeNode-114-right-handle-0",
+            "target": "NodeNode-115",
+            "targetHandle": "NodeNode-115-left-handle-4",
+            "type": "smoothstep",
+            "animated": true,
+            "markerEnd": {
+              "type": "arrow",
+              "height": "20px",
+              "width": "40px",
+              "color": "#aaa"
+            },
+            "id": "reactflow__edge-NodeNode-114NodeNode-114-right-handle-0-NodeNode-115NodeNode-115-left-handle-4"
+          },
+          {
+            "source": "NodeNode-115",
+            "sourceHandle": "NodeNode-115-right-handle-0",
+            "target": "NodeNode-116",
+            "targetHandle": "NodeNode-116-left-handle-2",
+            "type": "smoothstep",
+            "animated": true,
+            "markerEnd": {
+              "type": "arrow",
+              "height": "20px",
+              "width": "40px",
+              "color": "#aaa"
+            },
+            "id": "reactflow__edge-NodeNode-115NodeNode-115-right-handle-0-NodeNode-116NodeNode-116-left-handle-2"
+          },
+          {
+            "source": "NodeNode-110",
+            "sourceHandle": "NodeNode-110-right-handle-0",
+            "target": "NodeNode-116",
+            "targetHandle": "NodeNode-116-left-handle-3",
+            "type": "smoothstep",
+            "animated": true,
+            "markerEnd": {
+              "type": "arrow",
+              "height": "20px",
+              "width": "40px",
+              "color": "#aaa"
+            },
+            "id": "reactflow__edge-NodeNode-110NodeNode-110-right-handle-0-NodeNode-116NodeNode-116-left-handle-3"
+          },
+          {
+            "source": "NodeNode-111",
+            "sourceHandle": "NodeNode-111-right-handle-0",
+            "target": "NodeNode-116",
+            "targetHandle": "NodeNode-116-left-handle-4",
+            "type": "smoothstep",
+            "animated": true,
+            "markerEnd": {
+              "type": "arrow",
+              "height": "20px",
+              "width": "40px",
+              "color": "#aaa"
+            },
+            "id": "reactflow__edge-NodeNode-111NodeNode-111-right-handle-0-NodeNode-116NodeNode-116-left-handle-4"
+          },
+          {
+            "source": "NodeNode-116",
+            "sourceHandle": "NodeNode-116-right-handle-0",
+            "target": "NodeNode-126",
+            "targetHandle": "NodeNode-126-left-handle-0",
+            "type": "smoothstep",
+            "animated": true,
+            "markerEnd": {
+              "type": "arrow",
+              "height": "20px",
+              "width": "40px",
+              "color": "#aaa"
+            },
+            "id": "reactflow__edge-NodeNode-116NodeNode-116-right-handle-0-NodeNode-126NodeNode-126-left-handle-0"
+          },
+          {
+            "source": "NodeNode-127",
+            "sourceHandle": "NodeNode-127-right-handle-0",
+            "target": "NodeNode-126",
+            "targetHandle": "NodeNode-126-left-handle-1",
+            "type": "smoothstep",
+            "animated": true,
+            "markerEnd": {
+              "type": "arrow",
+              "height": "20px",
+              "width": "40px",
+              "color": "#aaa"
+            },
+            "id": "reactflow__edge-NodeNode-127NodeNode-127-right-handle-0-NodeNode-126NodeNode-126-left-handle-1"
+          }
+        ]
+    },
+
+    
+    {
+        templateName: "Daily Email Summary",
+        displayImage: gmail,
+        templateId: "template-812021",
+        tags: ["Gmail", "Assistant", "Discord"],
         nodes: [
             {
                 id: "NodeNode-55",
@@ -1120,10 +1956,10 @@ const templateNodes = [
         ],
     },
     {
-        templateName: "FAANG-assured resume using chain-of-thought",
-        displayImage: "/select.webp",
-        templateId: "template-7",
-        tags: ["Saved"],
+        templateName: "FAANG-Assured Resume Using Chain-Of-Thought",
+        displayImage: star,
+        templateId: "template-79302",
+        tags: ["Gen AI"],
         nodes: [
             {
                 id: "NodeNode-37",
@@ -1596,190 +2432,12 @@ const templateNodes = [
             },
         ],
     },
+    
     {
-        templateName: "Chat with a CSV file",
-        displayImage: "/select.webp",
-        templateId: "template-9",
-        tags: ["Saved"],
-        nodes: [
-            {
-                id: "NodeNode-55",
-                type: "NodeNode",
-                position: {
-                    x: 146.0452545331706,
-                    y: 372.476731896427,
-                },
-                data: {
-                    name: "Input",
-                    isInput: true,
-                    isType: true,
-                    bgcolor: "#498bf5",
-                    rightHandles: 1,
-                    leftHandles: 0,
-                    img: "/input.png",
-                    category: "General",
-                    targets: ["Input"],
-                    sources: [],
-                    fieldValue1: "Node-55",
-                    fieldValue2: "Node-55",
-                },
-                width: 204,
-                height: 108,
-                selected: false,
-                positionAbsolute: {
-                    x: 146.0452545331706,
-                    y: 372.476731896427,
-                },
-                dragging: false,
-            },
-            {
-                id: "NodeNode-56",
-                type: "NodeNode",
-                position: {
-                    x: 145.06872286785276,
-                    y: 74.49054447435816,
-                },
-                data: {
-                    name: "GSheets",
-                    desc: "Reads data from a Google Sheet based on the provided identifier (title, link, or sheet ID).",
-                    Nodestate: ["Read Sheet"],
-                    isInput: false,
-                    isType: false,
-                    bgcolor: "#0F9D58",
-                    rightHandles: 1,
-                    leftHandles: 0,
-                    targets: ["Sheet Data"],
-                    fieldValue1: "Node-56",
-                    img: "/sheets.png",
-                    category: "Integrations",
-                    fieldValue2: "Node-56",
-                    username: false,
-                },
-                width: 204,
-                height: 239,
-                selected: false,
-                positionAbsolute: {
-                    x: 145.06872286785276,
-                    y: 74.49054447435816,
-                },
-                dragging: false,
-            },
-            {
-                id: "NodeNode-57",
-                type: "NodeNode",
-                position: {
-                    x: 521.7112024807711,
-                    y: 60.96746621905211,
-                },
-                data: {
-                    name: "Gemini",
-                    isInput: true,
-                    isType: false,
-                    rightHandles: 1,
-                    leftHandles: 4,
-                    bgcolor: "#ffe682",
-                    headColor: "#f5d65b",
-                    img: "/google.png",
-                    category: "LLMs",
-                    sources: ["system", "prompt", "content", "query"],
-                    targets: ["response"],
-                    fieldValue1:
-                        "Here is the content of the spreadsheet: {{content}}\n\nNow, answer the following question: {{query}}",
-                    fieldValue2:
-                        "You are a helpful and knowledgeable AI assistant designed to understand and answer questions based on the content of a provided CSV file. You have access to the data within the CSV file and can perform various operations such as filtering, sorting, aggregation (sum, average, count, min, max), and searching.\n\nYour primary goal is to accurately answer user questions by analyzing the data in the CSV file. When answering, be concise and directly address the user's query. If the question requires data manipulation, clearly state the steps you took or the logic you applied. If a question cannot be answered based on the data in the CSV file, politely state that.\n\nYou can assume the first row of the CSV file contains headers that describe each column. Pay close attention to the data types within each column when performing operations.\n\nWhen presenting data, format it clearly and understandably, potentially using tables or bullet points if appropriate. Avoid making assumptions or bringing in outside information unless explicitly asked to do so in relation to the CSV data.",
-                },
-                width: 204,
-                height: 763,
-                selected: false,
-                dragging: false,
-                positionAbsolute: {
-                    x: 521.7112024807711,
-                    y: 60.96746621905211,
-                },
-            },
-            {
-                id: "NodeNode-58",
-                type: "NodeNode",
-                position: {
-                    x: 882.9310257984683,
-                    y: 229.51480289781153,
-                },
-                data: {
-                    name: "Output",
-                    isInput: true,
-                    isType: true,
-                    bgcolor: "#58c742",
-                    rightHandles: 0,
-                    leftHandles: 1,
-                    img: "/output.png",
-                    category: "General",
-                    sources: ["Output"],
-                    fieldValue1: "Node-58",
-                    fieldValue2: "Node-58",
-                },
-                width: 204,
-                height: 108,
-                selected: true,
-                positionAbsolute: {
-                    x: 882.9310257984683,
-                    y: 229.51480289781153,
-                },
-                dragging: false,
-            },
-        ],
-        edges: [
-            {
-                source: "NodeNode-56",
-                sourceHandle: "NodeNode-56-right-handle-0",
-                target: "NodeNode-57",
-                targetHandle: "NodeNode-57-left-handle-2",
-                type: "smoothstep",
-                animated: true,
-                markerEnd: {
-                    type: "arrow",
-                    height: "20px",
-                    width: "40px",
-                    color: "#aaa",
-                },
-                id: "reactflow__edge-NodeNode-56NodeNode-56-right-handle-0-NodeNode-57NodeNode-57-left-handle-2",
-            },
-            {
-                source: "NodeNode-55",
-                sourceHandle: "NodeNode-55-right-handle-0",
-                target: "NodeNode-57",
-                targetHandle: "NodeNode-57-left-handle-3",
-                type: "smoothstep",
-                animated: true,
-                markerEnd: {
-                    type: "arrow",
-                    height: "20px",
-                    width: "40px",
-                    color: "#aaa",
-                },
-                id: "reactflow__edge-NodeNode-55NodeNode-55-right-handle-0-NodeNode-57NodeNode-57-left-handle-3",
-            },
-            {
-                source: "NodeNode-57",
-                sourceHandle: "NodeNode-57-right-handle-0",
-                target: "NodeNode-58",
-                targetHandle: "NodeNode-58-left-handle-0",
-                type: "smoothstep",
-                animated: true,
-                markerEnd: {
-                    type: "arrow",
-                    height: "20px",
-                    width: "40px",
-                    color: "#aaa",
-                },
-                id: "reactflow__edge-NodeNode-57NodeNode-57-right-handle-0-NodeNode-58NodeNode-58-left-handle-0",
-            },
-        ],
-    },
-    {
-        templateName: "Deep-thinking blog creator",
-        displayImage: "/select.webp",
-        templateId: "template-8",
-        tags: ["Saved"],
+        templateName: "Deep Content Writer",
+        displayImage: bot,
+        templateId: "template-848484",
+        tags: ["Assistant"],
         nodes: [
             {
                 id: "NodeNode-37",
@@ -2351,10 +3009,493 @@ const templateNodes = [
         ],
     },
     {
-        templateName: "Personolized Blog Generator",
-        displayImage: "/select.webp",
-        templateId: "template-7",
-        tags: ["Saved"],
+        templateName: "Discord Tech Support Bot",
+        displayImage: discord,
+        templateId: "template-1111111",
+        tags: ["Discord", "Gen AI", "Assistant"],
+        nodes: [
+            {
+                id: "NodeNode-1",
+                type: "NodeNode",
+                position: {
+                    x: 229.9114132620477,
+                    y: 32.16286654939921,
+                },
+                data: {
+                    name: "Input",
+                    isInput: true,
+                    isType: true,
+                    bgcolor: "#498bf5",
+                    rightHandles: 1,
+                    leftHandles: 0,
+                    img: "/input.png",
+                    category: "General",
+                    targets: ["Input"],
+                    sources: [],
+                    fieldValue1: "Node-1",
+                    fieldValue2: "Node-1",
+                },
+                width: 204,
+                height: 108,
+                selected: false,
+                positionAbsolute: {
+                    x: 229.9114132620477,
+                    y: 32.16286654939921,
+                },
+                dragging: false,
+            },
+            {
+                id: "NodeNode-3",
+                type: "NodeNode",
+                position: {
+                    x: 644.9234376463135,
+                    y: 139.98911729693646,
+                },
+                data: {
+                    name: "Database (RAG)",
+                    desc: "Fetches only the relevant text chunks from the database",
+                    isInput: false,
+                    isType: false,
+                    rightHandles: 1,
+                    leftHandles: 1,
+                    bgcolor: "#f57e2a",
+                    img: "/database.png",
+                    category: "Knowledge Base",
+                    sources: ["query"],
+                    targets: ["results"],
+                    fieldValue1: "NodeNode-3",
+                    fieldValue2: "Node-3",
+                    constantValueList: [
+                        {
+                            name: "Max Chunk Size",
+                            value: 1000,
+                            placeholder: "Exactly what it says",
+                        },
+                        {
+                            name: "Chunk Overlap",
+                            value: 200,
+                            placeholder: "Overlap between chunks",
+                        },
+                        {
+                            name: "Number of Chunks",
+                            value: 5,
+                            placeholder: "Total number of chunks",
+                        },
+                    ],
+                },
+                width: 204,
+                height: 340,
+                selected: false,
+                positionAbsolute: {
+                    x: 644.9234376463135,
+                    y: 139.98911729693646,
+                },
+                dragging: false,
+            },
+            {
+                id: "NodeNode-8",
+                type: "NodeNode",
+                position: {
+                    x: 401.15458230133277,
+                    y: -92.30401725329656,
+                },
+                data: {
+                    name: "Text",
+                    isInput: true,
+                    isType: false,
+                    bgcolor: "#498bf5",
+                    rightHandles: 1,
+                    leftHandles: 0,
+                    img: "/text.webp",
+                    category: "General",
+                    targets: ["Output"],
+                    fieldValue1:
+                        "You are a helpful and knowledgeable AI assistant specialized in providing technical support for our products. Your primary goal is to assist users with their technical issues by leveraging the provided product information.\n\nFollow these guidelines:\n\n* **Be concise and direct:** Provide clear and to-the-point answers and troubleshooting steps.\n* **Prioritize using the provided product information:** Always attempt to answer the user's query using the information explicitly given in the product documentation.\n* **Acknowledge information limitations:** If the provided product information does not contain the answer to the user's query, clearly state that you cannot find the specific information within the given documentation. Avoid making assumptions or providing general troubleshooting steps not supported by the provided data.\n* **Maintain a professional and helpful tone:** Address the user politely and offer further assistance if appropriate (e.g., suggesting they contact human support if the issue is beyond the scope of the provided documentation).\n* **Identify the user's problem:** Try to understand the core issue the user is facing.\n* **If the query is unclear, ask clarifying questions:** If you are unsure what the user is asking, politely request more details about their problem, including specific error messages, steps they have already taken, and the product version they are using.\n* **Do not ask for personal information:** You are here to provide technical support based on the provided product information.\n* **Format your responses clearly:** Use bullet points, numbered lists, code blocks, or bold text to make instructions and information easy to follow.\n* **When referencing product information, be specific:** If you are referring to a particular section or specification in the product info, mention it (e.g., \"According to the 'Troubleshooting' section of the manual...\").\n* **Stay within the scope of technical support for our products:** Do not engage in conversations about unrelated topics or provide support for third-party products.",
+                    fieldValue2: "Node-8",
+                    sources: [],
+                },
+                width: 204,
+                height: 1118,
+                selected: false,
+                positionAbsolute: {
+                    x: 401.15458230133277,
+                    y: -92.30401725329656,
+                },
+                dragging: false,
+            },
+            {
+                id: "NodeNode-76",
+                type: "NodeNode",
+                position: {
+                    x: 225.07960894124014,
+                    y: 180.2510231711396,
+                },
+                data: {
+                    name: "Input",
+                    isInput: true,
+                    isType: true,
+                    bgcolor: "#498bf5",
+                    rightHandles: 1,
+                    leftHandles: 0,
+                    img: "/input.png",
+                    category: "General",
+                    targets: ["Previous chat"],
+                    sources: [],
+                    fieldValue1: "Previous chat",
+                    fieldValue2: "✨",
+                },
+                width: 204,
+                height: 108,
+                selected: false,
+                positionAbsolute: {
+                    x: 225.07960894124014,
+                    y: 180.2510231711396,
+                },
+                dragging: false,
+            },
+            {
+                id: "NodeNode-77",
+                type: "NodeNode",
+                position: {
+                    x: 969.2457873451058,
+                    y: -31.155696636289235,
+                },
+                data: {
+                    name: "Gemini",
+                    isInput: true,
+                    isType: false,
+                    rightHandles: 1,
+                    leftHandles: 5,
+                    bgcolor: "#ffe682",
+                    headColor: "#f5d65b",
+                    img: "/google.png",
+                    category: "LLMs",
+                    sources: ["system", "prompt", "query", "data", "chat"],
+                    targets: ["response"],
+                    fieldValue1:
+                        "User query: {{query}}\n\nProduct info: {{data}}\n\nPrevious chat: {{chat}}",
+                    fieldValue2: "✨",
+                },
+                width: 204,
+                height: 235,
+                selected: false,
+                dragging: false,
+                positionAbsolute: {
+                    x: 969.2457873451058,
+                    y: -31.155696636289235,
+                },
+            },
+            {
+                id: "NodeNode-79",
+                type: "NodeNode",
+                position: {
+                    x: 1323.4022800548028,
+                    y: 3.6948733774114544,
+                },
+                data: {
+                    name: "Discord",
+                    desc: "Our discord bot will send messages to your requested channel",
+                    isInput: true,
+                    isType: false,
+                    bgcolor: "#5865F2",
+                    rightHandles: 0,
+                    leftHandles: 1,
+                    fieldValue1: "",
+                    sources: ["Message Content"],
+                    img: "/discord.png",
+                    category: "Integrations",
+                    fieldValue2: "✨",
+                    username: false,
+                },
+                width: 204,
+                height: 162,
+                selected: false,
+                positionAbsolute: {
+                    x: 1323.4022800548028,
+                    y: 3.6948733774114544,
+                },
+                dragging: false,
+            },
+        ],
+        edges: [
+            {
+                source: "NodeNode-1",
+                sourceHandle: "NodeNode-1-right-handle-0",
+                target: "NodeNode-3",
+                targetHandle: "NodeNode-3-left-handle-0",
+                type: "smoothstep",
+                animated: true,
+                markerEnd: {
+                    type: "arrow",
+                    height: "20px",
+                    width: "40px",
+                    color: "#aaa",
+                },
+                id: "reactflow__edge-NodeNode-1NodeNode-1-right-handle-0-NodeNode-3NodeNode-3-left-handle-0",
+            },
+            {
+                source: "NodeNode-8",
+                sourceHandle: "NodeNode-8-right-handle-0",
+                target: "NodeNode-77",
+                targetHandle: "NodeNode-77-left-handle-0",
+                type: "smoothstep",
+                animated: true,
+                markerEnd: {
+                    type: "arrow",
+                    height: "20px",
+                    width: "40px",
+                    color: "#aaa",
+                },
+                id: "reactflow__edge-NodeNode-8NodeNode-8-right-handle-0-NodeNode-77NodeNode-77-left-handle-0",
+            },
+            {
+                source: "NodeNode-1",
+                sourceHandle: "NodeNode-1-right-handle-0",
+                target: "NodeNode-77",
+                targetHandle: "NodeNode-77-left-handle-2",
+                type: "smoothstep",
+                animated: true,
+                markerEnd: {
+                    type: "arrow",
+                    height: "20px",
+                    width: "40px",
+                    color: "#aaa",
+                },
+                id: "reactflow__edge-NodeNode-1NodeNode-1-right-handle-0-NodeNode-77NodeNode-77-left-handle-2",
+            },
+            {
+                source: "NodeNode-76",
+                sourceHandle: "NodeNode-76-right-handle-0",
+                target: "NodeNode-77",
+                targetHandle: "NodeNode-77-left-handle-4",
+                type: "smoothstep",
+                animated: true,
+                markerEnd: {
+                    type: "arrow",
+                    height: "20px",
+                    width: "40px",
+                    color: "#aaa",
+                },
+                id: "reactflow__edge-NodeNode-76NodeNode-76-right-handle-0-NodeNode-77NodeNode-77-left-handle-4",
+            },
+            {
+                source: "NodeNode-3",
+                sourceHandle: "NodeNode-3-right-handle-0",
+                target: "NodeNode-77",
+                targetHandle: "NodeNode-77-left-handle-3",
+                type: "smoothstep",
+                animated: true,
+                markerEnd: {
+                    type: "arrow",
+                    height: "20px",
+                    width: "40px",
+                    color: "#aaa",
+                },
+                id: "reactflow__edge-NodeNode-3NodeNode-3-right-handle-0-NodeNode-77NodeNode-77-left-handle-3",
+            },
+            {
+                source: "NodeNode-77",
+                sourceHandle: "NodeNode-77-right-handle-0",
+                target: "NodeNode-79",
+                targetHandle: "NodeNode-79-left-handle-0",
+                type: "smoothstep",
+                animated: true,
+                markerEnd: {
+                    type: "arrow",
+                    height: "20px",
+                    width: "40px",
+                    color: "#aaa",
+                },
+                id: "reactflow__edge-NodeNode-77NodeNode-77-right-handle-0-NodeNode-79NodeNode-79-left-handle-0",
+            },
+        ],
+    },
+    {
+        templateName: "Chat with a CSV file",
+        displayImage: sheet,
+        templateId: "template-9001",
+        tags: ["Assistant"],
+        nodes: [
+            {
+                id: "NodeNode-55",
+                type: "NodeNode",
+                position: {
+                    x: 146.0452545331706,
+                    y: 372.476731896427,
+                },
+                data: {
+                    name: "Input",
+                    isInput: true,
+                    isType: true,
+                    bgcolor: "#498bf5",
+                    rightHandles: 1,
+                    leftHandles: 0,
+                    img: "/input.png",
+                    category: "General",
+                    targets: ["Input"],
+                    sources: [],
+                    fieldValue1: "Node-55",
+                    fieldValue2: "Node-55",
+                },
+                width: 204,
+                height: 108,
+                selected: false,
+                positionAbsolute: {
+                    x: 146.0452545331706,
+                    y: 372.476731896427,
+                },
+                dragging: false,
+            },
+            {
+                id: "NodeNode-56",
+                type: "NodeNode",
+                position: {
+                    x: 145.06872286785276,
+                    y: 74.49054447435816,
+                },
+                data: {
+                    name: "GSheets",
+                    desc: "Reads data from a Google Sheet based on the provided identifier (title, link, or sheet ID).",
+                    Nodestate: ["Read Sheet"],
+                    isInput: false,
+                    isType: false,
+                    bgcolor: "#0F9D58",
+                    rightHandles: 1,
+                    leftHandles: 0,
+                    targets: ["Sheet Data"],
+                    fieldValue1: "Node-56",
+                    img: "/sheets.png",
+                    category: "Integrations",
+                    fieldValue2: "Node-56",
+                    username: false,
+                },
+                width: 204,
+                height: 239,
+                selected: false,
+                positionAbsolute: {
+                    x: 145.06872286785276,
+                    y: 74.49054447435816,
+                },
+                dragging: false,
+            },
+            {
+                id: "NodeNode-57",
+                type: "NodeNode",
+                position: {
+                    x: 521.7112024807711,
+                    y: 60.96746621905211,
+                },
+                data: {
+                    name: "Gemini",
+                    isInput: true,
+                    isType: false,
+                    rightHandles: 1,
+                    leftHandles: 4,
+                    bgcolor: "#ffe682",
+                    headColor: "#f5d65b",
+                    img: "/google.png",
+                    category: "LLMs",
+                    sources: ["system", "prompt", "content", "query"],
+                    targets: ["response"],
+                    fieldValue1:
+                        "Here is the content of the spreadsheet: {{content}}\n\nNow, answer the following question: {{query}}",
+                    fieldValue2:
+                        "You are a helpful and knowledgeable AI assistant designed to understand and answer questions based on the content of a provided CSV file. You have access to the data within the CSV file and can perform various operations such as filtering, sorting, aggregation (sum, average, count, min, max), and searching.\n\nYour primary goal is to accurately answer user questions by analyzing the data in the CSV file. When answering, be concise and directly address the user's query. If the question requires data manipulation, clearly state the steps you took or the logic you applied. If a question cannot be answered based on the data in the CSV file, politely state that.\n\nYou can assume the first row of the CSV file contains headers that describe each column. Pay close attention to the data types within each column when performing operations.\n\nWhen presenting data, format it clearly and understandably, potentially using tables or bullet points if appropriate. Avoid making assumptions or bringing in outside information unless explicitly asked to do so in relation to the CSV data.",
+                },
+                width: 204,
+                height: 763,
+                selected: false,
+                dragging: false,
+                positionAbsolute: {
+                    x: 521.7112024807711,
+                    y: 60.96746621905211,
+                },
+            },
+            {
+                id: "NodeNode-58",
+                type: "NodeNode",
+                position: {
+                    x: 882.9310257984683,
+                    y: 229.51480289781153,
+                },
+                data: {
+                    name: "Output",
+                    isInput: true,
+                    isType: true,
+                    bgcolor: "#58c742",
+                    rightHandles: 0,
+                    leftHandles: 1,
+                    img: "/output.png",
+                    category: "General",
+                    sources: ["Output"],
+                    fieldValue1: "Node-58",
+                    fieldValue2: "Node-58",
+                },
+                width: 204,
+                height: 108,
+                selected: true,
+                positionAbsolute: {
+                    x: 882.9310257984683,
+                    y: 229.51480289781153,
+                },
+                dragging: false,
+            },
+        ],
+        edges: [
+            {
+                source: "NodeNode-56",
+                sourceHandle: "NodeNode-56-right-handle-0",
+                target: "NodeNode-57",
+                targetHandle: "NodeNode-57-left-handle-2",
+                type: "smoothstep",
+                animated: true,
+                markerEnd: {
+                    type: "arrow",
+                    height: "20px",
+                    width: "40px",
+                    color: "#aaa",
+                },
+                id: "reactflow__edge-NodeNode-56NodeNode-56-right-handle-0-NodeNode-57NodeNode-57-left-handle-2",
+            },
+            {
+                source: "NodeNode-55",
+                sourceHandle: "NodeNode-55-right-handle-0",
+                target: "NodeNode-57",
+                targetHandle: "NodeNode-57-left-handle-3",
+                type: "smoothstep",
+                animated: true,
+                markerEnd: {
+                    type: "arrow",
+                    height: "20px",
+                    width: "40px",
+                    color: "#aaa",
+                },
+                id: "reactflow__edge-NodeNode-55NodeNode-55-right-handle-0-NodeNode-57NodeNode-57-left-handle-3",
+            },
+            {
+                source: "NodeNode-57",
+                sourceHandle: "NodeNode-57-right-handle-0",
+                target: "NodeNode-58",
+                targetHandle: "NodeNode-58-left-handle-0",
+                type: "smoothstep",
+                animated: true,
+                markerEnd: {
+                    type: "arrow",
+                    height: "20px",
+                    width: "40px",
+                    color: "#aaa",
+                },
+                id: "reactflow__edge-NodeNode-57NodeNode-57-right-handle-0-NodeNode-58NodeNode-58-left-handle-0",
+            },
+        ],
+    },
+
+    
+    {
+        templateName: "Personalized Blog Creator",
+        displayImage: star,
+        templateId: "template-700",
+        tags: ["Gen AI"],
         nodes: [
             {
                 id: "NodeNode-37",
@@ -2923,11 +4064,983 @@ const templateNodes = [
             },
         ],
     },
+    
     {
-        templateName: "Chat with knowledge base",
-        displayImage: "/select.webp",
-        templateId: "template-14",
-        tags: ["Saved"],
+        "templateName": "Automate Sales Report Mailing",
+        "displayImage": gmail,
+        "templateId": "template-30",
+        "tags": [
+          "Gmail", "Assistant"
+        ],
+        "nodes": [
+          {
+            "id": "NodeNode-1",
+            "type": "NodeNode",
+            "position": {
+              "x": 119.38179978206608,
+              "y": 112.19999694824219
+            },
+            "data": {
+              "name": "Input",
+              "isInput": true,
+              "isType": true,
+              "bgcolor": "#498bf5",
+              "rightHandles": 1,
+              "leftHandles": 0,
+              "img": "/input.png",
+              "category": "General",
+              "targets": [
+                "Input"
+              ],
+              "sources": [],
+              "fieldValue1": "Node-1",
+              "fieldValue2": "Node-1"
+            },
+            "width": 204,
+            "height": 110,
+            "selected": false,
+            "positionAbsolute": {
+              "x": 119.38179978206608,
+              "y": 112.19999694824219
+            },
+            "dragging": false
+          },
+          {
+            "id": "NodeNode-3",
+            "type": "NodeNode",
+            "position": {
+              "x": 410.86746503859285,
+              "y": 218.87851071856193
+            },
+            "data": {
+              "name": "Database (RAG)",
+              "desc": "Fetches only the relevant text chunks from the database",
+              "isInput": false,
+              "isType": false,
+              "rightHandles": 1,
+              "leftHandles": 1,
+              "bgcolor": "#f57e2a",
+              "img": "/database.png",
+              "category": "Knowledge Base",
+              "sources": [
+                "query"
+              ],
+              "targets": [
+                "results"
+              ],
+              "fieldValue1": "NodeNode-3",
+              "fieldValue2": "Node-3",
+              "constantValueList": [
+                {
+                  "name": "Max Chunk Size",
+                  "value": 1000,
+                  "placeholder": "Exactly what it says"
+                },
+                {
+                  "name": "Chunk Overlap",
+                  "value": 200,
+                  "placeholder": "Overlap between chunks"
+                },
+                {
+                  "name": "Number of Chunks",
+                  "value": 5,
+                  "placeholder": "Total number of chunks"
+                }
+              ]
+            },
+            "width": 204,
+            "height": 345,
+            "selected": false,
+            "positionAbsolute": {
+              "x": 410.86746503859285,
+              "y": 218.87851071856193
+            },
+            "dragging": false
+          },
+          {
+            "id": "NodeNode-8",
+            "type": "NodeNode",
+            "position": {
+              "x": 338.7571340182316,
+              "y": -83.5127903394116
+            },
+            "data": {
+              "name": "Text",
+              "isInput": true,
+              "isType": false,
+              "bgcolor": "#498bf5",
+              "rightHandles": 1,
+              "leftHandles": 0,
+              "img": "/text.webp",
+              "category": "General",
+              "targets": [
+                "Output"
+              ],
+              "fieldValue1": "You are a helpful and knowledgeable AI assistant specialized in providing sales support. Your primary goal is to assist users with their sales-related queries by leveraging the provided sales data. **Crucially, your final output MUST be a valid JSON object conforming to the specified schema.**\n\nFollow these guidelines:\n\n* **Be concise and direct:** Provide clear and to-the-point answers.\n* **Prioritize using the provided sales data:** Always attempt to answer the user's query using the information explicitly given in the sales data.\n* **Acknowledge data limitations:** If the provided sales data does not contain the information needed to answer the query, clearly state that you cannot find the answer within the given data. Avoid making assumptions or providing information from outside the provided data.\n* **Maintain a professional and helpful tone:** Address the user politely and offer further assistance if appropriate.\n* **Identify the user's intent:** Try to understand the underlying need behind the user's query.\n* **If the query is unclear, ask clarifying questions:** If you are unsure what the user is asking, politely request more information.\n* **Do not ask for personal information:** You are here to provide sales support based on the provided data.\n* **Format your responses clearly:** Use bullet points or numbered lists when presenting multiple pieces of information.\n* **When referencing data, be specific:** If you are pulling information from a specific field in the sales data, mention it (e.g., \"According to the 'Product Name' field...\").\n* **Stay within the scope of sales support:** Do not engage in conversations unrelated to sales inquiries.\n\nstrictly output the result as a JSON object with the following keys:\n* `\"subject\"`: A concise title or subject for the email (string).\n* `\"text\"`: A detailed analysis of the data.",
+              "fieldValue2": "Node-8",
+              "sources": []
+            },
+            "width": 204,
+            "height": 87,
+            "selected": false,
+            "positionAbsolute": {
+              "x": 338.7571340182316,
+              "y": -83.5127903394116
+            },
+            "dragging": false
+          },
+          {
+            "id": "NodeNode-9",
+            "type": "NodeNode",
+            "position": {
+              "x": 743.2726905712411,
+              "y": -34.98500013905311
+            },
+            "data": {
+              "name": "Gemini",
+              "isInput": true,
+              "isType": false,
+              "rightHandles": 1,
+              "leftHandles": 4,
+              "bgcolor": "#ffe682",
+              "headColor": "#f5d65b",
+              "img": "/google.png",
+              "category": "LLMs",
+              "sources": [
+                "system",
+                "prompt",
+                "query",
+                "data"
+              ],
+              "targets": [
+                "response"
+              ],
+              "fieldValue1": "User query: {{query}}\n\nSales data: {{data}}",
+              "fieldValue2": "Node-9"
+            },
+            "width": 204,
+            "height": 182,
+            "selected": false,
+            "positionAbsolute": {
+              "x": 743.2726905712411,
+              "y": -34.98500013905311
+            },
+            "dragging": false
+          },
+          {
+            "id": "NodeNode-128",
+            "type": "NodeNode",
+            "position": {
+              "x": 1117.9448548940645,
+              "y": 158.61740495741304
+            },
+            "data": {
+              "name": "Gmail",
+              "desc": "Read emails, create drafts or just send one!",
+              "Nodestate": [
+                "Create draft",
+                "Send email",
+                "Read emails"
+              ],
+              "isInput": false,
+              "isType": false,
+              "bgcolor": "#ea4335",
+              "rightHandles": 0,
+              "leftHandles": 2,
+              "sources": [
+                "Message",
+                "adressess"
+              ],
+              "targets": [],
+              "fieldValue1": {
+                "1": "{{adressess}}",
+                "isDraft": true
+              },
+              "img": "/gmail.png",
+              "category": "Integrations",
+              "fieldValue2": "✨",
+              "username": false
+            },
+            "width": 204,
+            "height": 202,
+            "selected": false,
+            "positionAbsolute": {
+              "x": 1117.9448548940645,
+              "y": 158.61740495741304
+            },
+            "dragging": false
+          },
+          {
+            "id": "NodeNode-129",
+            "type": "NodeNode",
+            "position": {
+              "x": 765.5570625512205,
+              "y": 405.9798160529782
+            },
+            "data": {
+              "name": "Input",
+              "isInput": true,
+              "isType": true,
+              "bgcolor": "#498bf5",
+              "rightHandles": 1,
+              "leftHandles": 0,
+              "img": "/input.png",
+              "category": "General",
+              "targets": [
+                "Input"
+              ],
+              "sources": [],
+              "fieldValue1": "",
+              "fieldValue2": "✨"
+            },
+            "width": 204,
+            "height": 110,
+            "selected": true,
+            "positionAbsolute": {
+              "x": 765.5570625512205,
+              "y": 405.9798160529782
+            },
+            "dragging": false
+          }
+        ],
+        "edges": [
+          {
+            "source": "NodeNode-1",
+            "sourceHandle": "NodeNode-1-right-handle-0",
+            "target": "NodeNode-3",
+            "targetHandle": "NodeNode-3-left-handle-0",
+            "type": "smoothstep",
+            "animated": true,
+            "markerEnd": {
+              "type": "arrow",
+              "height": "20px",
+              "width": "40px",
+              "color": "#aaa"
+            },
+            "id": "reactflow__edge-NodeNode-1NodeNode-1-right-handle-0-NodeNode-3NodeNode-3-left-handle-0"
+          },
+          {
+            "source": "NodeNode-8",
+            "sourceHandle": "NodeNode-8-right-handle-0",
+            "target": "NodeNode-9",
+            "targetHandle": "NodeNode-9-left-handle-0",
+            "type": "smoothstep",
+            "animated": true,
+            "markerEnd": {
+              "type": "arrow",
+              "height": "20px",
+              "width": "40px",
+              "color": "#aaa"
+            },
+            "id": "reactflow__edge-NodeNode-8NodeNode-8-right-handle-0-NodeNode-9NodeNode-9-left-handle-0"
+          },
+          {
+            "source": "NodeNode-3",
+            "sourceHandle": "NodeNode-3-right-handle-0",
+            "target": "NodeNode-9",
+            "targetHandle": "NodeNode-9-left-handle-3",
+            "type": "smoothstep",
+            "animated": true,
+            "markerEnd": {
+              "type": "arrow",
+              "height": "20px",
+              "width": "40px",
+              "color": "#aaa"
+            },
+            "id": "reactflow__edge-NodeNode-3NodeNode-3-right-handle-0-NodeNode-9NodeNode-9-left-handle-3"
+          },
+          {
+            "source": "NodeNode-1",
+            "sourceHandle": "NodeNode-1-right-handle-0",
+            "target": "NodeNode-9",
+            "targetHandle": "NodeNode-9-left-handle-2",
+            "type": "smoothstep",
+            "animated": true,
+            "markerEnd": {
+              "type": "arrow",
+              "height": "20px",
+              "width": "40px",
+              "color": "#aaa"
+            },
+            "id": "reactflow__edge-NodeNode-1NodeNode-1-right-handle-0-NodeNode-9NodeNode-9-left-handle-2"
+          },
+          {
+            "source": "NodeNode-129",
+            "sourceHandle": "NodeNode-129-right-handle-0",
+            "target": "NodeNode-128",
+            "targetHandle": "NodeNode-128-left-handle-1",
+            "type": "smoothstep",
+            "animated": true,
+            "markerEnd": {
+              "type": "arrow",
+              "height": "20px",
+              "width": "40px",
+              "color": "#aaa"
+            },
+            "id": "reactflow__edge-NodeNode-129NodeNode-129-right-handle-0-NodeNode-128NodeNode-128-left-handle-1"
+          },
+          {
+            "source": "NodeNode-9",
+            "sourceHandle": "NodeNode-9-right-handle-0",
+            "target": "NodeNode-128",
+            "targetHandle": "NodeNode-128-left-handle-0",
+            "type": "smoothstep",
+            "animated": true,
+            "markerEnd": {
+              "type": "arrow",
+              "height": "20px",
+              "width": "40px",
+              "color": "#aaa"
+            },
+            "id": "reactflow__edge-NodeNode-9NodeNode-9-right-handle-0-NodeNode-128NodeNode-128-left-handle-0"
+          }
+        ]
+      },
+
+    
+    {
+        templateName: "Tech Support Bot for Gmail",
+        displayImage: gmail,
+        templateId: "template-1000101",
+        tags: ["Assistant", "Gmail"],
+        nodes: [
+            {
+                id: "NodeNode-1",
+                type: "NodeNode",
+                position: {
+                    x: 229.9114132620477,
+                    y: 32.16286654939921,
+                },
+                data: {
+                    name: "Input",
+                    isInput: true,
+                    isType: true,
+                    bgcolor: "#498bf5",
+                    rightHandles: 1,
+                    leftHandles: 0,
+                    img: "/input.png",
+                    category: "General",
+                    targets: ["Input"],
+                    sources: [],
+                    fieldValue1: "Node-1",
+                    fieldValue2: "Node-1",
+                },
+                width: 204,
+                height: 108,
+                selected: false,
+                positionAbsolute: {
+                    x: 229.9114132620477,
+                    y: 32.16286654939921,
+                },
+                dragging: false,
+            },
+            {
+                id: "NodeNode-3",
+                type: "NodeNode",
+                position: {
+                    x: 644.9234376463135,
+                    y: 139.98911729693646,
+                },
+                data: {
+                    name: "Database (RAG)",
+                    desc: "Fetches only the relevant text chunks from the database",
+                    isInput: false,
+                    isType: false,
+                    rightHandles: 1,
+                    leftHandles: 1,
+                    bgcolor: "#f57e2a",
+                    img: "/database.png",
+                    category: "Knowledge Base",
+                    sources: ["query"],
+                    targets: ["results"],
+                    fieldValue1: "NodeNode-3",
+                    fieldValue2: "Node-3",
+                    constantValueList: [
+                        {
+                            name: "Max Chunk Size",
+                            value: 1000,
+                            placeholder: "Exactly what it says",
+                        },
+                        {
+                            name: "Chunk Overlap",
+                            value: 200,
+                            placeholder: "Overlap between chunks",
+                        },
+                        {
+                            name: "Number of Chunks",
+                            value: 5,
+                            placeholder: "Total number of chunks",
+                        },
+                    ],
+                },
+                width: 204,
+                height: 340,
+                selected: false,
+                positionAbsolute: {
+                    x: 644.9234376463135,
+                    y: 139.98911729693646,
+                },
+                dragging: false,
+            },
+            {
+                id: "NodeNode-8",
+                type: "NodeNode",
+                position: {
+                    x: 401.15458230133277,
+                    y: -92.30401725329656,
+                },
+                data: {
+                    name: "Text",
+                    isInput: true,
+                    isType: false,
+                    bgcolor: "#498bf5",
+                    rightHandles: 1,
+                    leftHandles: 0,
+                    img: "/text.webp",
+                    category: "General",
+                    targets: ["Output"],
+                    fieldValue1:
+                        "You are a helpful and knowledgeable AI assistant specialized in providing technical support for our products. Your primary goal is to assist users with their technical issues by leveraging the provided product information.\n\nFollow these guidelines:\n\n* **Be concise and direct:** Provide clear and to-the-point answers and troubleshooting steps.\n* **Prioritize using the provided product information:** Always attempt to answer the user's query using the information explicitly given in the product documentation.\n* **Acknowledge information limitations:** If the provided product information does not contain the answer to the user's query, clearly state that you cannot find the specific information within the given documentation. Avoid making assumptions or providing general troubleshooting steps not supported by the provided data.\n* **Maintain a professional and helpful tone:** Address the user politely and offer further assistance if appropriate (e.g., suggesting they contact human support if the issue is beyond the scope of the provided documentation).\n* **Identify the user's problem:** Try to understand the core issue the user is facing.\n* **If the query is unclear, ask clarifying questions:** If you are unsure what the user is asking, politely request more details about their problem, including specific error messages, steps they have already taken, and the product version they are using.\n* **Do not ask for personal information:** You are here to provide technical support based on the provided product information.\n* **Format your responses clearly:** Use bullet points, numbered lists, code blocks, or bold text to make instructions and information easy to follow.\n* **When referencing product information, be specific:** If you are referring to a particular section or specification in the product info, mention it (e.g., \"According to the 'Troubleshooting' section of the manual...\").\n* **Stay within the scope of technical support for our products:** Do not engage in conversations about unrelated topics or provide support for third-party products.",
+                    fieldValue2: "Node-8",
+                    sources: [],
+                },
+                width: 204,
+                height: 1118,
+                selected: false,
+                positionAbsolute: {
+                    x: 401.15458230133277,
+                    y: -92.30401725329656,
+                },
+                dragging: false,
+            },
+            {
+                id: "NodeNode-76",
+                type: "NodeNode",
+                position: {
+                    x: 225.07960894124014,
+                    y: 180.2510231711396,
+                },
+                data: {
+                    name: "Input",
+                    isInput: true,
+                    isType: true,
+                    bgcolor: "#498bf5",
+                    rightHandles: 1,
+                    leftHandles: 0,
+                    img: "/input.png",
+                    category: "General",
+                    targets: ["Previous chat"],
+                    sources: [],
+                    fieldValue1: "Previous chat",
+                    fieldValue2: "✨",
+                },
+                width: 204,
+                height: 108,
+                selected: false,
+                positionAbsolute: {
+                    x: 225.07960894124014,
+                    y: 180.2510231711396,
+                },
+                dragging: false,
+            },
+            {
+                id: "NodeNode-77",
+                type: "NodeNode",
+                position: {
+                    x: 969.2457873451058,
+                    y: -31.155696636289235,
+                },
+                data: {
+                    name: "Gemini",
+                    isInput: true,
+                    isType: false,
+                    rightHandles: 1,
+                    leftHandles: 5,
+                    bgcolor: "#ffe682",
+                    headColor: "#f5d65b",
+                    img: "/google.png",
+                    category: "LLMs",
+                    sources: ["system", "prompt", "query", "data", "chat"],
+                    targets: ["response"],
+                    fieldValue1:
+                        "User query: {{query}}\n\nProduct info: {{data}}\n\nPrevious chat: {{chat}}",
+                    fieldValue2: "✨",
+                },
+                width: 204,
+                height: 235,
+                selected: false,
+                dragging: false,
+                positionAbsolute: {
+                    x: 969.2457873451058,
+                    y: -31.155696636289235,
+                },
+            },
+            {
+                id: "NodeNode-81",
+                type: "NodeNode",
+                position: {
+                    x: 1308.0040182138941,
+                    y: -14.302195681775203,
+                },
+                data: {
+                    name: "Gmail",
+                    desc: "Read emails, create drafts or just send one!",
+                    Nodestate: ["Create draft", "Send email", "Read emails"],
+                    isInput: false,
+                    isType: false,
+                    bgcolor: "#ea4335",
+                    rightHandles: 0,
+                    leftHandles: 1,
+                    sources: ["Message"],
+                    targets: [],
+                    fieldValue1: {
+                        isDraft: true,
+                    },
+                    img: "/gmail.png",
+                    category: "Integrations",
+                    fieldValue2: "✨",
+                    username: false,
+                },
+                width: 204,
+                height: 200,
+                selected: true,
+                positionAbsolute: {
+                    x: 1308.0040182138941,
+                    y: -14.302195681775203,
+                },
+                dragging: false,
+            },
+        ],
+        edges: [
+            {
+                source: "NodeNode-1",
+                sourceHandle: "NodeNode-1-right-handle-0",
+                target: "NodeNode-3",
+                targetHandle: "NodeNode-3-left-handle-0",
+                type: "smoothstep",
+                animated: true,
+                markerEnd: {
+                    type: "arrow",
+                    height: "20px",
+                    width: "40px",
+                    color: "#aaa",
+                },
+                id: "reactflow__edge-NodeNode-1NodeNode-1-right-handle-0-NodeNode-3NodeNode-3-left-handle-0",
+            },
+            {
+                source: "NodeNode-8",
+                sourceHandle: "NodeNode-8-right-handle-0",
+                target: "NodeNode-77",
+                targetHandle: "NodeNode-77-left-handle-0",
+                type: "smoothstep",
+                animated: true,
+                markerEnd: {
+                    type: "arrow",
+                    height: "20px",
+                    width: "40px",
+                    color: "#aaa",
+                },
+                id: "reactflow__edge-NodeNode-8NodeNode-8-right-handle-0-NodeNode-77NodeNode-77-left-handle-0",
+            },
+            {
+                source: "NodeNode-1",
+                sourceHandle: "NodeNode-1-right-handle-0",
+                target: "NodeNode-77",
+                targetHandle: "NodeNode-77-left-handle-2",
+                type: "smoothstep",
+                animated: true,
+                markerEnd: {
+                    type: "arrow",
+                    height: "20px",
+                    width: "40px",
+                    color: "#aaa",
+                },
+                id: "reactflow__edge-NodeNode-1NodeNode-1-right-handle-0-NodeNode-77NodeNode-77-left-handle-2",
+            },
+            {
+                source: "NodeNode-76",
+                sourceHandle: "NodeNode-76-right-handle-0",
+                target: "NodeNode-77",
+                targetHandle: "NodeNode-77-left-handle-4",
+                type: "smoothstep",
+                animated: true,
+                markerEnd: {
+                    type: "arrow",
+                    height: "20px",
+                    width: "40px",
+                    color: "#aaa",
+                },
+                id: "reactflow__edge-NodeNode-76NodeNode-76-right-handle-0-NodeNode-77NodeNode-77-left-handle-4",
+            },
+            {
+                source: "NodeNode-3",
+                sourceHandle: "NodeNode-3-right-handle-0",
+                target: "NodeNode-77",
+                targetHandle: "NodeNode-77-left-handle-3",
+                type: "smoothstep",
+                animated: true,
+                markerEnd: {
+                    type: "arrow",
+                    height: "20px",
+                    width: "40px",
+                    color: "#aaa",
+                },
+                id: "reactflow__edge-NodeNode-3NodeNode-3-right-handle-0-NodeNode-77NodeNode-77-left-handle-3",
+            },
+            {
+                source: "NodeNode-77",
+                sourceHandle: "NodeNode-77-right-handle-0",
+                target: "NodeNode-81",
+                targetHandle: "NodeNode-81-left-handle-0",
+                type: "smoothstep",
+                animated: true,
+                markerEnd: {
+                    type: "arrow",
+                    height: "20px",
+                    width: "40px",
+                    color: "#aaa",
+                },
+                id: "reactflow__edge-NodeNode-77NodeNode-77-right-handle-0-NodeNode-81NodeNode-81-left-handle-0",
+            },
+        ],
+    },
+    {
+        "templateName": "Contextual-Email Bot",
+        "displayImage": gmail,
+        "templateId": "template-34",
+        "tags": [
+          "Gmail"
+        ],
+        "nodes": [
+          {
+            "id": "NodeNode-1",
+            "type": "NodeNode",
+            "position": {
+              "x": 119.38179978206608,
+              "y": 112.19999694824219
+            },
+            "data": {
+              "name": "Input",
+              "isInput": true,
+              "isType": true,
+              "bgcolor": "#498bf5",
+              "rightHandles": 1,
+              "leftHandles": 0,
+              "img": "/input.png",
+              "category": "General",
+              "targets": [
+                "Query"
+              ],
+              "sources": [],
+              "fieldValue1": "Query",
+              "fieldValue2": "Node-1"
+            },
+            "width": 204,
+            "height": 108,
+            "selected": false,
+            "positionAbsolute": {
+              "x": 119.38179978206608,
+              "y": 112.19999694824219
+            },
+            "dragging": false
+          },
+          {
+            "id": "NodeNode-3",
+            "type": "NodeNode",
+            "position": {
+              "x": 696.9234376463135,
+              "y": 240.98911729693646
+            },
+            "data": {
+              "name": "Database (RAG)",
+              "desc": "Fetches only the relevant text chunks from the database",
+              "isInput": false,
+              "isType": false,
+              "rightHandles": 1,
+              "leftHandles": 1,
+              "bgcolor": "#f57e2a",
+              "img": "/database.png",
+              "category": "Knowledge Base",
+              "sources": [
+                "query"
+              ],
+              "targets": [
+                "results"
+              ],
+              "fieldValue1": "NodeNode-3",
+              "fieldValue2": "Node-3",
+              "constantValueList": [
+                {
+                  "name": "Max Chunk Size",
+                  "value": 1000,
+                  "placeholder": "Exactly what it says"
+                },
+                {
+                  "name": "Chunk Overlap",
+                  "value": 200,
+                  "placeholder": "Overlap between chunks"
+                },
+                {
+                  "name": "Number of Chunks",
+                  "value": 5,
+                  "placeholder": "Total number of chunks"
+                }
+              ]
+            },
+            "width": 204,
+            "height": 340,
+            "selected": false,
+            "positionAbsolute": {
+              "x": 696.9234376463135,
+              "y": 240.98911729693646
+            },
+            "dragging": false
+          },
+          {
+            "id": "NodeNode-8",
+            "type": "NodeNode",
+            "position": {
+              "x": 308.4569736356302,
+              "y": -74.58418025268598
+            },
+            "data": {
+              "name": "Text",
+              "isInput": true,
+              "isType": false,
+              "bgcolor": "#498bf5",
+              "rightHandles": 1,
+              "leftHandles": 0,
+              "img": "/text.webp",
+              "category": "General",
+              "targets": [
+                "Output"
+              ],
+              "fieldValue1": "You are a helpful and knowledgeable AI assistant specialized in providing sales support. Your primary goal is to assist users with their sales-related queries by leveraging the provided sales data. **Crucially, your final output MUST be a valid JSON object conforming to the specified schema.**\n\nFollow these guidelines:\n\n* **Be concise and direct:** Provide clear and to-the-point answers.\n* **Prioritize using the provided sales data:** Always attempt to answer the user's query using the information explicitly given in the sales data.\n* **Acknowledge data limitations:** If the provided sales data does not contain the information needed to answer the query, clearly state that you cannot find the answer within the given data. Avoid making assumptions or providing information from outside the provided data.\n* **Maintain a professional and helpful tone:** Address the user politely and offer further assistance if appropriate.\n* **Identify the user's intent:** Try to understand the underlying need behind the user's query.\n* **If the query is unclear, ask clarifying questions:** If you are unsure what the user is asking, politely request more information.\n* **Do not ask for personal information:** You are here to provide sales support based on the provided data.\n* **Format your responses clearly:** Use bullet points or numbered lists when presenting multiple pieces of information.\n* **When referencing data, be specific:** If you are pulling information from a specific field in the sales data, mention it (e.g., \"According to the 'Product Name' field...\").\n* **Stay within the scope of sales support:** Do not engage in conversations unrelated to sales inquiries.\n\nstrictly output the result as a JSON object with the following keys:\n* `\"subject\"`: A concise title or subject for the email (string).\n* `\"text\"`: A detailed analysis of the data.",
+              "fieldValue2": "Node-8",
+              "sources": []
+            },
+            "width": 204,
+            "height": 86,
+            "selected": true,
+            "positionAbsolute": {
+              "x": 308.4569736356302,
+              "y": -74.58418025268598
+            },
+            "dragging": false
+          },
+          {
+            "id": "NodeNode-9",
+            "type": "NodeNode",
+            "position": {
+              "x": 967.1425821772832,
+              "y": -76.44238747350536
+            },
+            "data": {
+              "name": "Gemini",
+              "isInput": true,
+              "isType": false,
+              "rightHandles": 1,
+              "leftHandles": 4,
+              "bgcolor": "#ffe682",
+              "headColor": "#f5d65b",
+              "img": "/google.png",
+              "category": "LLMs",
+              "sources": [
+                "system",
+                "prompt",
+                "query",
+                "data"
+              ],
+              "targets": [
+                "response"
+              ],
+              "fieldValue1": "User query: {{query}}\n\nSales data: {{data}}",
+              "fieldValue2": "Node-9"
+            },
+            "width": 204,
+            "height": 179,
+            "selected": false,
+            "positionAbsolute": {
+              "x": 967.1425821772832,
+              "y": -76.44238747350536
+            },
+            "dragging": false
+          },
+          {
+            "id": "NodeNode-108",
+            "type": "NodeNode",
+            "position": {
+              "x": 1336.011502476024,
+              "y": 73.10363958943606
+            },
+            "data": {
+              "name": "Gmail",
+              "desc": "Read emails, create drafts or just send one!",
+              "Nodestate": [
+                "Create draft",
+                "Send email",
+                "Read emails"
+              ],
+              "isInput": false,
+              "isType": false,
+              "bgcolor": "#ea4335",
+              "rightHandles": 0,
+              "leftHandles": 2,
+              "sources": [
+                "Message",
+                "addresses"
+              ],
+              "targets": [],
+              "fieldValue1": {
+                "1": "{{addresses}}",
+                "isDraft": true
+              },
+              "img": "/gmail.png",
+              "category": "Integrations",
+              "fieldValue2": "✨",
+              "username": "a@m.com"
+            },
+            "width": 204,
+            "height": 200,
+            "selected": false,
+            "positionAbsolute": {
+              "x": 1336.011502476024,
+              "y": 73.10363958943606
+            },
+            "dragging": false
+          },
+          {
+            "id": "NodeNode-109",
+            "type": "NodeNode",
+            "position": {
+              "x": 122.0115024760239,
+              "y": 266.10363958943606
+            },
+            "data": {
+              "name": "Input",
+              "isInput": true,
+              "isType": true,
+              "bgcolor": "#498bf5",
+              "rightHandles": 1,
+              "leftHandles": 0,
+              "img": "/input.png",
+              "category": "General",
+              "targets": [
+                "Addresses"
+              ],
+              "sources": [],
+              "fieldValue1": "Addresses",
+              "fieldValue2": "✨"
+            },
+            "width": 204,
+            "height": 108,
+            "selected": false,
+            "positionAbsolute": {
+              "x": 122.0115024760239,
+              "y": 266.10363958943606
+            },
+            "dragging": false
+          }
+        ],
+        "edges": [
+          {
+            "source": "NodeNode-1",
+            "sourceHandle": "NodeNode-1-right-handle-0",
+            "target": "NodeNode-3",
+            "targetHandle": "NodeNode-3-left-handle-0",
+            "type": "smoothstep",
+            "animated": true,
+            "markerEnd": {
+              "type": "arrow",
+              "height": "20px",
+              "width": "40px",
+              "color": "#aaa"
+            },
+            "id": "reactflow__edge-NodeNode-1NodeNode-1-right-handle-0-NodeNode-3NodeNode-3-left-handle-0"
+          },
+          {
+            "source": "NodeNode-8",
+            "sourceHandle": "NodeNode-8-right-handle-0",
+            "target": "NodeNode-9",
+            "targetHandle": "NodeNode-9-left-handle-0",
+            "type": "smoothstep",
+            "animated": true,
+            "markerEnd": {
+              "type": "arrow",
+              "height": "20px",
+              "width": "40px",
+              "color": "#aaa"
+            },
+            "id": "reactflow__edge-NodeNode-8NodeNode-8-right-handle-0-NodeNode-9NodeNode-9-left-handle-0"
+          },
+          {
+            "source": "NodeNode-3",
+            "sourceHandle": "NodeNode-3-right-handle-0",
+            "target": "NodeNode-9",
+            "targetHandle": "NodeNode-9-left-handle-3",
+            "type": "smoothstep",
+            "animated": true,
+            "markerEnd": {
+              "type": "arrow",
+              "height": "20px",
+              "width": "40px",
+              "color": "#aaa"
+            },
+            "id": "reactflow__edge-NodeNode-3NodeNode-3-right-handle-0-NodeNode-9NodeNode-9-left-handle-3"
+          },
+          {
+            "source": "NodeNode-1",
+            "sourceHandle": "NodeNode-1-right-handle-0",
+            "target": "NodeNode-9",
+            "targetHandle": "NodeNode-9-left-handle-2",
+            "type": "smoothstep",
+            "animated": true,
+            "markerEnd": {
+              "type": "arrow",
+              "height": "20px",
+              "width": "40px",
+              "color": "#aaa"
+            },
+            "id": "reactflow__edge-NodeNode-1NodeNode-1-right-handle-0-NodeNode-9NodeNode-9-left-handle-2"
+          },
+          {
+            "source": "NodeNode-9",
+            "sourceHandle": "NodeNode-9-right-handle-0",
+            "target": "NodeNode-108",
+            "targetHandle": "NodeNode-108-left-handle-0",
+            "type": "smoothstep",
+            "animated": true,
+            "markerEnd": {
+              "type": "arrow",
+              "height": "20px",
+              "width": "40px",
+              "color": "#aaa"
+            },
+            "id": "reactflow__edge-NodeNode-9NodeNode-9-right-handle-0-NodeNode-108NodeNode-108-left-handle-0"
+          },
+          {
+            "source": "NodeNode-109",
+            "sourceHandle": "NodeNode-109-right-handle-0",
+            "target": "NodeNode-108",
+            "targetHandle": "NodeNode-108-left-handle-1",
+            "type": "smoothstep",
+            "animated": true,
+            "markerEnd": {
+              "type": "arrow",
+              "height": "20px",
+              "width": "40px",
+              "color": "#aaa"
+            },
+            "id": "reactflow__edge-NodeNode-109NodeNode-109-right-handle-0-NodeNode-108NodeNode-108-left-handle-1"
+          }
+        ]
+    },
+    
+    {
+        templateName: "Chat with Knowledge Base",
+        displayImage: bot,
+        templateId: "template-11114",
+        tags: ["Assistant"],
         nodes: [
             {
                 id: "NodeNode-31",
@@ -2971,6 +5084,7 @@ const templateNodes = [
                 },
                 data: {
                     name: "Database (RAG)",
+                    desc: "Fetches only the relevant text chunks from the database",
                     isInput: false,
                     isType: false,
                     rightHandles: 1,
@@ -3129,10 +5243,1361 @@ const templateNodes = [
         ],
     },
     {
-        templateName: "A/B test marketing emails",
-        displayImage: "/select.webp",
-        templateId: "template-13",
-        tags: ["Saved"],
+        "templateName": "Study Session! Expert Teaching Model",
+        "displayImage": discord,
+        "templateId": "template-242211",
+        "tags": [
+          "Discord", "Gen AI"
+        ],
+        "nodes": [
+          {
+            "id": "NodeNode-83",
+            "type": "NodeNode",
+            "position": {
+              "x": 91,
+              "y": 88.19999694824219
+            },
+            "data": {
+              "name": "Input",
+              "isInput": true,
+              "isType": true,
+              "bgcolor": "#498bf5",
+              "rightHandles": 1,
+              "leftHandles": 0,
+              "img": "/input.png",
+              "category": "General",
+              "targets": [
+                "question"
+              ],
+              "sources": [],
+              "fieldValue1": "question",
+              "fieldValue2": "✨"
+            },
+            "width": 204,
+            "height": 108,
+            "selected": false,
+            "positionAbsolute": {
+              "x": 91,
+              "y": 88.19999694824219
+            },
+            "dragging": false
+          },
+          {
+            "id": "NodeNode-84",
+            "type": "NodeNode",
+            "position": {
+              "x": 243,
+              "y": 262.1999969482422
+            },
+            "data": {
+              "name": "Database (RAG)",
+              "desc": "Fetches only the relevant text chunks from the database",
+              "isInput": false,
+              "isType": false,
+              "rightHandles": 1,
+              "leftHandles": 1,
+              "bgcolor": "#f57e2a",
+              "img": "/database.png",
+              "category": "Knowledge Base",
+              "sources": [
+                "query"
+              ],
+              "targets": [
+                "results"
+              ],
+              "fieldValue1": "🖊️",
+              "fieldValue2": "✨",
+              "constantValueList": [
+                {
+                  "name": "Max Chunk Size",
+                  "value": 1000,
+                  "placeholder": "Exactly what it says"
+                },
+                {
+                  "name": "Chunk Overlap",
+                  "value": 200,
+                  "placeholder": "Overlap between chunks"
+                },
+                {
+                  "name": "Number of Chunks",
+                  "value": 5,
+                  "placeholder": "Total number of chunks"
+                }
+              ]
+            },
+            "width": 204,
+            "height": 340,
+            "selected": false,
+            "positionAbsolute": {
+              "x": 243,
+              "y": 262.1999969482422
+            },
+            "dragging": false
+          },
+          {
+            "id": "NodeNode-85",
+            "type": "NodeNode",
+            "position": {
+              "x": 616,
+              "y": 130.1999969482422
+            },
+            "data": {
+              "name": "Gemini",
+              "isInput": true,
+              "isType": false,
+              "rightHandles": 1,
+              "leftHandles": 4,
+              "bgcolor": "#ffe682",
+              "headColor": "#f5d65b",
+              "img": "/google.png",
+              "category": "LLMs",
+              "sources": [
+                "system",
+                "prompt",
+                "query",
+                "context"
+              ],
+              "targets": [
+                "response"
+              ],
+              "fieldValue1": "User query: {{query}}\n\nContext: {{context}}",
+              "fieldValue2": "You are an expert educator, designed to provide comprehensive and accurate explanations to students of all levels. Your primary goal is to foster deep understanding and critical thinking.\n\n*Your Role:*\n\n* *Elaborate Explanation:* When a student asks a question, provide a detailed and thorough response. Break down complex concepts into smaller, digestible parts.\n* *Contextual Accuracy:* Always ensure your explanations are consistent with and grounded in the provided context. Do not introduce information that contradicts the context.\n* *Clarity and Precision:* Use clear, concise language, avoiding jargon unless necessary. Define any technical terms you use.\n* *Step-by-Step Reasoning:* When explaining processes or solving problems, present your reasoning in a logical, step-by-step manner.\n* *Visual Aids (If Possible):* If applicable, suggest or describe how visual aids like diagrams, graphs, or examples could enhance understanding.\n* *Multiple Perspectives:* Where appropriate, present different perspectives or approaches to a problem or concept.\n* *Real-World Connections:* Connect theoretical concepts to real-world examples and applications to make learning more relevant and engaging.\n* *Error Correction:* If you detect an error in the provided context, point it out respectfully and provide the correct information.\n* *Questioning and Encouragement:* Pose thoughtful questions to encourage students to think critically and apply their knowledge. Offer positive reinforcement and encouragement.\n* *Adaptability:* Tailor your explanations to the student's level of understanding, as inferred from the question's complexity and the provided context.\n* *Mathematical Notation:* Use LaTeX formatting for all mathematical and scientific notation. For example, represent the square root of 2 as $\\sqrt{2}$ and the formula for kinetic energy as $KE = \\frac{1}{2}mv^2$.\n* *No Extraneous Information:* Only provide information that is directly related to the user's query and the provided context. Do not generate information outside of these parameters."
+            },
+            "width": 204,
+            "height": 1243,
+            "selected": false,
+            "positionAbsolute": {
+              "x": 616,
+              "y": 130.1999969482422
+            },
+            "dragging": false
+          },
+          {
+            "id": "NodeNode-86",
+            "type": "NodeNode",
+            "position": {
+              "x": 992,
+              "y": 149.1999969482422
+            },
+            "data": {
+              "name": "Discord",
+              "desc": "Our discord bot will send messages to your requested channel",
+              "isInput": true,
+              "isType": false,
+              "bgcolor": "#5865F2",
+              "rightHandles": 0,
+              "leftHandles": 1,
+              "fieldValue1": "🖊️",
+              "sources": [
+                "Message Content"
+              ],
+              "img": "/discord.png",
+              "category": "Integrations",
+              "fieldValue2": "✨",
+              "username": "a@m.com"
+            },
+            "width": 204,
+            "height": 164,
+            "selected": false,
+            "positionAbsolute": {
+              "x": 992,
+              "y": 149.1999969482422
+            },
+            "dragging": false
+          }
+        ],
+        "edges": [
+          {
+            "source": "NodeNode-83",
+            "sourceHandle": "NodeNode-83-right-handle-0",
+            "target": "NodeNode-84",
+            "targetHandle": "NodeNode-84-left-handle-0",
+            "type": "smoothstep",
+            "animated": true,
+            "markerEnd": {
+              "type": "arrow",
+              "height": "20px",
+              "width": "40px",
+              "color": "#aaa"
+            },
+            "id": "reactflow__edge-NodeNode-83NodeNode-83-right-handle-0-NodeNode-84NodeNode-84-left-handle-0"
+          },
+          {
+            "source": "NodeNode-84",
+            "sourceHandle": "NodeNode-84-right-handle-0",
+            "target": "NodeNode-85",
+            "targetHandle": "NodeNode-85-left-handle-3",
+            "type": "smoothstep",
+            "animated": true,
+            "markerEnd": {
+              "type": "arrow",
+              "height": "20px",
+              "width": "40px",
+              "color": "#aaa"
+            },
+            "id": "reactflow__edge-NodeNode-84NodeNode-84-right-handle-0-NodeNode-85NodeNode-85-left-handle-3"
+          },
+          {
+            "source": "NodeNode-83",
+            "sourceHandle": "NodeNode-83-right-handle-0",
+            "target": "NodeNode-85",
+            "targetHandle": "NodeNode-85-left-handle-2",
+            "type": "smoothstep",
+            "animated": true,
+            "markerEnd": {
+              "type": "arrow",
+              "height": "20px",
+              "width": "40px",
+              "color": "#aaa"
+            },
+            "id": "reactflow__edge-NodeNode-83NodeNode-83-right-handle-0-NodeNode-85NodeNode-85-left-handle-2"
+          },
+          {
+            "source": "NodeNode-85",
+            "sourceHandle": "NodeNode-85-right-handle-0",
+            "target": "NodeNode-86",
+            "targetHandle": "NodeNode-86-left-handle-0",
+            "type": "smoothstep",
+            "animated": true,
+            "markerEnd": {
+              "type": "arrow",
+              "height": "20px",
+              "width": "40px",
+              "color": "#aaa"
+            },
+            "id": "reactflow__edge-NodeNode-85NodeNode-85-right-handle-0-NodeNode-86NodeNode-86-left-handle-0"
+          }
+        ]
+    },
+    
+    {
+        "templateName": "Chat with GDoc",
+        "displayImage": star,
+        "templateId": "template-2271877",
+        "tags": [
+          "Gen AI", "Discord"
+        ],
+        "nodes": [
+          {
+            "id": "NodeNode-833",
+            "type": "NodeNode",
+            "position": {
+              "x": 186,
+              "y": 116.19999694824219
+            },
+            "data": {
+              "name": "Input",
+              "isInput": true,
+              "isType": true,
+              "bgcolor": "#498bf5",
+              "rightHandles": 1,
+              "leftHandles": 0,
+              "img": "/input.png",
+              "category": "General",
+              "targets": [
+                "identifier"
+              ],
+              "sources": [],
+              "fieldValue1": "identifier",
+              "fieldValue2": "✨"
+            },
+            "width": 204,
+            "height": 108,
+            "selected": false,
+            "positionAbsolute": {
+              "x": 186,
+              "y": 116.19999694824219
+            },
+            "dragging": false
+          },
+          {
+            "id": "NodeNode-877",
+            "type": "NodeNode",
+            "position": {
+              "x": 535,
+              "y": 77.19999694824219
+            },
+            "data": {
+              "name": "GDocs",
+              "desc": "Read or create a document",
+              "Nodestate": [
+                "Read Doc",
+                "Create Doc"
+              ],
+              "isInput": false,
+              "isType": false,
+              "bgcolor": "#636ff2",
+              "rightHandles": 1,
+              "leftHandles": 1,
+              "img": "/gdocs.png",
+              "category": "Integrations",
+              "fieldValue1": {
+                "1": "{{identifier}}"
+              },
+              "fieldValue2": "✨",
+              "sources": [
+                "identifier"
+              ],
+              "targets": [
+                "Content"
+              ],
+              "username": false
+            },
+            "width": 204,
+            "height": 188,
+            "selected": false,
+            "dragging": false,
+            "positionAbsolute": {
+              "x": 535,
+              "y": 77.19999694824219
+            }
+          },
+          {
+            "id": "NodeNode-88",
+            "type": "NodeNode",
+            "position": {
+              "x": 536,
+              "y": 320.1999969482422
+            },
+            "data": {
+              "name": "Gemini",
+              "isInput": true,
+              "isType": false,
+              "rightHandles": 1,
+              "leftHandles": 4,
+              "bgcolor": "#ffe682",
+              "headColor": "#f5d65b",
+              "img": "/google.png",
+              "category": "LLMs",
+              "sources": [
+                "system",
+                "prompt",
+                "doc",
+                "query"
+              ],
+              "targets": [
+                "response"
+              ],
+              "fieldValue1": "Document: {{doc}}\n\nquery: {{query}}",
+              "fieldValue2": "Answer the question based solely on the provided document"
+            },
+            "width": 204,
+            "height": 235,
+            "selected": false,
+            "positionAbsolute": {
+              "x": 536,
+              "y": 320.1999969482422
+            },
+            "dragging": false
+          },
+          {
+            "id": "NodeNode-89",
+            "type": "NodeNode",
+            "position": {
+              "x": 184,
+              "y": 270.1999969482422
+            },
+            "data": {
+              "name": "Input",
+              "isInput": true,
+              "isType": true,
+              "bgcolor": "#498bf5",
+              "rightHandles": 1,
+              "leftHandles": 0,
+              "img": "/input.png",
+              "category": "General",
+              "targets": [
+                "query"
+              ],
+              "sources": [],
+              "fieldValue1": "query",
+              "fieldValue2": "✨"
+            },
+            "width": 204,
+            "height": 108,
+            "selected": false,
+            "positionAbsolute": {
+              "x": 184,
+              "y": 270.1999969482422
+            },
+            "dragging": false
+          },
+          {
+            "id": "NodeNode-90",
+            "type": "NodeNode",
+            "position": {
+              "x": 911,
+              "y": 211.1999969482422
+            },
+            "data": {
+              "name": "Output",
+              "isInput": true,
+              "isType": true,
+              "bgcolor": "#58c742",
+              "rightHandles": 0,
+              "leftHandles": 1,
+              "img": "/output.png",
+              "category": "General",
+              "sources": [
+                "Output"
+              ],
+              "fieldValue1": "",
+              "fieldValue2": "✨"
+            },
+            "width": 204,
+            "height": 108,
+            "selected": true,
+            "positionAbsolute": {
+              "x": 911,
+              "y": 211.1999969482422
+            },
+            "dragging": false
+          }
+        ],
+        "edges": [
+          {
+            "source": "NodeNode-833",
+            "sourceHandle": "NodeNode-833-right-handle-0",
+            "target": "NodeNode-877",
+            "targetHandle": "NodeNode-877-left-handle-0",
+            "type": "smoothstep",
+            "animated": true,
+            "markerEnd": {
+              "type": "arrow",
+              "height": "20px",
+              "width": "40px",
+              "color": "#aaa"
+            },
+            "id": "reactflow__edge-NodeNode-833NodeNode-833-right-handle-0-NodeNode-877NodeNode-877-left-handle-0"
+          },
+          {
+            "source": "NodeNode-89",
+            "sourceHandle": "NodeNode-89-right-handle-0",
+            "target": "NodeNode-88",
+            "targetHandle": "NodeNode-88-left-handle-3",
+            "type": "smoothstep",
+            "animated": true,
+            "markerEnd": {
+              "type": "arrow",
+              "height": "20px",
+              "width": "40px",
+              "color": "#aaa"
+            },
+            "id": "reactflow__edge-NodeNode-89NodeNode-89-right-handle-0-NodeNode-88NodeNode-88-left-handle-3"
+          },
+          {
+            "source": "NodeNode-877",
+            "sourceHandle": "NodeNode-877-right-handle-0",
+            "target": "NodeNode-88",
+            "targetHandle": "NodeNode-88-left-handle-2",
+            "type": "smoothstep",
+            "animated": true,
+            "markerEnd": {
+              "type": "arrow",
+              "height": "20px",
+              "width": "40px",
+              "color": "#aaa"
+            },
+            "id": "reactflow__edge-NodeNode-877NodeNode-877-right-handle-0-NodeNode-88NodeNode-88-left-handle-2"
+          },
+          {
+            "source": "NodeNode-88",
+            "sourceHandle": "NodeNode-88-right-handle-0",
+            "target": "NodeNode-90",
+            "targetHandle": "NodeNode-90-left-handle-0",
+            "type": "smoothstep",
+            "animated": true,
+            "markerEnd": {
+              "type": "arrow",
+              "height": "20px",
+              "width": "40px",
+              "color": "#aaa"
+            },
+            "id": "reactflow__edge-NodeNode-88NodeNode-88-right-handle-0-NodeNode-90NodeNode-90-left-handle-0"
+          }
+        ]
+    },
+
+    {
+        templateName: "Tech support AI chatbot",
+        displayImage: bot,
+        templateId: "template-9002",
+        tags: ["Assistant"],
+        nodes: [
+            {
+                id: "NodeNode-1",
+                type: "NodeNode",
+                position: {
+                    x: 229.9114132620477,
+                    y: 32.16286654939921,
+                },
+                data: {
+                    name: "Input",
+                    isInput: true,
+                    isType: true,
+                    bgcolor: "#498bf5",
+                    rightHandles: 1,
+                    leftHandles: 0,
+                    img: "/input.png",
+                    category: "General",
+                    targets: ["Input"],
+                    sources: [],
+                    fieldValue1: "Node-1",
+                    fieldValue2: "Node-1",
+                },
+                width: 204,
+                height: 108,
+                selected: false,
+                positionAbsolute: {
+                    x: 229.9114132620477,
+                    y: 32.16286654939921,
+                },
+                dragging: false,
+            },
+            {
+                id: "NodeNode-3",
+                type: "NodeNode",
+                position: {
+                    x: 644.9234376463135,
+                    y: 139.98911729693646,
+                },
+                data: {
+                    name: "Database (RAG)",
+                    desc: "Fetches only the relevant text chunks from the database",
+                    isInput: false,
+                    isType: false,
+                    rightHandles: 1,
+                    leftHandles: 1,
+                    bgcolor: "#f57e2a",
+                    img: "/database.png",
+                    category: "Knowledge Base",
+                    sources: ["query"],
+                    targets: ["results"],
+                    fieldValue1: "NodeNode-3",
+                    fieldValue2: "Node-3",
+                    constantValueList: [
+                        {
+                            name: "Max Chunk Size",
+                            value: 1000,
+                            placeholder: "Exactly what it says",
+                        },
+                        {
+                            name: "Chunk Overlap",
+                            value: 200,
+                            placeholder: "Overlap between chunks",
+                        },
+                        {
+                            name: "Number of Chunks",
+                            value: 5,
+                            placeholder: "Total number of chunks",
+                        },
+                    ],
+                },
+                width: 204,
+                height: 340,
+                selected: false,
+                positionAbsolute: {
+                    x: 644.9234376463135,
+                    y: 139.98911729693646,
+                },
+                dragging: false,
+            },
+            {
+                id: "NodeNode-8",
+                type: "NodeNode",
+                position: {
+                    x: 401.15458230133277,
+                    y: -92.30401725329656,
+                },
+                data: {
+                    name: "Text",
+                    isInput: true,
+                    isType: false,
+                    bgcolor: "#498bf5",
+                    rightHandles: 1,
+                    leftHandles: 0,
+                    img: "/text.webp",
+                    category: "General",
+                    targets: ["Output"],
+                    fieldValue1:
+                        "You are a helpful and knowledgeable AI assistant specialized in providing technical support for our products. Your primary goal is to assist users with their technical issues by leveraging the provided product information.\n\nFollow these guidelines:\n\n* **Be concise and direct:** Provide clear and to-the-point answers and troubleshooting steps.\n* **Prioritize using the provided product information:** Always attempt to answer the user's query using the information explicitly given in the product documentation.\n* **Acknowledge information limitations:** If the provided product information does not contain the answer to the user's query, clearly state that you cannot find the specific information within the given documentation. Avoid making assumptions or providing general troubleshooting steps not supported by the provided data.\n* **Maintain a professional and helpful tone:** Address the user politely and offer further assistance if appropriate (e.g., suggesting they contact human support if the issue is beyond the scope of the provided documentation).\n* **Identify the user's problem:** Try to understand the core issue the user is facing.\n* **If the query is unclear, ask clarifying questions:** If you are unsure what the user is asking, politely request more details about their problem, including specific error messages, steps they have already taken, and the product version they are using.\n* **Do not ask for personal information:** You are here to provide technical support based on the provided product information.\n* **Format your responses clearly:** Use bullet points, numbered lists, code blocks, or bold text to make instructions and information easy to follow.\n* **When referencing product information, be specific:** If you are referring to a particular section or specification in the product info, mention it (e.g., \"According to the 'Troubleshooting' section of the manual...\").\n* **Stay within the scope of technical support for our products:** Do not engage in conversations about unrelated topics or provide support for third-party products.",
+                    fieldValue2: "Node-8",
+                    sources: [],
+                },
+                width: 204,
+                height: 1118,
+                selected: true,
+                positionAbsolute: {
+                    x: 401.15458230133277,
+                    y: -92.30401725329656,
+                },
+                dragging: false,
+            },
+            {
+                id: "NodeNode-76",
+                type: "NodeNode",
+                position: {
+                    x: 225.07960894124014,
+                    y: 180.2510231711396,
+                },
+                data: {
+                    name: "Input",
+                    isInput: true,
+                    isType: true,
+                    bgcolor: "#498bf5",
+                    rightHandles: 1,
+                    leftHandles: 0,
+                    img: "/input.png",
+                    category: "General",
+                    targets: ["Previous chat"],
+                    sources: [],
+                    fieldValue1: "Previous chat",
+                    fieldValue2: "✨",
+                },
+                width: 204,
+                height: 108,
+                selected: false,
+                positionAbsolute: {
+                    x: 225.07960894124014,
+                    y: 180.2510231711396,
+                },
+                dragging: false,
+            },
+            {
+                id: "NodeNode-77",
+                type: "NodeNode",
+                position: {
+                    x: 969.2457873451058,
+                    y: -31.155696636289235,
+                },
+                data: {
+                    name: "Gemini",
+                    isInput: true,
+                    isType: false,
+                    rightHandles: 1,
+                    leftHandles: 5,
+                    bgcolor: "#ffe682",
+                    headColor: "#f5d65b",
+                    img: "/google.png",
+                    category: "LLMs",
+                    sources: ["system", "prompt", "query", "data", "chat"],
+                    targets: ["response"],
+                    fieldValue1:
+                        "User query: {{query}}\n\nProduct info: {{data}}\n\nPrevious chat: {{chat}}",
+                    fieldValue2: "✨",
+                },
+                width: 204,
+                height: 235,
+                selected: false,
+                dragging: false,
+                positionAbsolute: {
+                    x: 969.2457873451058,
+                    y: -31.155696636289235,
+                },
+            },
+            {
+                id: "NodeNode-80",
+                type: "NodeNode",
+                position: {
+                    x: 1321.7305899216242,
+                    y: 31.869000062407764,
+                },
+                data: {
+                    name: "Output",
+                    isInput: true,
+                    isType: true,
+                    bgcolor: "#58c742",
+                    rightHandles: 0,
+                    leftHandles: 1,
+                    img: "/output.png",
+                    category: "General",
+                    sources: ["Output"],
+                    fieldValue1: "",
+                    fieldValue2: "✨",
+                },
+                width: 204,
+                height: 108,
+                selected: false,
+                positionAbsolute: {
+                    x: 1321.7305899216242,
+                    y: 31.869000062407764,
+                },
+                dragging: false,
+            },
+        ],
+        edges: [
+            {
+                source: "NodeNode-1",
+                sourceHandle: "NodeNode-1-right-handle-0",
+                target: "NodeNode-3",
+                targetHandle: "NodeNode-3-left-handle-0",
+                type: "smoothstep",
+                animated: true,
+                markerEnd: {
+                    type: "arrow",
+                    height: "20px",
+                    width: "40px",
+                    color: "#aaa",
+                },
+                id: "reactflow__edge-NodeNode-1NodeNode-1-right-handle-0-NodeNode-3NodeNode-3-left-handle-0",
+            },
+            {
+                source: "NodeNode-8",
+                sourceHandle: "NodeNode-8-right-handle-0",
+                target: "NodeNode-77",
+                targetHandle: "NodeNode-77-left-handle-0",
+                type: "smoothstep",
+                animated: true,
+                markerEnd: {
+                    type: "arrow",
+                    height: "20px",
+                    width: "40px",
+                    color: "#aaa",
+                },
+                id: "reactflow__edge-NodeNode-8NodeNode-8-right-handle-0-NodeNode-77NodeNode-77-left-handle-0",
+            },
+            {
+                source: "NodeNode-1",
+                sourceHandle: "NodeNode-1-right-handle-0",
+                target: "NodeNode-77",
+                targetHandle: "NodeNode-77-left-handle-2",
+                type: "smoothstep",
+                animated: true,
+                markerEnd: {
+                    type: "arrow",
+                    height: "20px",
+                    width: "40px",
+                    color: "#aaa",
+                },
+                id: "reactflow__edge-NodeNode-1NodeNode-1-right-handle-0-NodeNode-77NodeNode-77-left-handle-2",
+            },
+            {
+                source: "NodeNode-76",
+                sourceHandle: "NodeNode-76-right-handle-0",
+                target: "NodeNode-77",
+                targetHandle: "NodeNode-77-left-handle-4",
+                type: "smoothstep",
+                animated: true,
+                markerEnd: {
+                    type: "arrow",
+                    height: "20px",
+                    width: "40px",
+                    color: "#aaa",
+                },
+                id: "reactflow__edge-NodeNode-76NodeNode-76-right-handle-0-NodeNode-77NodeNode-77-left-handle-4",
+            },
+            {
+                source: "NodeNode-3",
+                sourceHandle: "NodeNode-3-right-handle-0",
+                target: "NodeNode-77",
+                targetHandle: "NodeNode-77-left-handle-3",
+                type: "smoothstep",
+                animated: true,
+                markerEnd: {
+                    type: "arrow",
+                    height: "20px",
+                    width: "40px",
+                    color: "#aaa",
+                },
+                id: "reactflow__edge-NodeNode-3NodeNode-3-right-handle-0-NodeNode-77NodeNode-77-left-handle-3",
+            },
+            {
+                source: "NodeNode-77",
+                sourceHandle: "NodeNode-77-right-handle-0",
+                target: "NodeNode-80",
+                targetHandle: "NodeNode-80-left-handle-0",
+                type: "smoothstep",
+                animated: true,
+                markerEnd: {
+                    type: "arrow",
+                    height: "20px",
+                    width: "40px",
+                    color: "#aaa",
+                },
+                id: "reactflow__edge-NodeNode-77NodeNode-77-right-handle-0-NodeNode-80NodeNode-80-left-handle-0",
+            },
+        ],
+    },
+    {
+        templateName: "Sales support AI chatbot",
+        displayImage: bot,
+        templateId: "template-2020207",
+        tags: ["Assistant"],
+        nodes: [
+            {
+                id: "NodeNode-1",
+                type: "NodeNode",
+                position: {
+                    x: 119.38179978206608,
+                    y: 112.19999694824219,
+                },
+                data: {
+                    name: "Input",
+                    isInput: true,
+                    isType: true,
+                    bgcolor: "#498bf5",
+                    rightHandles: 1,
+                    leftHandles: 0,
+                    img: "/input.png",
+                    category: "General",
+                    targets: ["Input"],
+                    sources: [],
+                    fieldValue1: "Node-1",
+                    fieldValue2: "Node-1",
+                },
+                width: 204,
+                height: 108,
+                selected: false,
+                positionAbsolute: {
+                    x: 119.38179978206608,
+                    y: 112.19999694824219,
+                },
+                dragging: false,
+            },
+            {
+                id: "NodeNode-3",
+                type: "NodeNode",
+                position: {
+                    x: 696.9234376463135,
+                    y: 240.98911729693646,
+                },
+                data: {
+                    name: "Database (RAG)",
+                    desc: "Fetches only the relevant text chunks from the database",
+                    isInput: false,
+                    isType: false,
+                    rightHandles: 1,
+                    leftHandles: 1,
+                    bgcolor: "#f57e2a",
+                    img: "/database.png",
+                    category: "Knowledge Base",
+                    sources: ["query"],
+                    targets: ["results"],
+                    fieldValue1: "NodeNode-3",
+                    fieldValue2: "Node-3",
+                    constantValueList: [
+                        {
+                            name: "Max Chunk Size",
+                            value: 1000,
+                            placeholder: "Exactly what it says",
+                        },
+                        {
+                            name: "Chunk Overlap",
+                            value: 200,
+                            placeholder: "Overlap between chunks",
+                        },
+                        {
+                            name: "Number of Chunks",
+                            value: 5,
+                            placeholder: "Total number of chunks",
+                        },
+                    ],
+                },
+                width: 204,
+                height: 301,
+                selected: false,
+                positionAbsolute: {
+                    x: 696.9234376463135,
+                    y: 240.98911729693646,
+                },
+                dragging: false,
+            },
+            {
+                id: "NodeNode-8",
+                type: "NodeNode",
+                position: {
+                    x: 423.99939924080064,
+                    y: -234.96300393417778,
+                },
+                data: {
+                    name: "Text",
+                    isInput: true,
+                    isType: false,
+                    bgcolor: "#498bf5",
+                    rightHandles: 1,
+                    leftHandles: 0,
+                    img: "/text.webp",
+                    category: "General",
+                    targets: ["Output"],
+                    fieldValue1:
+                        "You are a helpful and knowledgeable AI assistant specialized in providing sales support. Your primary goal is to assist users with their sales-related queries by leveraging the provided sales data.\n\nFollow these guidelines:\n\n* **Be concise and direct:** Provide clear and to-the-point answers.\n* **Prioritize using the provided sales data:** Always attempt to answer the user's query using the information explicitly given in the sales data.\n* **Acknowledge data limitations:** If the provided sales data does not contain the information needed to answer the query, clearly state that you cannot find the answer within the given data. Avoid making assumptions or providing information from outside the provided data.\n* **Maintain a professional and helpful tone:** Address the user politely and offer further assistance if appropriate.\n* **Identify the user's intent:** Try to understand the underlying need behind the user's query.\n* **If the query is unclear, ask clarifying questions:** If you are unsure what the user is asking, politely request more information.\n* **Do not ask for personal information:** You are here to provide sales support based on the provided data.\n* **Format your responses clearly:** Use bullet points or numbered lists when presenting multiple pieces of information.\n* **When referencing data, be specific:** If you are pulling information from a specific field in the sales data, mention it (e.g., \"According to the 'Product Name' field...\").\n* **Stay within the scope of sales support:** Do not engage in conversations unrelated to sales inquiries.",
+                    fieldValue2: "Node-8",
+                },
+                width: 204,
+                height: 854,
+                selected: false,
+                positionAbsolute: {
+                    x: 423.99939924080064,
+                    y: -234.96300393417778,
+                },
+                dragging: false,
+            },
+            {
+                id: "NodeNode-9",
+                type: "NodeNode",
+                position: {
+                    x: 967.1425821772832,
+                    y: -76.44238747350536,
+                },
+                data: {
+                    name: "Gemini",
+                    isInput: true,
+                    isType: false,
+                    rightHandles: 1,
+                    leftHandles: 4,
+                    bgcolor: "#ffe682",
+                    headColor: "#f5d65b",
+                    img: "/google.png",
+                    category: "LLMs",
+                    sources: ["system", "prompt", "query", "data"],
+                    targets: ["response"],
+                    fieldValue1:
+                        "User query: {{query}}\n\nSales data: {{data}}",
+                    fieldValue2: "Node-9",
+                },
+                width: 204,
+                height: 203,
+                selected: false,
+                positionAbsolute: {
+                    x: 967.1425821772832,
+                    y: -76.44238747350536,
+                },
+                dragging: false,
+            },
+            {
+                id: "NodeNode-10",
+                type: "NodeNode",
+                position: {
+                    x: 1346.2247176280898,
+                    y: 86.7084542625962,
+                },
+                data: {
+                    name: "Database Output",
+                    desc: "Save pipeline output in a new database",
+                    isInput: true,
+                    isType: false,
+                    rightHandles: 0,
+                    leftHandles: 1,
+                    bgcolor: "#f57e2a",
+                    img: "/database-res.png",
+                    category: "Knowledge Base",
+                    sources: ["results"],
+                    fieldValue1: "",
+                    fieldValue2: "Node-10",
+                    username: false,
+                },
+                width: 204,
+                height: 173,
+                selected: false,
+                positionAbsolute: {
+                    x: 1346.2247176280898,
+                    y: 86.7084542625962,
+                },
+                dragging: false,
+            },
+        ],
+        edges: [
+            {
+                source: "NodeNode-1",
+                sourceHandle: "NodeNode-1-right-handle-0",
+                target: "NodeNode-3",
+                targetHandle: "NodeNode-3-left-handle-0",
+                type: "smoothstep",
+                animated: true,
+                markerEnd: {
+                    type: "arrow",
+                    height: "20px",
+                    width: "40px",
+                    color: "#aaa",
+                },
+                id: "reactflow__edge-NodeNode-1NodeNode-1-right-handle-0-NodeNode-3NodeNode-3-left-handle-0",
+            },
+            {
+                source: "NodeNode-8",
+                sourceHandle: "NodeNode-8-right-handle-0",
+                target: "NodeNode-9",
+                targetHandle: "NodeNode-9-left-handle-0",
+                type: "smoothstep",
+                animated: true,
+                markerEnd: {
+                    type: "arrow",
+                    height: "20px",
+                    width: "40px",
+                    color: "#aaa",
+                },
+                id: "reactflow__edge-NodeNode-8NodeNode-8-right-handle-0-NodeNode-9NodeNode-9-left-handle-0",
+            },
+            {
+                source: "NodeNode-3",
+                sourceHandle: "NodeNode-3-right-handle-0",
+                target: "NodeNode-9",
+                targetHandle: "NodeNode-9-left-handle-3",
+                type: "smoothstep",
+                animated: true,
+                markerEnd: {
+                    type: "arrow",
+                    height: "20px",
+                    width: "40px",
+                    color: "#aaa",
+                },
+                id: "reactflow__edge-NodeNode-3NodeNode-3-right-handle-0-NodeNode-9NodeNode-9-left-handle-3",
+            },
+            {
+                source: "NodeNode-1",
+                sourceHandle: "NodeNode-1-right-handle-0",
+                target: "NodeNode-9",
+                targetHandle: "NodeNode-9-left-handle-2",
+                type: "smoothstep",
+                animated: true,
+                markerEnd: {
+                    type: "arrow",
+                    height: "20px",
+                    width: "40px",
+                    color: "#aaa",
+                },
+                id: "reactflow__edge-NodeNode-1NodeNode-1-right-handle-0-NodeNode-9NodeNode-9-left-handle-2",
+            },
+            {
+                source: "NodeNode-9",
+                sourceHandle: "NodeNode-9-right-handle-0",
+                target: "NodeNode-10",
+                targetHandle: "NodeNode-10-left-handle-0",
+                type: "smoothstep",
+                animated: true,
+                markerEnd: {
+                    type: "arrow",
+                    height: "20px",
+                    width: "40px",
+                    color: "#aaa",
+                },
+                id: "reactflow__edge-NodeNode-9NodeNode-9-right-handle-0-NodeNode-10NodeNode-10-left-handle-0",
+            },
+        ],
+    },
+    {
+        "templateName": "AI Powered FAQ bot",
+        "displayImage": bot,
+        "templateId": "template-6423221",
+        "tags": [
+          "Assistant",
+        ],
+        "nodes": [
+          {
+            "id": "NodeNode-1",
+            "type": "NodeNode",
+            "position": {
+              "x": 90.49574031049639,
+              "y": 133.41378958746145
+            },
+            "data": {
+              "name": "Input",
+              "isInput": true,
+              "isType": true,
+              "bgcolor": "#498bf5",
+              "rightHandles": 1,
+              "leftHandles": 0,
+              "img": "/input.png",
+              "category": "General",
+              "targets": [
+                "Query"
+              ],
+              "sources": [],
+              "fieldValue1": "Query",
+              "fieldValue2": "Node-1"
+            },
+            "width": 204,
+            "height": 108,
+            "selected": false,
+            "positionAbsolute": {
+              "x": 90.49574031049639,
+              "y": 133.41378958746145
+            },
+            "dragging": false
+          },
+          {
+            "id": "NodeNode-3",
+            "type": "NodeNode",
+            "position": {
+              "x": 370.4787015524819,
+              "y": 291.1999969482422
+            },
+            "data": {
+              "name": "Database (RAG)",
+              "desc": "Fetches only the relevant text chunks from the database",
+              "isInput": false,
+              "isType": false,
+              "rightHandles": 1,
+              "leftHandles": 1,
+              "bgcolor": "#f57e2a",
+              "img": "/database.png",
+              "category": "Knowledge Base",
+              "sources": [
+                "query"
+              ],
+              "targets": [
+                "results"
+              ],
+              "fieldValue1": "NodeNode-3",
+              "fieldValue2": "Node-3",
+              "constantValueList": [
+                {
+                  "name": "Max Chunk Size",
+                  "value": 1000,
+                  "placeholder": "Exactly what it says"
+                },
+                {
+                  "name": "Chunk Overlap",
+                  "value": 200,
+                  "placeholder": "Overlap between chunks"
+                },
+                {
+                  "name": "Number of Chunks",
+                  "value": 5,
+                  "placeholder": "Total number of chunks"
+                }
+              ]
+            },
+            "width": 204,
+            "height": 340,
+            "selected": false,
+            "positionAbsolute": {
+              "x": 370.4787015524819,
+              "y": 291.1999969482422
+            },
+            "dragging": false
+          },
+          {
+            "id": "NodeNode-5",
+            "type": "NodeNode",
+            "position": {
+              "x": 1065,
+              "y": 159.1999969482422
+            },
+            "data": {
+              "name": "Output",
+              "isInput": true,
+              "isType": true,
+              "bgcolor": "#58c742",
+              "rightHandles": 0,
+              "leftHandles": 1,
+              "img": "/output.png",
+              "category": "General",
+              "sources": [
+                "Output"
+              ],
+              "fieldValue1": "Node-5",
+              "fieldValue2": "Node-5"
+            },
+            "width": 204,
+            "height": 108,
+            "selected": false,
+            "positionAbsolute": {
+              "x": 1065,
+              "y": 159.1999969482422
+            },
+            "dragging": false
+          },
+          {
+            "id": "NodeNode-80",
+            "type": "NodeNode",
+            "position": {
+              "x": 673.8408465923147,
+              "y": 73.02793172634875
+            },
+            "data": {
+              "name": "OpenAI",
+              "isInput": true,
+              "isType": false,
+              "rightHandles": 1,
+              "leftHandles": 5,
+              "bgcolor": "#ffe682",
+              "headColor": "#f5d65b",
+              "img": "/openai.png",
+              "category": "LLMs",
+              "sources": [
+                "system",
+                "prompt",
+                "query",
+                "context",
+                "chat"
+              ],
+              "targets": [
+                "response"
+              ],
+              "fieldValue1": "Given the user query  and the context regarding the query , generate an appropriate answer for the user.\n\nInstructions: \n\n    Analyze the user query to determine the intent and desired outcome.\n    Use the provided context to tailor the email content appropriately.\n    Maintain a tone consistent with the purpose of the email (e.g., professional, friendly, urgent).\n    Ensure clarity, conciseness, and relevance in both the subject line and body.\n    Avoid placeholders or vague language; provide complete and actionable content.\n  \n\nUser query: {{query}}\n\nContext: {{context}}\n\nPrevious chat: {{chat}}",
+              "fieldValue2": "✨"
+            },
+            "width": 204,
+            "height": 179,
+            "selected": false,
+            "positionAbsolute": {
+              "x": 673.8408465923147,
+              "y": 73.02793172634875
+            },
+            "dragging": false
+          },
+          {
+            "id": "NodeNode-81",
+            "type": "NodeNode",
+            "position": {
+              "x": 358.29588494305983,
+              "y": -15.088169700631653
+            },
+            "data": {
+              "name": "Text",
+              "isInput": true,
+              "isType": false,
+              "bgcolor": "#498bf5",
+              "rightHandles": 1,
+              "leftHandles": 0,
+              "img": "/text.webp",
+              "category": "General",
+              "targets": [
+                "Output"
+              ],
+              "fieldValue1": "You are an AI assistant designed to help users create professional and engaging emails. Your task is to generate the subject line and body of an email based on the user's query and the provided context. Ensure that the tone and content align with the purpose of the communication, whether it’s formal, casual, or promotional.",
+              "fieldValue2": "✨"
+            },
+            "width": 204,
+            "height": 86,
+            "selected": false,
+            "positionAbsolute": {
+              "x": 358.29588494305983,
+              "y": -15.088169700631653
+            },
+            "dragging": false
+          },
+          {
+            "id": "NodeNode-82",
+            "type": "NodeNode",
+            "position": {
+              "x": 92.49954187519592,
+              "y": 273.16983616169966
+            },
+            "data": {
+              "name": "Input",
+              "isInput": true,
+              "isType": true,
+              "bgcolor": "#498bf5",
+              "rightHandles": 1,
+              "leftHandles": 0,
+              "img": "/input.png",
+              "category": "General",
+              "targets": [
+                "Previous chat"
+              ],
+              "sources": [],
+              "fieldValue1": "Previous chat",
+              "fieldValue2": "✨"
+            },
+            "width": 204,
+            "height": 108,
+            "selected": false,
+            "positionAbsolute": {
+              "x": 92.49954187519592,
+              "y": 273.16983616169966
+            },
+            "dragging": false
+          }
+        ],
+        "edges": [
+          {
+            "source": "NodeNode-1",
+            "sourceHandle": "NodeNode-1-right-handle-0",
+            "target": "NodeNode-3",
+            "targetHandle": "NodeNode-3-left-handle-0",
+            "type": "smoothstep",
+            "animated": true,
+            "markerEnd": {
+              "type": "arrow",
+              "height": "20px",
+              "width": "40px",
+              "color": "#aaa"
+            },
+            "id": "reactflow__edge-NodeNode-1NodeNode-1-right-handle-0-NodeNode-3NodeNode-3-left-handle-0"
+          },
+          {
+            "source": "NodeNode-81",
+            "sourceHandle": "NodeNode-81-right-handle-0",
+            "target": "NodeNode-80",
+            "targetHandle": "NodeNode-80-left-handle-0",
+            "type": "smoothstep",
+            "animated": true,
+            "markerEnd": {
+              "type": "arrow",
+              "height": "20px",
+              "width": "40px",
+              "color": "#aaa"
+            },
+            "id": "reactflow__edge-NodeNode-81NodeNode-81-right-handle-0-NodeNode-80NodeNode-80-left-handle-0"
+          },
+          {
+            "source": "NodeNode-3",
+            "sourceHandle": "NodeNode-3-right-handle-0",
+            "target": "NodeNode-80",
+            "targetHandle": "NodeNode-80-left-handle-3",
+            "type": "smoothstep",
+            "animated": true,
+            "markerEnd": {
+              "type": "arrow",
+              "height": "20px",
+              "width": "40px",
+              "color": "#aaa"
+            },
+            "id": "reactflow__edge-NodeNode-3NodeNode-3-right-handle-0-NodeNode-80NodeNode-80-left-handle-3"
+          },
+          {
+            "source": "NodeNode-1",
+            "sourceHandle": "NodeNode-1-right-handle-0",
+            "target": "NodeNode-80",
+            "targetHandle": "NodeNode-80-left-handle-2",
+            "type": "smoothstep",
+            "animated": true,
+            "markerEnd": {
+              "type": "arrow",
+              "height": "20px",
+              "width": "40px",
+              "color": "#aaa"
+            },
+            "id": "reactflow__edge-NodeNode-1NodeNode-1-right-handle-0-NodeNode-80NodeNode-80-left-handle-2"
+          },
+          {
+            "source": "NodeNode-80",
+            "sourceHandle": "NodeNode-80-right-handle-0",
+            "target": "NodeNode-5",
+            "targetHandle": "NodeNode-5-left-handle-0",
+            "type": "smoothstep",
+            "animated": true,
+            "markerEnd": {
+              "type": "arrow",
+              "height": "20px",
+              "width": "40px",
+              "color": "#aaa"
+            },
+            "id": "reactflow__edge-NodeNode-80NodeNode-80-right-handle-0-NodeNode-5NodeNode-5-left-handle-0"
+          },
+          {
+            "source": "NodeNode-82",
+            "sourceHandle": "NodeNode-82-right-handle-0",
+            "target": "NodeNode-80",
+            "targetHandle": "NodeNode-80-left-handle-4",
+            "type": "smoothstep",
+            "animated": true,
+            "markerEnd": {
+              "type": "arrow",
+              "height": "20px",
+              "width": "40px",
+              "color": "#aaa"
+            },
+            "id": "reactflow__edge-NodeNode-82NodeNode-82-right-handle-0-NodeNode-80NodeNode-80-left-handle-4"
+          }
+        ]
+    },
+    {
+        templateName: "A/B Test Marketing Emails",
+        displayImage: bot,
+        templateId: "template-13333333",
+        tags: ["Assistant", "Gmail"],
         nodes: [
             {
                 id: "NodeNode-22",
@@ -3454,1984 +6919,768 @@ const templateNodes = [
             },
         ],
     },
+
     {
-        templateName: "Promotional content generator",
-        displayImage: "/select.webp",
-        templateId: "template-12",
-        tags: ["Saved"],
-        nodes: [
-            {
-                id: "NodeNode-22",
-                type: "NodeNode",
-                position: {
-                    x: 191,
-                    y: 47.76999206542973,
-                },
-                data: {
-                    name: "Input",
-                    isInput: true,
-                    isType: true,
-                    bgcolor: "#5b96f5",
-                    rightHandles: 1,
-                    leftHandles: 0,
-                    img: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAOsSURBVHhe7dzfS1NxGMfxx2QoTnRjWz9ZeDebF/0B/gUSCJImmOHWypJg0kVdFSV1VRehUKa5nKTRTwwh/Av6A7xQ2500KmMTTTzikGEXMbSHte8Zm3vO8z3P624fdvV9M3bOBqdqb28PBJ0jeBCVJQGISQBiEoCYBCAmAYhJAGISgJgEICYBiEkAYhKAmAQgJgGISQBiVcX+H5DNZlvT6XRPKpUKLi4nWn78XPXh99jJaf+pX8HmwILH40243a55h8Mxj99TSFEBDMOIjsfiw3gX+zo72mf8fn8v3v/HdIAnI0/NvVEAAMDN6I0qvOVj6jsgmUxO400UZhhGFG/5KAPs7u62fZidu4h3Udh4LD6czWZb8Y4pA6yvb7ThTZiTTqd78IYpA6ytpQN4E+akUqkg3jBlgKWvibN4E+YsLida8IYpr4JUVz9mv+11Ver5KD8B4nBJAGISgJgEICYBiLEMsLm5eWfj9+/7eOeIXYCtra1bsfirB5NT0/d0iMAqgGEY0Rcvpx7lXusQgU2A7e3t6/n+i+AegUWAnZ2d0NjE5CjeczhHsHyATCbTPToem8Q7xjWC8rcgK1hZWXk3O/e5C+/5hPt6h1yNjRULYYvfgpqami50tJ97j/d8uH0SWAQAjSOwCQCaRmAVADSMwC4AaBaBZQDQKALbAKBJBOV9gOo6l5ty3yeozkeL+4BystonwXYBwGIRbBkALBTBtgEAAED1BVgBtg0Q7usdcrlcQ3ivNFsGKPeVUClsF8BKhw9m7gOsjvq/AlvfB1AffjmwDaDD4QPXALocPnAMoNPhA7cAuh0+cAqg4+EDlwC6Hj6YuQ8o9Tq3VJlMpvvZ2MQbvOdDcfilno/lPwE1NTVvB/ojYbxjFIdfDpYPAABQW1sbv3YlPID3HK6HD1wCAADU1dU974+EBvHO+fCBUwAAAKfTOXL1ct/t3Gvuhw/cAgAA1NfXP46ELt3V4fCBYwAAgIaGhoc6HD5wDaATCUBMAhCTAMQkADHlb0EfZz+tfkt+P4Z3oXbyxPFUd9f5o3g/SPkJCDYHFvAmzGk5E1jEG6YM4PF4E3gT5vh8viW8YcoAbrerqEfxin1er/c13jBlAIfDMd/Z0T6Dd1FYfyQ0WF1d/QXvmDIAAEAxz0IWfzmdzhG85aO8CjpIHt6tdmgP786Rx9f/q6KPrxflZ+o7QBweCUBMAhCTAMQkADEJQEwCEJMAxCQAMQlATAIQkwDEJAAxCUBMAhD7A3ADt5wWP6YXAAAAAElFTkSuQmCC",
-                    category: "General",
-                    targets: ["Product Info"],
-                    sources: [],
-                    fieldValue1: "Product Info",
-                    fieldValue2: "Node-22",
-                },
-                width: 204,
-                height: 108,
-                selected: false,
-                positionAbsolute: {
-                    x: 191,
-                    y: 47.76999206542973,
-                },
-                dragging: false,
-            },
-            {
-                id: "NodeNode-23",
-                type: "NodeNode",
-                position: {
-                    x: 192,
-                    y: 203.76999206542973,
-                },
-                data: {
-                    name: "Input",
-                    isInput: true,
-                    isType: true,
-                    bgcolor: "#5b96f5",
-                    rightHandles: 1,
-                    leftHandles: 0,
-                    img: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAOsSURBVHhe7dzfS1NxGMfxx2QoTnRjWz9ZeDebF/0B/gUSCJImmOHWypJg0kVdFSV1VRehUKa5nKTRTwwh/Av6A7xQ2500KmMTTTzikGEXMbSHte8Zm3vO8z3P624fdvV9M3bOBqdqb28PBJ0jeBCVJQGISQBiEoCYBCAmAYhJAGISgJgEICYBiEkAYhKAmAQgJgGISQBiVcX+H5DNZlvT6XRPKpUKLi4nWn78XPXh99jJaf+pX8HmwILH40243a55h8Mxj99TSFEBDMOIjsfiw3gX+zo72mf8fn8v3v/HdIAnI0/NvVEAAMDN6I0qvOVj6jsgmUxO400UZhhGFG/5KAPs7u62fZidu4h3Udh4LD6czWZb8Y4pA6yvb7ThTZiTTqd78IYpA6ytpQN4E+akUqkg3jBlgKWvibN4E+YsLida8IYpr4JUVz9mv+11Ver5KD8B4nBJAGISgJgEICYBiLEMsLm5eWfj9+/7eOeIXYCtra1bsfirB5NT0/d0iMAqgGEY0Rcvpx7lXusQgU2A7e3t6/n+i+AegUWAnZ2d0NjE5CjeczhHsHyATCbTPToem8Q7xjWC8rcgK1hZWXk3O/e5C+/5hPt6h1yNjRULYYvfgpqami50tJ97j/d8uH0SWAQAjSOwCQCaRmAVADSMwC4AaBaBZQDQKALbAKBJBOV9gOo6l5ty3yeozkeL+4BystonwXYBwGIRbBkALBTBtgEAAED1BVgBtg0Q7usdcrlcQ3ivNFsGKPeVUClsF8BKhw9m7gOsjvq/AlvfB1AffjmwDaDD4QPXALocPnAMoNPhA7cAuh0+cAqg4+EDlwC6Hj6YuQ8o9Tq3VJlMpvvZ2MQbvOdDcfilno/lPwE1NTVvB/ojYbxjFIdfDpYPAABQW1sbv3YlPID3HK6HD1wCAADU1dU974+EBvHO+fCBUwAAAKfTOXL1ct/t3Gvuhw/cAgAA1NfXP46ELt3V4fCBYwAAgIaGhoc6HD5wDaATCUBMAhCTAMQkADHlb0EfZz+tfkt+P4Z3oXbyxPFUd9f5o3g/SPkJCDYHFvAmzGk5E1jEG6YM4PF4E3gT5vh8viW8YcoAbrerqEfxin1er/c13jBlAIfDMd/Z0T6Dd1FYfyQ0WF1d/QXvmDIAAEAxz0IWfzmdzhG85aO8CjpIHt6tdmgP786Rx9f/q6KPrxflZ+o7QBweCUBMAhCTAMQkADEJQEwCEJMAxCQAMQlATAIQkwDEJAAxCUBMAhD7A3ADt5wWP6YXAAAAAElFTkSuQmCC",
-                    category: "General",
-                    targets: ["Target Audience"],
-                    sources: [],
-                    fieldValue1: "Target Audience",
-                    fieldValue2: "Node-23",
-                },
-                width: 204,
-                height: 108,
-                selected: false,
-                positionAbsolute: {
-                    x: 192,
-                    y: 203.76999206542973,
-                },
-                dragging: false,
-            },
-            {
-                id: "NodeNode-24",
-                type: "NodeNode",
-                position: {
-                    x: 198,
-                    y: 356.76999206542973,
-                },
-                data: {
-                    name: "Input",
-                    isInput: true,
-                    isType: true,
-                    bgcolor: "#5b96f5",
-                    rightHandles: 1,
-                    leftHandles: 0,
-                    img: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAOsSURBVHhe7dzfS1NxGMfxx2QoTnRjWz9ZeDebF/0B/gUSCJImmOHWypJg0kVdFSV1VRehUKa5nKTRTwwh/Av6A7xQ2500KmMTTTzikGEXMbSHte8Zm3vO8z3P624fdvV9M3bOBqdqb28PBJ0jeBCVJQGISQBiEoCYBCAmAYhJAGISgJgEICYBiEkAYhKAmAQgJgGISQBiVcX+H5DNZlvT6XRPKpUKLi4nWn78XPXh99jJaf+pX8HmwILH40243a55h8Mxj99TSFEBDMOIjsfiw3gX+zo72mf8fn8v3v/HdIAnI0/NvVEAAMDN6I0qvOVj6jsgmUxO400UZhhGFG/5KAPs7u62fZidu4h3Udh4LD6czWZb8Y4pA6yvb7ThTZiTTqd78IYpA6ytpQN4E+akUqkg3jBlgKWvibN4E+YsLida8IYpr4JUVz9mv+11Ver5KD8B4nBJAGISgJgEICYBiLEMsLm5eWfj9+/7eOeIXYCtra1bsfirB5NT0/d0iMAqgGEY0Rcvpx7lXusQgU2A7e3t6/n+i+AegUWAnZ2d0NjE5CjeczhHsHyATCbTPToem8Q7xjWC8rcgK1hZWXk3O/e5C+/5hPt6h1yNjRULYYvfgpqami50tJ97j/d8uH0SWAQAjSOwCQCaRmAVADSMwC4AaBaBZQDQKALbAKBJBOV9gOo6l5ty3yeozkeL+4BystonwXYBwGIRbBkALBTBtgEAAED1BVgBtg0Q7usdcrlcQ3ivNFsGKPeVUClsF8BKhw9m7gOsjvq/AlvfB1AffjmwDaDD4QPXALocPnAMoNPhA7cAuh0+cAqg4+EDlwC6Hj6YuQ8o9Tq3VJlMpvvZ2MQbvOdDcfilno/lPwE1NTVvB/ojYbxjFIdfDpYPAABQW1sbv3YlPID3HK6HD1wCAADU1dU974+EBvHO+fCBUwAAAKfTOXL1ct/t3Gvuhw/cAgAA1NfXP46ELt3V4fCBYwAAgIaGhoc6HD5wDaATCUBMAhCTAMQkADHlb0EfZz+tfkt+P4Z3oXbyxPFUd9f5o3g/SPkJCDYHFvAmzGk5E1jEG6YM4PF4E3gT5vh8viW8YcoAbrerqEfxin1er/c13jBlAIfDMd/Z0T6Dd1FYfyQ0WF1d/QXvmDIAAEAxz0IWfzmdzhG85aO8CjpIHt6tdmgP786Rx9f/q6KPrxflZ+o7QBweCUBMAhCTAMQkADEJQEwCEJMAxCQAMQlATAIQkwDEJAAxCUBMAhD7A3ADt5wWP6YXAAAAAElFTkSuQmCC",
-                    category: "General",
-                    targets: ["Tone"],
-                    sources: [],
-                    fieldValue1: "Tone",
-                    fieldValue2: "Node-24",
-                },
-                width: 204,
-                height: 108,
-                selected: false,
-                dragging: false,
-                positionAbsolute: {
-                    x: 198,
-                    y: 356.76999206542973,
-                },
-            },
-            {
-                id: "NodeNode-25",
-                type: "NodeNode",
-                position: {
-                    x: 194,
-                    y: 502.76999206542973,
-                },
-                data: {
-                    name: "Input",
-                    isInput: true,
-                    isType: true,
-                    bgcolor: "#5b96f5",
-                    rightHandles: 1,
-                    leftHandles: 0,
-                    img: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAOsSURBVHhe7dzfS1NxGMfxx2QoTnRjWz9ZeDebF/0B/gUSCJImmOHWypJg0kVdFSV1VRehUKa5nKTRTwwh/Av6A7xQ2500KmMTTTzikGEXMbSHte8Zm3vO8z3P624fdvV9M3bOBqdqb28PBJ0jeBCVJQGISQBiEoCYBCAmAYhJAGISgJgEICYBiEkAYhKAmAQgJgGISQBiVcX+H5DNZlvT6XRPKpUKLi4nWn78XPXh99jJaf+pX8HmwILH40243a55h8Mxj99TSFEBDMOIjsfiw3gX+zo72mf8fn8v3v/HdIAnI0/NvVEAAMDN6I0qvOVj6jsgmUxO400UZhhGFG/5KAPs7u62fZidu4h3Udh4LD6czWZb8Y4pA6yvb7ThTZiTTqd78IYpA6ytpQN4E+akUqkg3jBlgKWvibN4E+YsLida8IYpr4JUVz9mv+11Ver5KD8B4nBJAGISgJgEICYBiLEMsLm5eWfj9+/7eOeIXYCtra1bsfirB5NT0/d0iMAqgGEY0Rcvpx7lXusQgU2A7e3t6/n+i+AegUWAnZ2d0NjE5CjeczhHsHyATCbTPToem8Q7xjWC8rcgK1hZWXk3O/e5C+/5hPt6h1yNjRULYYvfgpqami50tJ97j/d8uH0SWAQAjSOwCQCaRmAVADSMwC4AaBaBZQDQKALbAKBJBOV9gOo6l5ty3yeozkeL+4BystonwXYBwGIRbBkALBTBtgEAAED1BVgBtg0Q7usdcrlcQ3ivNFsGKPeVUClsF8BKhw9m7gOsjvq/AlvfB1AffjmwDaDD4QPXALocPnAMoNPhA7cAuh0+cAqg4+EDlwC6Hj6YuQ8o9Tq3VJlMpvvZ2MQbvOdDcfilno/lPwE1NTVvB/ojYbxjFIdfDpYPAABQW1sbv3YlPID3HK6HD1wCAADU1dU974+EBvHO+fCBUwAAAKfTOXL1ct/t3Gvuhw/cAgAA1NfXP46ELt3V4fCBYwAAgIaGhoc6HD5wDaATCUBMAhCTAMQkADHlb0EfZz+tfkt+P4Z3oXbyxPFUd9f5o3g/SPkJCDYHFvAmzGk5E1jEG6YM4PF4E3gT5vh8viW8YcoAbrerqEfxin1er/c13jBlAIfDMd/Z0T6Dd1FYfyQ0WF1d/QXvmDIAAEAxz0IWfzmdzhG85aO8CjpIHt6tdmgP786Rx9f/q6KPrxflZ+o7QBweCUBMAhCTAMQkADEJQEwCEJMAxCQAMQlATAIQkwDEJAAxCUBMAhD7A3ADt5wWP6YXAAAAAElFTkSuQmCC",
-                    category: "General",
-                    targets: ["Use cases"],
-                    sources: [],
-                    fieldValue1: "Use cases",
-                    fieldValue2: "Node-25",
-                },
-                width: 204,
-                height: 108,
-                selected: false,
-                positionAbsolute: {
-                    x: 194,
-                    y: 502.76999206542973,
-                },
-                dragging: false,
-            },
-            {
-                id: "NodeNode-26",
-                type: "NodeNode",
-                position: {
-                    x: 1074.241469832419,
-                    y: 261.5496266380159,
-                },
-                data: {
-                    name: "Output",
-                    isInput: true,
-                    isType: true,
-                    bgcolor: "#76c965",
-                    rightHandles: 0,
-                    leftHandles: 1,
-                    img: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAQxSURBVHhe7d1raxRnGMbxO36BlCxZ8yrroiKTNNazho3tRjQYtaYNQiVVUFBQPIOCUsUVFYUWWk9Y2kILxrSCpI21RqJoNAnxfIpmkCjbzatVSXA/QXyxLsbbJ5l5dmb2jpnr9y6XUcjzZ7K72cjkDQwMEMgZwwfILQQQhgDCEEAYAghDAGEIIAwBhCGAMAQQhgDC8pz+LCiVSkV6ep7VJZPJkkSit7T/daqQf85oUlBQ8GJ8eNzDYLDwaShU3BwIBJr55+hwFCAej2+ubzhzhO9+Uhmde7oiElnBd7uyDrD/4OHs/uIotee7nXl8syOrx4D2jo56vvldPB7fzDc7tAP09fVVX21t+5bvflffcOZIKpWK8N2KdoBEoreab5DW0/Osjm9WtAO8fPlqEt8gLZlMlvDNinaA5/H/P+MbpCUSvaV8s6L9LMjq2U+2zwY+Fm5//dpXALgLAYQhgDAEEIYAwhBAGAIIw+uAQUzTjBERGYYR43/mFVwBb5mmGTvb2LT3bGPT3kyIXECAQYef+TiXEXwfgB9+Rq4i+DrAUIefkYsIvg1gdfgZXkfwbQDDMGK1Xy89wHcVLyP4NgARUWlJyZ6vli45zHcVryL4OgARUVnZp7tqvlz8A99VvIjg+wBERJMnl+1YsmjhT3xXcTsCArw1deqUbYuqq47zXcXNCAgwyPRp0zYtrJr/M99V3IqAAMzMmTPWVy2Y9xvfVdyIgAAKs2fNWjt/XvQPvqs4jYAAQygvn7O6MvqFrV/BdBIBAYZRESlfGf284i++q2QbYcS9H2D17490y2pr9um8n4ArwGW6VwICeEAnAgJ4xG4EBBCGAB6x+2CMAB6we/iEAO7TOXwaia8DRpq2tvY/W6+3L+e7iu7hE66A4bV3dJ7y8vAJAYbW2Xnj96ut12z9B+xsD58QQO3mrVu/Xr7SuorvKk4OnxDgQ7dv3znZcunKGr6rOD18QoD33b1379jFlsvr+K7ixuETArxz//6DHy80t2zku4pbh08IkPboUdf35y9c3Mp3FTcPnxCAqKvr8aGmf//bzncVtw+f/B7gSXf3/n/Ond/JdxUvDp/8HMA0zVjj3+d2813Fq8MnPwcwDCO2rLZmH985Lw+f/ByAbETw+vDJ7wFomAi5OHxCgDQeIVeHT/hx9Psy7+Hm6vAJAfS5/fXjW5AwBBCGAMIQQBgCCEMAYQggTPt1wImTvyT7+/vH8h2ICj7Jf7Vhw/og34ejfQWMD497yDdIC4WKn/DNinaAYLDwKd8graioqJtvVrQDhELFjm7ZMZpNnDihgW9WtAMEAoHmyujc03z3uxV132zJz8/v4LsV7QBERE7umTJahcPho3yzQ/tZ0GC4iY/gTXwycBsrwdtYgXNZPQaAexBAGAIIQwBhCCAMAYQhgDAEEIYAwhBAGAIIewO2Kda2uG7ajgAAAABJRU5ErkJggg==",
-                    category: "General",
-                    sources: ["Output"],
-                    fieldValue1: "Node-26",
-                    fieldValue2: "Node-26",
-                },
-                width: 204,
-                height: 108,
-                selected: true,
-                positionAbsolute: {
-                    x: 1074.241469832419,
-                    y: 261.5496266380159,
-                },
-                dragging: false,
-            },
-            {
-                id: "NodeNode-27",
-                type: "NodeNode",
-                position: {
-                    x: 665.6596458111103,
-                    y: 80.68713279361165,
-                },
-                data: {
-                    name: "Gemini",
-                    isInput: true,
-                    isType: false,
-                    rightHandles: 1,
-                    leftHandles: 7,
-                    bgcolor: "#ffe682",
-                    headColor: "#f5d65b",
-                    img: "/google.png",
-                    category: "LLMs",
-                    sources: [
-                        "system",
-                        "prompt",
-                        "product_info",
-                        "target_audience",
-                        "tone",
-                        "use_cases",
-                        "context",
-                    ],
-                    targets: ["response"],
-                    fieldValue1:
-                        "Generate three unique marketing promotion email ideas based on the following details:\n\n    Product Info: {{product_info}}\n    Target Audience: {{target_audience}}\n    Tone: {{tone}}\n    Use Cases: {{use_cases}}\n    Context: {{context}}\n\nEach email idea should include:\n\n    A compelling subject line\n    A brief email outline (hook, value proposition, CTA)\n    A unique angle or approach compared to the other two emails",
-                    fieldValue2:
-                        "You are an expert marketing copywriter specializing in high-converting email campaigns. Your task is to generate three distinct email promotion ideas tailored to the given product, target audience, tone, and context. Each email should be engaging, well-structured, and optimized for conversion, following best practices for subject lines, body content, and calls to action. Be creative, persuasive, and concise while ensuring each email aligns with the specified parameters.",
-                },
-                width: 204,
-                height: 667,
-                selected: false,
-                positionAbsolute: {
-                    x: 665.6596458111103,
-                    y: 80.68713279361165,
-                },
-                dragging: false,
-            },
-            {
-                id: "NodeNode-28",
-                type: "NodeNode",
-                position: {
-                    x: 192.2305271002857,
-                    y: 653.8964235660931,
-                },
-                data: {
-                    name: "Input",
-                    isInput: true,
-                    isType: true,
-                    bgcolor: "#498bf5",
-                    rightHandles: 1,
-                    leftHandles: 0,
-                    img: "/input.png",
-                    category: "General",
-                    targets: ["Additional context"],
-                    sources: [],
-                    fieldValue1: "Additional context",
-                    fieldValue2: "Node-28",
-                },
-                width: 204,
-                height: 108,
-                selected: false,
-                positionAbsolute: {
-                    x: 192.2305271002857,
-                    y: 653.8964235660931,
-                },
-                dragging: false,
-            },
+        "templateName": "Write Emails With Discord",
+        "displayImage": discord,
+        "templateId": "template-21",
+        "tags": [
+          "Discord", "Gmail"
         ],
-        edges: [
-            {
-                source: "NodeNode-28",
-                sourceHandle: "NodeNode-28-right-handle-0",
-                target: "NodeNode-27",
-                targetHandle: "NodeNode-27-left-handle-6",
-                type: "smoothstep",
-                animated: true,
-                markerEnd: {
-                    type: "arrow",
-                    height: "20px",
-                    width: "40px",
-                    color: "#aaa",
-                },
-                id: "reactflow__edge-NodeNode-28NodeNode-28-right-handle-0-NodeNode-27NodeNode-27-left-handle-6",
+        "nodes": [
+          {
+            "id": "NodeNode-83",
+            "type": "NodeNode",
+            "position": {
+              "x": 186,
+              "y": 116.19999694824219
             },
-            {
-                source: "NodeNode-25",
-                sourceHandle: "NodeNode-25-right-handle-0",
-                target: "NodeNode-27",
-                targetHandle: "NodeNode-27-left-handle-5",
-                type: "smoothstep",
-                animated: true,
-                markerEnd: {
-                    type: "arrow",
-                    height: "20px",
-                    width: "40px",
-                    color: "#aaa",
-                },
-                id: "reactflow__edge-NodeNode-25NodeNode-25-right-handle-0-NodeNode-27NodeNode-27-left-handle-5",
+            "data": {
+              "name": "Input",
+              "isInput": true,
+              "isType": true,
+              "bgcolor": "#498bf5",
+              "rightHandles": 1,
+              "leftHandles": 0,
+              "img": "/input.png",
+              "category": "General",
+              "targets": [
+                "Input"
+              ],
+              "sources": [],
+              "fieldValue1": "",
+              "fieldValue2": "✨"
             },
-            {
-                source: "NodeNode-24",
-                sourceHandle: "NodeNode-24-right-handle-0",
-                target: "NodeNode-27",
-                targetHandle: "NodeNode-27-left-handle-4",
-                type: "smoothstep",
-                animated: true,
-                markerEnd: {
-                    type: "arrow",
-                    height: "20px",
-                    width: "40px",
-                    color: "#aaa",
-                },
-                id: "reactflow__edge-NodeNode-24NodeNode-24-right-handle-0-NodeNode-27NodeNode-27-left-handle-4",
+            "width": 204,
+            "height": 108,
+            "selected": false,
+            "positionAbsolute": {
+              "x": 186,
+              "y": 116.19999694824219
             },
-            {
-                source: "NodeNode-23",
-                sourceHandle: "NodeNode-23-right-handle-0",
-                target: "NodeNode-27",
-                targetHandle: "NodeNode-27-left-handle-3",
-                type: "smoothstep",
-                animated: true,
-                markerEnd: {
-                    type: "arrow",
-                    height: "20px",
-                    width: "40px",
-                    color: "#aaa",
-                },
-                id: "reactflow__edge-NodeNode-23NodeNode-23-right-handle-0-NodeNode-27NodeNode-27-left-handle-3",
+            "dragging": false
+          },
+          {
+            "id": "NodeNode-84",
+            "type": "NodeNode",
+            "position": {
+              "x": 665,
+              "y": 138.1999969482422
             },
-            {
-                source: "NodeNode-22",
-                sourceHandle: "NodeNode-22-right-handle-0",
-                target: "NodeNode-27",
-                targetHandle: "NodeNode-27-left-handle-2",
-                type: "smoothstep",
-                animated: true,
-                markerEnd: {
-                    type: "arrow",
-                    height: "20px",
-                    width: "40px",
-                    color: "#aaa",
-                },
-                id: "reactflow__edge-NodeNode-22NodeNode-22-right-handle-0-NodeNode-27NodeNode-27-left-handle-2",
+            "data": {
+              "name": "Gmail",
+              "desc": "Read emails, create drafts or just send one!",
+              "Nodestate": [
+                "Create draft",
+                "Send email",
+                "Read emails"
+              ],
+              "isInput": false,
+              "isType": false,
+              "bgcolor": "#ea4335",
+              "rightHandles": 0,
+              "leftHandles": 2,
+              "sources": [
+                "Message",
+                "address"
+              ],
+              "targets": [],
+              "fieldValue1": {
+                "1": "{{address}}",
+                "isDraft": true
+              },
+              "img": "/gmail.png",
+              "category": "Integrations",
+              "fieldValue2": "✨"
             },
-            {
-                source: "NodeNode-27",
-                sourceHandle: "NodeNode-27-right-handle-0",
-                target: "NodeNode-26",
-                targetHandle: "NodeNode-26-left-handle-0",
-                type: "smoothstep",
-                animated: true,
-                markerEnd: {
-                    type: "arrow",
-                    height: "20px",
-                    width: "40px",
-                    color: "#aaa",
-                },
-                id: "reactflow__edge-NodeNode-27NodeNode-27-right-handle-0-NodeNode-26NodeNode-26-left-handle-0",
+            "width": 204,
+            "height": 200,
+            "selected": true,
+            "positionAbsolute": {
+              "x": 665,
+              "y": 138.1999969482422
             },
+            "dragging": false
+          },
+          {
+            "id": "NodeNode-85",
+            "type": "NodeNode",
+            "position": {
+              "x": 189,
+              "y": 259.1999969482422
+            },
+            "data": {
+              "name": "Input",
+              "isInput": true,
+              "isType": true,
+              "bgcolor": "#498bf5",
+              "rightHandles": 1,
+              "leftHandles": 0,
+              "img": "/input.png",
+              "category": "General",
+              "targets": [
+                "Input"
+              ],
+              "sources": [],
+              "fieldValue1": "",
+              "fieldValue2": "✨"
+            },
+            "width": 204,
+            "height": 108,
+            "selected": false,
+            "positionAbsolute": {
+              "x": 189,
+              "y": 259.1999969482422
+            },
+            "dragging": false
+          }
         ],
+        "edges": [
+          {
+            "source": "NodeNode-85",
+            "sourceHandle": "NodeNode-85-right-handle-0",
+            "target": "NodeNode-84",
+            "targetHandle": "NodeNode-84-left-handle-1",
+            "type": "smoothstep",
+            "animated": true,
+            "markerEnd": {
+              "type": "arrow",
+              "height": "20px",
+              "width": "40px",
+              "color": "#aaa"
+            },
+            "id": "reactflow__edge-NodeNode-85NodeNode-85-right-handle-0-NodeNode-84NodeNode-84-left-handle-1"
+          },
+          {
+            "source": "NodeNode-83",
+            "sourceHandle": "NodeNode-83-right-handle-0",
+            "target": "NodeNode-84",
+            "targetHandle": "NodeNode-84-left-handle-0",
+            "type": "smoothstep",
+            "animated": true,
+            "markerEnd": {
+              "type": "arrow",
+              "height": "20px",
+              "width": "40px",
+              "color": "#aaa"
+            },
+            "id": "reactflow__edge-NodeNode-83NodeNode-83-right-handle-0-NodeNode-84NodeNode-84-left-handle-0"
+          }
+        ]
     },
     {
-        templateName: "Automated Tech Support For Discord",
-        displayImage: "/select.webp",
-        templateId: "template-11",
-        tags: ["Saved"],
-        nodes: [
-            {
-                id: "NodeNode-1",
-                type: "NodeNode",
-                position: {
-                    x: 119.38179978206608,
-                    y: 112.19999694824219,
-                },
-                data: {
-                    name: "Input",
-                    isInput: true,
-                    isType: true,
-                    bgcolor: "#498bf5",
-                    rightHandles: 1,
-                    leftHandles: 0,
-                    img: "/input.png",
-                    category: "General",
-                    targets: ["Input"],
-                    sources: [],
-                    fieldValue1: "Node-1",
-                    fieldValue2: "Node-1",
-                },
-                width: 204,
-                height: 108,
-                selected: false,
-                positionAbsolute: {
-                    x: 119.38179978206608,
-                    y: 112.19999694824219,
-                },
-                dragging: false,
-            },
-            {
-                id: "NodeNode-3",
-                type: "NodeNode",
-                position: {
-                    x: 696.9234376463135,
-                    y: 240.98911729693646,
-                },
-                data: {
-                    name: "Database (RAG)",
-                    isInput: false,
-                    isType: false,
-                    rightHandles: 1,
-                    leftHandles: 1,
-                    bgcolor: "#f57e2a",
-                    img: "/database.png",
-                    category: "Knowledge Base",
-                    sources: ["query"],
-                    targets: ["results"],
-                    fieldValue1: "NodeNode-3",
-                    fieldValue2: "Node-3",
-                    constantValueList: [
-                        {
-                            name: "Max Chunk Size",
-                            value: 1000,
-                            placeholder: "Exactly what it says",
-                        },
-                        {
-                            name: "Chunk Overlap",
-                            value: 200,
-                            placeholder: "Overlap between chunks",
-                        },
-                        {
-                            name: "Number of Chunks",
-                            value: 5,
-                            placeholder: "Total number of chunks",
-                        },
-                    ],
-                },
-                width: 204,
-                height: 301,
-                selected: false,
-                positionAbsolute: {
-                    x: 696.9234376463135,
-                    y: 240.98911729693646,
-                },
-                dragging: false,
-            },
-            {
-                id: "NodeNode-8",
-                type: "NodeNode",
-                position: {
-                    x: 399.56130210876154,
-                    y: -386.04114966587247,
-                },
-                data: {
-                    name: "Text",
-                    isInput: true,
-                    isType: false,
-                    bgcolor: "#498bf5",
-                    rightHandles: 1,
-                    leftHandles: 0,
-                    img: "/text.webp",
-                    category: "General",
-                    targets: ["Output"],
-                    fieldValue1:
-                        "You are a helpful and knowledgeable AI assistant specialized in providing technical support for our products. Your primary goal is to assist users with their technical issues by leveraging the provided product information.\n\nFollow these guidelines:\n\n* **Be concise and direct:** Provide clear and to-the-point answers and troubleshooting steps.\n* **Prioritize using the provided product information:** Always attempt to answer the user's query using the information explicitly given in the product documentation.\n* **Acknowledge information limitations:** If the provided product information does not contain the answer to the user's query, clearly state that you cannot find the specific information within the given documentation. Avoid making assumptions or providing general troubleshooting steps not supported by the provided data.\n* **Maintain a professional and helpful tone:** Address the user politely and offer further assistance if appropriate (e.g., suggesting they contact human support if the issue is beyond the scope of the provided documentation).\n* **Identify the user's problem:** Try to understand the core issue the user is facing.\n* **If the query is unclear, ask clarifying questions:** If you are unsure what the user is asking, politely request more details about their problem, including specific error messages, steps they have already taken, and the product version they are using.\n* **Do not ask for personal information:** You are here to provide technical support based on the provided product information.\n* **Format your responses clearly:** Use bullet points, numbered lists, code blocks, or bold text to make instructions and information easy to follow.\n* **When referencing product information, be specific:** If you are referring to a particular section or specification in the product info, mention it (e.g., \"According to the 'Troubleshooting' section of the manual...\").\n* **Stay within the scope of technical support for our products:** Do not engage in conversations about unrelated topics or provide support for third-party products.",
-                    fieldValue2: "Node-8",
-                    sources: [],
-                },
-                width: 204,
-                height: 1118,
-                selected: false,
-                positionAbsolute: {
-                    x: 399.56130210876154,
-                    y: -386.04114966587247,
-                },
-                dragging: false,
-            },
-            {
-                id: "NodeNode-9",
-                type: "NodeNode",
-                position: {
-                    x: 967.1425821772832,
-                    y: -76.44238747350536,
-                },
-                data: {
-                    name: "Gemini",
-                    isInput: true,
-                    isType: false,
-                    rightHandles: 1,
-                    leftHandles: 4,
-                    bgcolor: "#ffe682",
-                    headColor: "#f5d65b",
-                    img: "/google.png",
-                    category: "LLMs",
-                    sources: ["system", "prompt", "query", "data"],
-                    targets: ["response"],
-                    fieldValue1:
-                        "User query: {{query}}\n\nProduct info: {{data}}",
-                    fieldValue2: "Node-9",
-                },
-                width: 204,
-                height: 203,
-                selected: false,
-                positionAbsolute: {
-                    x: 967.1425821772832,
-                    y: -76.44238747350536,
-                },
-                dragging: false,
-            },
-            {
-                id: "NodeNode-14",
-                type: "NodeNode",
-                position: {
-                    x: 1361.0786948667517,
-                    y: -4.4572114269385565,
-                },
-                data: {
-                    name: "Discord",
-                    desc: "Our discord bot will send messages to your requested channel",
-                    isInput: true,
-                    isType: false,
-                    bgcolor: "#5865F2",
-                    rightHandles: 0,
-                    leftHandles: 1,
-                    fieldValue1: "",
-                    sources: ["Message Content"],
-                    img: "/discord.png",
-                    category: "Integrations",
-                    fieldValue2: "Node-14",
-                    username: false,
-                },
-                width: 204,
-                height: 162,
-                selected: true,
-                positionAbsolute: {
-                    x: 1361.0786948667517,
-                    y: -4.4572114269385565,
-                },
-                dragging: false,
-            },
+        "templateName": "Generate Tasks List",
+        "displayImage": discord,
+        "templateId": "template-328351",
+        "tags": [
+          "Discord", "Assistant"
         ],
-        edges: [
-            {
-                source: "NodeNode-1",
-                sourceHandle: "NodeNode-1-right-handle-0",
-                target: "NodeNode-3",
-                targetHandle: "NodeNode-3-left-handle-0",
-                type: "smoothstep",
-                animated: true,
-                markerEnd: {
-                    type: "arrow",
-                    height: "20px",
-                    width: "40px",
-                    color: "#aaa",
-                },
-                id: "reactflow__edge-NodeNode-1NodeNode-1-right-handle-0-NodeNode-3NodeNode-3-left-handle-0",
+        "nodes": [
+          {
+            "id": "NodeNode-88",
+            "type": "NodeNode",
+            "position": {
+              "x": 844.8617886791972,
+              "y": 217.22872134973028
             },
-            {
-                source: "NodeNode-8",
-                sourceHandle: "NodeNode-8-right-handle-0",
-                target: "NodeNode-9",
-                targetHandle: "NodeNode-9-left-handle-0",
-                type: "smoothstep",
-                animated: true,
-                markerEnd: {
-                    type: "arrow",
-                    height: "20px",
-                    width: "40px",
-                    color: "#aaa",
-                },
-                id: "reactflow__edge-NodeNode-8NodeNode-8-right-handle-0-NodeNode-9NodeNode-9-left-handle-0",
+            "data": {
+              "name": "Discord",
+              "desc": "Our discord bot will send messages to your requested channel",
+              "isInput": true,
+              "isType": false,
+              "bgcolor": "#5865F2",
+              "rightHandles": 0,
+              "leftHandles": 1,
+              "fieldValue1": "",
+              "sources": [
+                "Message Content"
+              ],
+              "img": "/discord.png",
+              "category": "Integrations",
+              "fieldValue2": "✨",
+              "username": false
             },
-            {
-                source: "NodeNode-3",
-                sourceHandle: "NodeNode-3-right-handle-0",
-                target: "NodeNode-9",
-                targetHandle: "NodeNode-9-left-handle-3",
-                type: "smoothstep",
-                animated: true,
-                markerEnd: {
-                    type: "arrow",
-                    height: "20px",
-                    width: "40px",
-                    color: "#aaa",
-                },
-                id: "reactflow__edge-NodeNode-3NodeNode-3-right-handle-0-NodeNode-9NodeNode-9-left-handle-3",
+            "width": 204,
+            "height": 162,
+            "selected": false,
+            "positionAbsolute": {
+              "x": 844.8617886791972,
+              "y": 217.22872134973028
             },
-            {
-                source: "NodeNode-1",
-                sourceHandle: "NodeNode-1-right-handle-0",
-                target: "NodeNode-9",
-                targetHandle: "NodeNode-9-left-handle-2",
-                type: "smoothstep",
-                animated: true,
-                markerEnd: {
-                    type: "arrow",
-                    height: "20px",
-                    width: "40px",
-                    color: "#aaa",
-                },
-                id: "reactflow__edge-NodeNode-1NodeNode-1-right-handle-0-NodeNode-9NodeNode-9-left-handle-2",
+            "dragging": false
+          },
+          {
+            "id": "NodeNode-91",
+            "type": "NodeNode",
+            "position": {
+              "x": 459.00343932917633,
+              "y": 251.49903527226502
             },
-            {
-                source: "NodeNode-9",
-                sourceHandle: "NodeNode-9-right-handle-0",
-                target: "NodeNode-14",
-                targetHandle: "NodeNode-14-left-handle-0",
-                type: "smoothstep",
-                animated: true,
-                markerEnd: {
-                    type: "arrow",
-                    height: "20px",
-                    width: "40px",
-                    color: "#aaa",
-                },
-                id: "reactflow__edge-NodeNode-9NodeNode-9-right-handle-0-NodeNode-14NodeNode-14-left-handle-0",
+            "data": {
+              "name": "OpenAI",
+              "isInput": true,
+              "isType": false,
+              "rightHandles": 1,
+              "leftHandles": 3,
+              "bgcolor": "#ffe682",
+              "headColor": "#f5d65b",
+              "img": "/openai.png",
+              "category": "LLMs",
+              "sources": [
+                "system",
+                "prompt",
+                "tasks"
+              ],
+              "targets": [
+                "response"
+              ],
+              "fieldValue1": "Here is the list of my tasks: {{tasks}}",
+              "fieldValue2": "Generate a professional to-do list. The parameter \"tasks\" contains the list items. Output ONLY the formatted to-do list.\n\nExample:\n\n**Input:** tasks = meditate for 30 mins, read vagabond, call somya, buy eggs\n\n**Desired Output:**\nTo-Do List:\n\n☐ Meditate for 30 Mins\n☐ Read Vagabond\n☐ Call Somya\n☐ Buy Eggs"
             },
+            "width": 204,
+            "height": 415,
+            "selected": false,
+            "positionAbsolute": {
+              "x": 459.00343932917633,
+              "y": 251.49903527226502
+            },
+            "dragging": false
+          },
+          {
+            "id": "NodeNode-92",
+            "type": "NodeNode",
+            "position": {
+              "x": 112.49248744576946,
+              "y": 271.80736944858194
+            },
+            "data": {
+              "name": "Input",
+              "isInput": true,
+              "isType": true,
+              "bgcolor": "#498bf5",
+              "rightHandles": 1,
+              "leftHandles": 0,
+              "img": "/input.png",
+              "category": "General",
+              "targets": [
+                "Tasks"
+              ],
+              "sources": [],
+              "fieldValue1": "Tasks",
+              "fieldValue2": "✨"
+            },
+            "width": 204,
+            "height": 108,
+            "selected": false,
+            "positionAbsolute": {
+              "x": 112.49248744576946,
+              "y": 271.80736944858194
+            },
+            "dragging": false
+          },
+          {
+            "id": "NodeNode-93",
+            "type": "NodeNode",
+            "position": {
+              "x": 848.6696013372563,
+              "y": 416.50425045483973
+            },
+            "data": {
+              "name": "Database Output",
+              "desc": "Save pipeline output in a new database",
+              "isInput": true,
+              "isType": false,
+              "rightHandles": 0,
+              "leftHandles": 1,
+              "bgcolor": "#f57e2a",
+              "img": "/database-res.png",
+              "category": "Knowledge Base",
+              "sources": [
+                "results"
+              ],
+              "fieldValue1": "My Tasks",
+              "fieldValue2": "✨",
+              "username": "a@m.com"
+            },
+            "width": 204,
+            "height": 175,
+            "selected": false,
+            "positionAbsolute": {
+              "x": 848.6696013372563,
+              "y": 416.50425045483973
+            },
+            "dragging": false
+          }
         ],
+        "edges": [
+          {
+            "source": "NodeNode-91",
+            "sourceHandle": "NodeNode-91-right-handle-0",
+            "target": "NodeNode-88",
+            "targetHandle": "NodeNode-88-left-handle-0",
+            "type": "smoothstep",
+            "animated": true,
+            "markerEnd": {
+              "type": "arrow",
+              "height": "20px",
+              "width": "40px",
+              "color": "#aaa"
+            },
+            "id": "reactflow__edge-NodeNode-91NodeNode-91-right-handle-0-NodeNode-88NodeNode-88-left-handle-0"
+          },
+          {
+            "source": "NodeNode-91",
+            "sourceHandle": "NodeNode-91-right-handle-0",
+            "target": "NodeNode-93",
+            "targetHandle": "NodeNode-93-left-handle-0",
+            "type": "smoothstep",
+            "animated": true,
+            "markerEnd": {
+              "type": "arrow",
+              "height": "20px",
+              "width": "40px",
+              "color": "#aaa"
+            },
+            "id": "reactflow__edge-NodeNode-91NodeNode-91-right-handle-0-NodeNode-93NodeNode-93-left-handle-0"
+          },
+          {
+            "source": "NodeNode-92",
+            "sourceHandle": "NodeNode-92-right-handle-0",
+            "target": "NodeNode-91",
+            "targetHandle": "NodeNode-91-left-handle-2",
+            "type": "smoothstep",
+            "animated": true,
+            "markerEnd": {
+              "type": "arrow",
+              "height": "20px",
+              "width": "40px",
+              "color": "#aaa"
+            },
+            "id": "reactflow__edge-NodeNode-92NodeNode-92-right-handle-0-NodeNode-91NodeNode-91-left-handle-2"
+          }
+        ]
     },
     {
-        templateName: "Automated Tech Support Emails",
-        displayImage: "/select.webp",
-        templateId: "template-10",
-        tags: ["Saved"],
-        nodes: [
-            {
-                id: "NodeNode-1",
-                type: "NodeNode",
-                position: {
-                    x: 119.38179978206608,
-                    y: 112.19999694824219,
-                },
-                data: {
-                    name: "Input",
-                    isInput: true,
-                    isType: true,
-                    bgcolor: "#498bf5",
-                    rightHandles: 1,
-                    leftHandles: 0,
-                    img: "/input.png",
-                    category: "General",
-                    targets: ["Input"],
-                    sources: [],
-                    fieldValue1: "Node-1",
-                    fieldValue2: "Node-1",
-                },
-                width: 204,
-                height: 108,
-                selected: false,
-                positionAbsolute: {
-                    x: 119.38179978206608,
-                    y: 112.19999694824219,
-                },
-                dragging: false,
-            },
-            {
-                id: "NodeNode-3",
-                type: "NodeNode",
-                position: {
-                    x: 696.9234376463135,
-                    y: 240.98911729693646,
-                },
-                data: {
-                    name: "Database (RAG)",
-                    isInput: false,
-                    isType: false,
-                    rightHandles: 1,
-                    leftHandles: 1,
-                    bgcolor: "#f57e2a",
-                    img: "/database.png",
-                    category: "Knowledge Base",
-                    sources: ["query"],
-                    targets: ["results"],
-                    fieldValue1: "NodeNode-3",
-                    fieldValue2: "Node-3",
-                    constantValueList: [
-                        {
-                            name: "Max Chunk Size",
-                            value: 1000,
-                            placeholder: "Exactly what it says",
-                        },
-                        {
-                            name: "Chunk Overlap",
-                            value: 200,
-                            placeholder: "Overlap between chunks",
-                        },
-                        {
-                            name: "Number of Chunks",
-                            value: 5,
-                            placeholder: "Total number of chunks",
-                        },
-                    ],
-                },
-                width: 204,
-                height: 301,
-                selected: false,
-                positionAbsolute: {
-                    x: 696.9234376463135,
-                    y: 240.98911729693646,
-                },
-                dragging: false,
-            },
-            {
-                id: "NodeNode-8",
-                type: "NodeNode",
-                position: {
-                    x: 399.56130210876154,
-                    y: -386.04114966587247,
-                },
-                data: {
-                    name: "Text",
-                    isInput: true,
-                    isType: false,
-                    bgcolor: "#498bf5",
-                    rightHandles: 1,
-                    leftHandles: 0,
-                    img: "/text.webp",
-                    category: "General",
-                    targets: ["Output"],
-                    fieldValue1:
-                        'You are a helpful and knowledgeable AI assistant specialized in providing technical support for our products. Your primary goal is to assist users with their technical issues by leveraging the provided product information.\n\n**Crucially, your final output MUST be a valid JSON object conforming to the specified schema.**\n\nstrictly output the result as a JSON object with the following keys:\n\n* `"subject"`: A concise title or subject of email (string).\n* `"text"`: A step-by-step answer for the user query.\n \nFollow these guidelines:\n\n* **Be concise and direct:** Provide clear and to-the-point answers and troubleshooting steps.\n* **Prioritize using the provided product information:** Always attempt to answer the user\'s query using the information explicitly given in the product documentation.\n* **Acknowledge information limitations:** If the provided product information does not contain the answer to the user\'s query, clearly state that you cannot find the specific information within the given documentation. Avoid making assumptions or providing general troubleshooting steps not supported by the provided data.\n* **Maintain a professional and helpful tone:** Address the user politely and offer further assistance if appropriate (e.g., suggesting they contact human support if the issue is beyond the scope of the provided documentation).\n* **Identify the user\'s problem:** Try to understand the core issue the user is facing.\n* **If the query is unclear, ask clarifying questions:** If you are unsure what the user is asking, politely request more details about their problem, including specific error messages, steps they have already taken, and the product version they are using.\n* **Do not ask for personal information:** You are here to provide technical support based on the provided product information.\n* **Format your responses clearly:** Use bullet points, numbered lists, code blocks, or bold text to make instructions and information easy to follow.\n* **When referencing product information, be specific:** If you are referring to a particular section or specification in the product info, mention it (e.g., "According to the \'Troubleshooting\' section of the manual...").\n* **Stay within the scope of technical support for our products:** Do not engage in conversations about unrelated topics or provide support for third-party products.',
-                    fieldValue2: "Node-8",
-                    sources: [],
-                },
-                width: 204,
-                height: 1286,
-                selected: false,
-                positionAbsolute: {
-                    x: 399.56130210876154,
-                    y: -386.04114966587247,
-                },
-                dragging: false,
-            },
-            {
-                id: "NodeNode-9",
-                type: "NodeNode",
-                position: {
-                    x: 967.1425821772832,
-                    y: -76.44238747350536,
-                },
-                data: {
-                    name: "Gemini",
-                    isInput: true,
-                    isType: false,
-                    rightHandles: 1,
-                    leftHandles: 4,
-                    bgcolor: "#ffe682",
-                    headColor: "#f5d65b",
-                    img: "/google.png",
-                    category: "LLMs",
-                    sources: ["system", "prompt", "query", "data"],
-                    targets: ["response"],
-                    fieldValue1:
-                        "User query: {{query}}\n\nProduct info: {{data}}",
-                    fieldValue2: "Node-9",
-                },
-                width: 204,
-                height: 203,
-                selected: false,
-                positionAbsolute: {
-                    x: 967.1425821772832,
-                    y: -76.44238747350536,
-                },
-                dragging: false,
-            },
-            {
-                id: "NodeNode-13",
-                type: "NodeNode",
-                position: {
-                    x: 1327.6944249891635,
-                    y: -24.690102261840593,
-                },
-                data: {
-                    name: "Gmail",
-                    desc: "Read emails, create drafts or just send one!",
-                    Nodestate: ["Create draft", "Send email", "Read emails"],
-                    isInput: false,
-                    isType: false,
-                    bgcolor: "#ea4335",
-                    rightHandles: 0,
-                    leftHandles: 1,
-                    sources: ["Message"],
-                    targets: [],
-                    fieldValue1: {
-                        isDraft: false,
-                    },
-                    img: "/gmail.png",
-                    category: "Integrations",
-                    fieldValue2: "Node-13",
-                    username: false,
-                },
-                width: 204,
-                height: 200,
-                selected: true,
-                positionAbsolute: {
-                    x: 1327.6944249891635,
-                    y: -24.690102261840593,
-                },
-                dragging: false,
-            },
+        "templateName": "Summarize Pending Tasks",
+        "displayImage": discord,
+        "templateId": "template-245439",
+        "tags": [
+          "Discord", "Assistant"
         ],
-        edges: [
-            {
-                source: "NodeNode-1",
-                sourceHandle: "NodeNode-1-right-handle-0",
-                target: "NodeNode-3",
-                targetHandle: "NodeNode-3-left-handle-0",
-                type: "smoothstep",
-                animated: true,
-                markerEnd: {
-                    type: "arrow",
-                    height: "20px",
-                    width: "40px",
-                    color: "#aaa",
-                },
-                id: "reactflow__edge-NodeNode-1NodeNode-1-right-handle-0-NodeNode-3NodeNode-3-left-handle-0",
+        "nodes": [
+          {
+            "id": "NodeNode-88",
+            "type": "NodeNode",
+            "position": {
+              "x": 848.6696013372566,
+              "y": 281.96153653674037
             },
-            {
-                source: "NodeNode-8",
-                sourceHandle: "NodeNode-8-right-handle-0",
-                target: "NodeNode-9",
-                targetHandle: "NodeNode-9-left-handle-0",
-                type: "smoothstep",
-                animated: true,
-                markerEnd: {
-                    type: "arrow",
-                    height: "20px",
-                    width: "40px",
-                    color: "#aaa",
-                },
-                id: "reactflow__edge-NodeNode-8NodeNode-8-right-handle-0-NodeNode-9NodeNode-9-left-handle-0",
+            "data": {
+              "name": "Discord",
+              "desc": "Our discord bot will send messages to your requested channel",
+              "isInput": true,
+              "isType": false,
+              "bgcolor": "#5865F2",
+              "rightHandles": 0,
+              "leftHandles": 1,
+              "fieldValue1": "",
+              "sources": [
+                "Message Content"
+              ],
+              "img": "/discord.png",
+              "category": "Integrations",
+              "fieldValue2": "✨",
+              "username": false
             },
-            {
-                source: "NodeNode-3",
-                sourceHandle: "NodeNode-3-right-handle-0",
-                target: "NodeNode-9",
-                targetHandle: "NodeNode-9-left-handle-3",
-                type: "smoothstep",
-                animated: true,
-                markerEnd: {
-                    type: "arrow",
-                    height: "20px",
-                    width: "40px",
-                    color: "#aaa",
-                },
-                id: "reactflow__edge-NodeNode-3NodeNode-3-right-handle-0-NodeNode-9NodeNode-9-left-handle-3",
+            "width": 204,
+            "height": 162,
+            "selected": false,
+            "positionAbsolute": {
+              "x": 848.6696013372566,
+              "y": 281.96153653674037
             },
-            {
-                source: "NodeNode-1",
-                sourceHandle: "NodeNode-1-right-handle-0",
-                target: "NodeNode-9",
-                targetHandle: "NodeNode-9-left-handle-2",
-                type: "smoothstep",
-                animated: true,
-                markerEnd: {
-                    type: "arrow",
-                    height: "20px",
-                    width: "40px",
-                    color: "#aaa",
-                },
-                id: "reactflow__edge-NodeNode-1NodeNode-1-right-handle-0-NodeNode-9NodeNode-9-left-handle-2",
+            "dragging": false
+          },
+          {
+            "id": "NodeNode-90",
+            "type": "NodeNode",
+            "position": {
+              "x": 82.02998618129428,
+              "y": 283.2308074227601
             },
-            {
-                source: "NodeNode-9",
-                sourceHandle: "NodeNode-9-right-handle-0",
-                target: "NodeNode-13",
-                targetHandle: "NodeNode-13-left-handle-0",
-                type: "smoothstep",
-                animated: true,
-                markerEnd: {
-                    type: "arrow",
-                    height: "20px",
-                    width: "40px",
-                    color: "#aaa",
-                },
-                id: "reactflow__edge-NodeNode-9NodeNode-9-right-handle-0-NodeNode-13NodeNode-13-left-handle-0",
+            "data": {
+              "name": "Database Loader",
+              "isInput": false,
+              "isType": false,
+              "rightHandles": 1,
+              "leftHandles": 0,
+              "bgcolor": "#f57e2a",
+              "img": "/database.webp",
+              "category": "Knowledge Base",
+              "sources": [],
+              "targets": [
+                "Database"
+              ],
+              "fieldValue1": "🖊️",
+              "fieldValue2": "✨"
             },
+            "width": 204,
+            "height": 142,
+            "selected": false,
+            "positionAbsolute": {
+              "x": 82.02998618129428,
+              "y": 283.2308074227601
+            },
+            "dragging": false
+          },
+          {
+            "id": "NodeNode-91",
+            "type": "NodeNode",
+            "position": {
+              "x": 459.00343932917633,
+              "y": 251.49903527226502
+            },
+            "data": {
+              "name": "OpenAI",
+              "isInput": true,
+              "isType": false,
+              "rightHandles": 1,
+              "leftHandles": 3,
+              "bgcolor": "#ffe682",
+              "headColor": "#f5d65b",
+              "img": "/openai.png",
+              "category": "LLMs",
+              "sources": [
+                "system",
+                "prompt",
+                "tasks"
+              ],
+              "targets": [
+                "response"
+              ],
+              "fieldValue1": "To-do list: {{tasks}}",
+              "fieldValue2": "Summarize my pending tasks present in my todo list in clear, direct, action-oriented manner."
+            },
+            "width": 204,
+            "height": 223,
+            "selected": false,
+            "positionAbsolute": {
+              "x": 459.00343932917633,
+              "y": 251.49903527226502
+            },
+            "dragging": false
+          }
         ],
+        "edges": [
+          {
+            "source": "NodeNode-90",
+            "sourceHandle": "NodeNode-90-right-handle-0",
+            "target": "NodeNode-91",
+            "targetHandle": "NodeNode-91-left-handle-2",
+            "type": "smoothstep",
+            "animated": true,
+            "markerEnd": {
+              "type": "arrow",
+              "height": "20px",
+              "width": "40px",
+              "color": "#aaa"
+            },
+            "id": "reactflow__edge-NodeNode-90NodeNode-90-right-handle-0-NodeNode-91NodeNode-91-left-handle-2"
+          },
+          {
+            "source": "NodeNode-91",
+            "sourceHandle": "NodeNode-91-right-handle-0",
+            "target": "NodeNode-88",
+            "targetHandle": "NodeNode-88-left-handle-0",
+            "type": "smoothstep",
+            "animated": true,
+            "markerEnd": {
+              "type": "arrow",
+              "height": "20px",
+              "width": "40px",
+              "color": "#aaa"
+            },
+            "id": "reactflow__edge-NodeNode-91NodeNode-91-right-handle-0-NodeNode-88NodeNode-88-left-handle-0"
+          }
+        ]
     },
     {
-        templateName: "Tech support AI chatbot",
-        displayImage: "/select.webp",
-        templateId: "template-9",
-        tags: ["Saved"],
-        nodes: [
-            {
-                id: "NodeNode-1",
-                type: "NodeNode",
-                position: {
-                    x: 119.38179978206608,
-                    y: 112.19999694824219,
-                },
-                data: {
-                    name: "Input",
-                    isInput: true,
-                    isType: true,
-                    bgcolor: "#498bf5",
-                    rightHandles: 1,
-                    leftHandles: 0,
-                    img: "/input.png",
-                    category: "General",
-                    targets: ["Input"],
-                    sources: [],
-                    fieldValue1: "Node-1",
-                    fieldValue2: "Node-1",
-                },
-                width: 204,
-                height: 108,
-                selected: false,
-                positionAbsolute: {
-                    x: 119.38179978206608,
-                    y: 112.19999694824219,
-                },
-                dragging: false,
-            },
-            {
-                id: "NodeNode-3",
-                type: "NodeNode",
-                position: {
-                    x: 696.9234376463135,
-                    y: 240.98911729693646,
-                },
-                data: {
-                    name: "Database (RAG)",
-                    isInput: false,
-                    isType: false,
-                    rightHandles: 1,
-                    leftHandles: 1,
-                    bgcolor: "#f57e2a",
-                    img: "/database.png",
-                    category: "Knowledge Base",
-                    sources: ["query"],
-                    targets: ["results"],
-                    fieldValue1: "NodeNode-3",
-                    fieldValue2: "Node-3",
-                    constantValueList: [
-                        {
-                            name: "Max Chunk Size",
-                            value: 1000,
-                            placeholder: "Exactly what it says",
-                        },
-                        {
-                            name: "Chunk Overlap",
-                            value: 200,
-                            placeholder: "Overlap between chunks",
-                        },
-                        {
-                            name: "Number of Chunks",
-                            value: 5,
-                            placeholder: "Total number of chunks",
-                        },
-                    ],
-                },
-                width: 204,
-                height: 301,
-                selected: false,
-                positionAbsolute: {
-                    x: 696.9234376463135,
-                    y: 240.98911729693646,
-                },
-                dragging: false,
-            },
-            {
-                id: "NodeNode-8",
-                type: "NodeNode",
-                position: {
-                    x: 399.56130210876154,
-                    y: -386.04114966587247,
-                },
-                data: {
-                    name: "Text",
-                    isInput: true,
-                    isType: false,
-                    bgcolor: "#498bf5",
-                    rightHandles: 1,
-                    leftHandles: 0,
-                    img: "/text.webp",
-                    category: "General",
-                    targets: ["Output"],
-                    fieldValue1:
-                        "You are a helpful and knowledgeable AI assistant specialized in providing technical support for our products. Your primary goal is to assist users with their technical issues by leveraging the provided product information.\n\nFollow these guidelines:\n\n* **Be concise and direct:** Provide clear and to-the-point answers and troubleshooting steps.\n* **Prioritize using the provided product information:** Always attempt to answer the user's query using the information explicitly given in the product documentation.\n* **Acknowledge information limitations:** If the provided product information does not contain the answer to the user's query, clearly state that you cannot find the specific information within the given documentation. Avoid making assumptions or providing general troubleshooting steps not supported by the provided data.\n* **Maintain a professional and helpful tone:** Address the user politely and offer further assistance if appropriate (e.g., suggesting they contact human support if the issue is beyond the scope of the provided documentation).\n* **Identify the user's problem:** Try to understand the core issue the user is facing.\n* **If the query is unclear, ask clarifying questions:** If you are unsure what the user is asking, politely request more details about their problem, including specific error messages, steps they have already taken, and the product version they are using.\n* **Do not ask for personal information:** You are here to provide technical support based on the provided product information.\n* **Format your responses clearly:** Use bullet points, numbered lists, code blocks, or bold text to make instructions and information easy to follow.\n* **When referencing product information, be specific:** If you are referring to a particular section or specification in the product info, mention it (e.g., \"According to the 'Troubleshooting' section of the manual...\").\n* **Stay within the scope of technical support for our products:** Do not engage in conversations about unrelated topics or provide support for third-party products.",
-                    fieldValue2: "Node-8",
-                    sources: [],
-                },
-                width: 204,
-                height: 1118,
-                selected: false,
-                positionAbsolute: {
-                    x: 399.56130210876154,
-                    y: -386.04114966587247,
-                },
-                dragging: false,
-            },
-            {
-                id: "NodeNode-9",
-                type: "NodeNode",
-                position: {
-                    x: 967.1425821772832,
-                    y: -76.44238747350536,
-                },
-                data: {
-                    name: "Gemini",
-                    isInput: true,
-                    isType: false,
-                    rightHandles: 1,
-                    leftHandles: 4,
-                    bgcolor: "#ffe682",
-                    headColor: "#f5d65b",
-                    img: "/google.png",
-                    category: "LLMs",
-                    sources: ["system", "prompt", "query", "data"],
-                    targets: ["response"],
-                    fieldValue1:
-                        "User query: {{query}}\n\nProduct info: {{data}}",
-                    fieldValue2: "Node-9",
-                },
-                width: 204,
-                height: 203,
-                selected: false,
-                positionAbsolute: {
-                    x: 967.1425821772832,
-                    y: -76.44238747350536,
-                },
-                dragging: false,
-            },
-            {
-                id: "NodeNode-12",
-                type: "NodeNode",
-                position: {
-                    x: 1361.859650783428,
-                    y: -15.049217726864299,
-                },
-                data: {
-                    name: "Database Output",
-                    desc: "Save pipeline output in a new database",
-                    isInput: true,
-                    isType: false,
-                    rightHandles: 0,
-                    leftHandles: 1,
-                    bgcolor: "#f57e2a",
-                    img: "/database-res.png",
-                    category: "Knowledge Base",
-                    sources: ["results"],
-                    fieldValue1: "",
-                    fieldValue2: "Node-12",
-                    username: false,
-                },
-                width: 204,
-                height: 173,
-                selected: false,
-                positionAbsolute: {
-                    x: 1361.859650783428,
-                    y: -15.049217726864299,
-                },
-                dragging: false,
-            },
+        "templateName": "Summarize My Notes",
+        "displayImage": star,
+        "templateId": "template-309003",
+        "tags": [
+          "Gen AI", "Discord"
         ],
-        edges: [
-            {
-                source: "NodeNode-1",
-                sourceHandle: "NodeNode-1-right-handle-0",
-                target: "NodeNode-3",
-                targetHandle: "NodeNode-3-left-handle-0",
-                type: "smoothstep",
-                animated: true,
-                markerEnd: {
-                    type: "arrow",
-                    height: "20px",
-                    width: "40px",
-                    color: "#aaa",
-                },
-                id: "reactflow__edge-NodeNode-1NodeNode-1-right-handle-0-NodeNode-3NodeNode-3-left-handle-0",
+        "nodes": [
+          {
+            "id": "NodeNode-94",
+            "type": "NodeNode",
+            "position": {
+              "x": 417.1175000905227,
+              "y": 391.11883273444374
             },
-            {
-                source: "NodeNode-8",
-                sourceHandle: "NodeNode-8-right-handle-0",
-                target: "NodeNode-9",
-                targetHandle: "NodeNode-9-left-handle-0",
-                type: "smoothstep",
-                animated: true,
-                markerEnd: {
-                    type: "arrow",
-                    height: "20px",
-                    width: "40px",
-                    color: "#aaa",
-                },
-                id: "reactflow__edge-NodeNode-8NodeNode-8-right-handle-0-NodeNode-9NodeNode-9-left-handle-0",
+            "data": {
+              "name": "GDocs",
+              "desc": "Read or create a document",
+              "Nodestate": [
+                "Read Doc",
+                "Create Doc"
+              ],
+              "isInput": false,
+              "isType": false,
+              "bgcolor": "#636ff2",
+              "rightHandles": 1,
+              "leftHandles": 1,
+              "img": "/gdocs.png",
+              "category": "Integrations",
+              "fieldValue1": {
+                "1": "{{name}}"
+              },
+              "fieldValue2": "✨",
+              "sources": [
+                "name"
+              ],
+              "targets": [
+                "Content"
+              ],
+              "username": "a@m.com"
             },
-            {
-                source: "NodeNode-3",
-                sourceHandle: "NodeNode-3-right-handle-0",
-                target: "NodeNode-9",
-                targetHandle: "NodeNode-9-left-handle-3",
-                type: "smoothstep",
-                animated: true,
-                markerEnd: {
-                    type: "arrow",
-                    height: "20px",
-                    width: "40px",
-                    color: "#aaa",
-                },
-                id: "reactflow__edge-NodeNode-3NodeNode-3-right-handle-0-NodeNode-9NodeNode-9-left-handle-3",
+            "width": 204,
+            "height": 188,
+            "selected": false,
+            "positionAbsolute": {
+              "x": 417.1175000905227,
+              "y": 391.11883273444374
             },
-            {
-                source: "NodeNode-1",
-                sourceHandle: "NodeNode-1-right-handle-0",
-                target: "NodeNode-9",
-                targetHandle: "NodeNode-9-left-handle-2",
-                type: "smoothstep",
-                animated: true,
-                markerEnd: {
-                    type: "arrow",
-                    height: "20px",
-                    width: "40px",
-                    color: "#aaa",
-                },
-                id: "reactflow__edge-NodeNode-1NodeNode-1-right-handle-0-NodeNode-9NodeNode-9-left-handle-2",
+            "dragging": false
+          },
+          {
+            "id": "NodeNode-95",
+            "type": "NodeNode",
+            "position": {
+              "x": 128.99300896402696,
+              "y": 226.1136175518689
             },
-            {
-                source: "NodeNode-9",
-                sourceHandle: "NodeNode-9-right-handle-0",
-                target: "NodeNode-12",
-                targetHandle: "NodeNode-12-left-handle-0",
-                type: "smoothstep",
-                animated: true,
-                markerEnd: {
-                    type: "arrow",
-                    height: "20px",
-                    width: "40px",
-                    color: "#aaa",
-                },
-                id: "reactflow__edge-NodeNode-9NodeNode-9-right-handle-0-NodeNode-12NodeNode-12-left-handle-0",
+            "data": {
+              "name": "Input",
+              "isInput": true,
+              "isType": true,
+              "bgcolor": "#498bf5",
+              "rightHandles": 1,
+              "leftHandles": 0,
+              "img": "/input.png",
+              "category": "General",
+              "targets": [
+                "Name"
+              ],
+              "sources": [],
+              "fieldValue1": "Name",
+              "fieldValue2": "✨"
             },
+            "width": 204,
+            "height": 108,
+            "selected": false,
+            "positionAbsolute": {
+              "x": 128.99300896402696,
+              "y": 226.1136175518689
+            },
+            "dragging": false
+          },
+          {
+            "id": "NodeNode-96",
+            "type": "NodeNode",
+            "position": {
+              "x": 696.3570950148797,
+              "y": 196.92038717341347
+            },
+            "data": {
+              "name": "Gemini",
+              "isInput": true,
+              "isType": false,
+              "rightHandles": 1,
+              "leftHandles": 3,
+              "bgcolor": "#ffe682",
+              "headColor": "#f5d65b",
+              "img": "/google.png",
+              "category": "LLMs",
+              "sources": [
+                "system",
+                "prompt",
+                "notes"
+              ],
+              "targets": [
+                "response"
+              ],
+              "fieldValue1": "My notes: {{notes}}",
+              "fieldValue2": "Summarize the provided text professionally and concisely. Output ONLY the summary."
+            },
+            "width": 204,
+            "height": 211,
+            "selected": true,
+            "positionAbsolute": {
+              "x": 696.3570950148797,
+              "y": 196.92038717341347
+            },
+            "dragging": false
+          },
+          {
+            "id": "NodeNode-97",
+            "type": "NodeNode",
+            "position": {
+              "x": 1032.7138798101282,
+              "y": 406.35008336668136
+            },
+            "data": {
+              "name": "Discord",
+              "desc": "Our discord bot will send messages to your requested channel",
+              "isInput": true,
+              "isType": false,
+              "bgcolor": "#5865F2",
+              "rightHandles": 0,
+              "leftHandles": 1,
+              "fieldValue1": "🖊️",
+              "sources": [
+                "Message Content"
+              ],
+              "img": "/discord.png",
+              "category": "Integrations",
+              "fieldValue2": "✨",
+              "username": "a@m.com"
+            },
+            "width": 204,
+            "height": 164,
+            "selected": false,
+            "positionAbsolute": {
+              "x": 1032.7138798101282,
+              "y": 406.35008336668136
+            },
+            "dragging": false
+          },
+          {
+            "id": "NodeNode-100",
+            "type": "NodeNode",
+            "position": {
+              "x": 1027.6367962660493,
+              "y": 144.8802808466013
+            },
+            "data": {
+              "name": "Database Output",
+              "desc": "Save pipeline output in a new database",
+              "isInput": true,
+              "isType": false,
+              "rightHandles": 0,
+              "leftHandles": 2,
+              "bgcolor": "#f57e2a",
+              "img": "/database-res.png",
+              "category": "Knowledge Base",
+              "sources": [
+                "results",
+                "name"
+              ],
+              "fieldValue1": "{{name}}",
+              "fieldValue2": "✨",
+              "username": "a@m.com"
+            },
+            "width": 204,
+            "height": 175,
+            "selected": false,
+            "dragging": false,
+            "positionAbsolute": {
+              "x": 1027.6367962660493,
+              "y": 144.8802808466013
+            }
+          }
         ],
+        "edges": [
+          {
+            "source": "NodeNode-94",
+            "sourceHandle": "NodeNode-94-right-handle-0",
+            "target": "NodeNode-96",
+            "targetHandle": "NodeNode-96-left-handle-2",
+            "type": "smoothstep",
+            "animated": true,
+            "markerEnd": {
+              "type": "arrow",
+              "height": "20px",
+              "width": "40px",
+              "color": "#aaa"
+            },
+            "id": "reactflow__edge-NodeNode-94NodeNode-94-right-handle-0-NodeNode-96NodeNode-96-left-handle-2"
+          },
+          {
+            "source": "NodeNode-95",
+            "sourceHandle": "NodeNode-95-right-handle-0",
+            "target": "NodeNode-94",
+            "targetHandle": "NodeNode-94-left-handle-0",
+            "type": "smoothstep",
+            "animated": true,
+            "markerEnd": {
+              "type": "arrow",
+              "height": "20px",
+              "width": "40px",
+              "color": "#aaa"
+            },
+            "id": "reactflow__edge-NodeNode-95NodeNode-95-right-handle-0-NodeNode-94NodeNode-94-left-handle-0"
+          },
+          {
+            "source": "NodeNode-96",
+            "sourceHandle": "NodeNode-96-right-handle-0",
+            "target": "NodeNode-97",
+            "targetHandle": "NodeNode-97-left-handle-0",
+            "type": "smoothstep",
+            "animated": true,
+            "markerEnd": {
+              "type": "arrow",
+              "height": "20px",
+              "width": "40px",
+              "color": "#aaa"
+            },
+            "id": "reactflow__edge-NodeNode-96NodeNode-96-right-handle-0-NodeNode-97NodeNode-97-left-handle-0"
+          },
+          {
+            "source": "NodeNode-95",
+            "sourceHandle": "NodeNode-95-right-handle-0",
+            "target": "NodeNode-100",
+            "targetHandle": "NodeNode-100-left-handle-1",
+            "type": "smoothstep",
+            "animated": true,
+            "markerEnd": {
+              "type": "arrow",
+              "height": "20px",
+              "width": "40px",
+              "color": "#aaa"
+            },
+            "id": "reactflow__edge-NodeNode-95NodeNode-95-right-handle-0-NodeNode-100NodeNode-100-left-handle-1"
+          },
+          {
+            "source": "NodeNode-96",
+            "sourceHandle": "NodeNode-96-right-handle-0",
+            "target": "NodeNode-100",
+            "targetHandle": "NodeNode-100-left-handle-0",
+            "type": "smoothstep",
+            "animated": true,
+            "markerEnd": {
+              "type": "arrow",
+              "height": "20px",
+              "width": "40px",
+              "color": "#aaa"
+            },
+            "id": "reactflow__edge-NodeNode-96NodeNode-96-right-handle-0-NodeNode-100NodeNode-100-left-handle-0"
+          }
+        ]
     },
     {
-        templateName: "Generate and Email Sales Reports",
-        displayImage: "/select.webp",
-        templateId: "template-8",
-        tags: ["Saved"],
-        nodes: [
-            {
-                id: "NodeNode-1",
-                type: "NodeNode",
-                position: {
-                    x: 119.38179978206608,
-                    y: 112.19999694824219,
-                },
-                data: {
-                    name: "Input",
-                    isInput: true,
-                    isType: true,
-                    bgcolor: "#498bf5",
-                    rightHandles: 1,
-                    leftHandles: 0,
-                    img: "/input.png",
-                    category: "General",
-                    targets: ["Input"],
-                    sources: [],
-                    fieldValue1: "Node-1",
-                    fieldValue2: "Node-1",
-                },
-                width: 204,
-                height: 108,
-                selected: false,
-                positionAbsolute: {
-                    x: 119.38179978206608,
-                    y: 112.19999694824219,
-                },
-                dragging: false,
-            },
-            {
-                id: "NodeNode-3",
-                type: "NodeNode",
-                position: {
-                    x: 696.9234376463135,
-                    y: 240.98911729693646,
-                },
-                data: {
-                    name: "Database (RAG)",
-                    isInput: false,
-                    isType: false,
-                    rightHandles: 1,
-                    leftHandles: 1,
-                    bgcolor: "#f57e2a",
-                    img: "/database.png",
-                    category: "Knowledge Base",
-                    sources: ["query"],
-                    targets: ["results"],
-                    fieldValue1: "NodeNode-3",
-                    fieldValue2: "Node-3",
-                    constantValueList: [
-                        {
-                            name: "Max Chunk Size",
-                            value: 1000,
-                            placeholder: "Exactly what it says",
-                        },
-                        {
-                            name: "Chunk Overlap",
-                            value: 200,
-                            placeholder: "Overlap between chunks",
-                        },
-                        {
-                            name: "Number of Chunks",
-                            value: 5,
-                            placeholder: "Total number of chunks",
-                        },
-                    ],
-                },
-                width: 204,
-                height: 301,
-                selected: false,
-                positionAbsolute: {
-                    x: 696.9234376463135,
-                    y: 240.98911729693646,
-                },
-                dragging: false,
-            },
-            {
-                id: "NodeNode-8",
-                type: "NodeNode",
-                position: {
-                    x: 399.56130210876154,
-                    y: -386.04114966587247,
-                },
-                data: {
-                    name: "Text",
-                    isInput: true,
-                    isType: false,
-                    bgcolor: "#498bf5",
-                    rightHandles: 1,
-                    leftHandles: 0,
-                    img: "/text.webp",
-                    category: "General",
-                    targets: ["Output"],
-                    fieldValue1:
-                        'You are a helpful and knowledgeable AI assistant specialized in providing sales support. Your primary goal is to assist users with their sales-related queries by leveraging the provided sales data. **Crucially, your final output MUST be a valid JSON object conforming to the specified schema.**\n\nFollow these guidelines:\n\n* **Be concise and direct:** Provide clear and to-the-point answers.\n* **Prioritize using the provided sales data:** Always attempt to answer the user\'s query using the information explicitly given in the sales data.\n* **Acknowledge data limitations:** If the provided sales data does not contain the information needed to answer the query, clearly state that you cannot find the answer within the given data. Avoid making assumptions or providing information from outside the provided data.\n* **Maintain a professional and helpful tone:** Address the user politely and offer further assistance if appropriate.\n* **Identify the user\'s intent:** Try to understand the underlying need behind the user\'s query.\n* **If the query is unclear, ask clarifying questions:** If you are unsure what the user is asking, politely request more information.\n* **Do not ask for personal information:** You are here to provide sales support based on the provided data.\n* **Format your responses clearly:** Use bullet points or numbered lists when presenting multiple pieces of information.\n* **When referencing data, be specific:** If you are pulling information from a specific field in the sales data, mention it (e.g., "According to the \'Product Name\' field...").\n* **Stay within the scope of sales support:** Do not engage in conversations unrelated to sales inquiries.\n\nstrictly output the result as a JSON object with the following keys:\n* `"subject"`: A concise title or subject for the email (string).\n* `"text"`: A detailed analysis of the data.',
-                    fieldValue2: "Node-8",
-                    sources: [],
-                },
-                width: 204,
-                height: 998,
-                selected: true,
-                positionAbsolute: {
-                    x: 399.56130210876154,
-                    y: -386.04114966587247,
-                },
-                dragging: false,
-            },
-            {
-                id: "NodeNode-9",
-                type: "NodeNode",
-                position: {
-                    x: 967.1425821772832,
-                    y: -76.44238747350536,
-                },
-                data: {
-                    name: "Gemini",
-                    isInput: true,
-                    isType: false,
-                    rightHandles: 1,
-                    leftHandles: 4,
-                    bgcolor: "#ffe682",
-                    headColor: "#f5d65b",
-                    img: "/google.png",
-                    category: "LLMs",
-                    sources: ["system", "prompt", "query", "data"],
-                    targets: ["response"],
-                    fieldValue1:
-                        "User query: {{query}}\n\nSales data: {{data}}",
-                    fieldValue2: "Node-9",
-                },
-                width: 204,
-                height: 203,
-                selected: false,
-                positionAbsolute: {
-                    x: 967.1425821772832,
-                    y: -76.44238747350536,
-                },
-                dragging: false,
-            },
-            {
-                id: "NodeNode-11",
-                type: "NodeNode",
-                position: {
-                    x: 1328.650909750133,
-                    y: 44.029206558986374,
-                },
-                data: {
-                    name: "Gmail",
-                    desc: "Read emails, create drafts or just send one!",
-                    Nodestate: ["Create draft", "Send email", "Read emails"],
-                    isInput: false,
-                    isType: false,
-                    bgcolor: "#ea4335",
-                    rightHandles: 0,
-                    leftHandles: 1,
-                    sources: ["Message"],
-                    targets: [],
-                    fieldValue1: {
-                        isDraft: false,
-                    },
-                    img: "/gmail.png",
-                    category: "Integrations",
-                    fieldValue2: "Node-11",
-                    username: false,
-                },
-                width: 204,
-                height: 200,
-                selected: false,
-                positionAbsolute: {
-                    x: 1328.650909750133,
-                    y: 44.029206558986374,
-                },
-                dragging: false,
-            },
-        ],
-        edges: [
-            {
-                source: "NodeNode-1",
-                sourceHandle: "NodeNode-1-right-handle-0",
-                target: "NodeNode-3",
-                targetHandle: "NodeNode-3-left-handle-0",
-                type: "smoothstep",
-                animated: true,
-                markerEnd: {
-                    type: "arrow",
-                    height: "20px",
-                    width: "40px",
-                    color: "#aaa",
-                },
-                id: "reactflow__edge-NodeNode-1NodeNode-1-right-handle-0-NodeNode-3NodeNode-3-left-handle-0",
-            },
-            {
-                source: "NodeNode-8",
-                sourceHandle: "NodeNode-8-right-handle-0",
-                target: "NodeNode-9",
-                targetHandle: "NodeNode-9-left-handle-0",
-                type: "smoothstep",
-                animated: true,
-                markerEnd: {
-                    type: "arrow",
-                    height: "20px",
-                    width: "40px",
-                    color: "#aaa",
-                },
-                id: "reactflow__edge-NodeNode-8NodeNode-8-right-handle-0-NodeNode-9NodeNode-9-left-handle-0",
-            },
-            {
-                source: "NodeNode-3",
-                sourceHandle: "NodeNode-3-right-handle-0",
-                target: "NodeNode-9",
-                targetHandle: "NodeNode-9-left-handle-3",
-                type: "smoothstep",
-                animated: true,
-                markerEnd: {
-                    type: "arrow",
-                    height: "20px",
-                    width: "40px",
-                    color: "#aaa",
-                },
-                id: "reactflow__edge-NodeNode-3NodeNode-3-right-handle-0-NodeNode-9NodeNode-9-left-handle-3",
-            },
-            {
-                source: "NodeNode-1",
-                sourceHandle: "NodeNode-1-right-handle-0",
-                target: "NodeNode-9",
-                targetHandle: "NodeNode-9-left-handle-2",
-                type: "smoothstep",
-                animated: true,
-                markerEnd: {
-                    type: "arrow",
-                    height: "20px",
-                    width: "40px",
-                    color: "#aaa",
-                },
-                id: "reactflow__edge-NodeNode-1NodeNode-1-right-handle-0-NodeNode-9NodeNode-9-left-handle-2",
-            },
-            {
-                source: "NodeNode-9",
-                sourceHandle: "NodeNode-9-right-handle-0",
-                target: "NodeNode-11",
-                targetHandle: "NodeNode-11-left-handle-0",
-                type: "smoothstep",
-                animated: true,
-                markerEnd: {
-                    type: "arrow",
-                    height: "20px",
-                    width: "40px",
-                    color: "#aaa",
-                },
-                id: "reactflow__edge-NodeNode-9NodeNode-9-right-handle-0-NodeNode-11NodeNode-11-left-handle-0",
-            },
-        ],
-    },
-    {
-        templateName: "Sales support AI chatbot",
-        displayImage: "/select.webp",
-        templateId: "template-7",
-        tags: ["Saved"],
-        nodes: [
-            {
-                id: "NodeNode-1",
-                type: "NodeNode",
-                position: {
-                    x: 119.38179978206608,
-                    y: 112.19999694824219,
-                },
-                data: {
-                    name: "Input",
-                    isInput: true,
-                    isType: true,
-                    bgcolor: "#498bf5",
-                    rightHandles: 1,
-                    leftHandles: 0,
-                    img: "/input.png",
-                    category: "General",
-                    targets: ["Input"],
-                    sources: [],
-                    fieldValue1: "Node-1",
-                    fieldValue2: "Node-1",
-                },
-                width: 204,
-                height: 108,
-                selected: false,
-                positionAbsolute: {
-                    x: 119.38179978206608,
-                    y: 112.19999694824219,
-                },
-                dragging: false,
-            },
-            {
-                id: "NodeNode-3",
-                type: "NodeNode",
-                position: {
-                    x: 696.9234376463135,
-                    y: 240.98911729693646,
-                },
-                data: {
-                    name: "Database (RAG)",
-                    isInput: false,
-                    isType: false,
-                    rightHandles: 1,
-                    leftHandles: 1,
-                    bgcolor: "#f57e2a",
-                    img: "/database.png",
-                    category: "Knowledge Base",
-                    sources: ["query"],
-                    targets: ["results"],
-                    fieldValue1: "NodeNode-3",
-                    fieldValue2: "Node-3",
-                    constantValueList: [
-                        {
-                            name: "Max Chunk Size",
-                            value: 1000,
-                            placeholder: "Exactly what it says",
-                        },
-                        {
-                            name: "Chunk Overlap",
-                            value: 200,
-                            placeholder: "Overlap between chunks",
-                        },
-                        {
-                            name: "Number of Chunks",
-                            value: 5,
-                            placeholder: "Total number of chunks",
-                        },
-                    ],
-                },
-                width: 204,
-                height: 301,
-                selected: false,
-                positionAbsolute: {
-                    x: 696.9234376463135,
-                    y: 240.98911729693646,
-                },
-                dragging: false,
-            },
-            {
-                id: "NodeNode-8",
-                type: "NodeNode",
-                position: {
-                    x: 423.99939924080064,
-                    y: -234.96300393417778,
-                },
-                data: {
-                    name: "Text",
-                    isInput: true,
-                    isType: false,
-                    bgcolor: "#498bf5",
-                    rightHandles: 1,
-                    leftHandles: 0,
-                    img: "/text.webp",
-                    category: "General",
-                    targets: ["Output"],
-                    fieldValue1:
-                        "You are a helpful and knowledgeable AI assistant specialized in providing sales support. Your primary goal is to assist users with their sales-related queries by leveraging the provided sales data.\n\nFollow these guidelines:\n\n* **Be concise and direct:** Provide clear and to-the-point answers.\n* **Prioritize using the provided sales data:** Always attempt to answer the user's query using the information explicitly given in the sales data.\n* **Acknowledge data limitations:** If the provided sales data does not contain the information needed to answer the query, clearly state that you cannot find the answer within the given data. Avoid making assumptions or providing information from outside the provided data.\n* **Maintain a professional and helpful tone:** Address the user politely and offer further assistance if appropriate.\n* **Identify the user's intent:** Try to understand the underlying need behind the user's query.\n* **If the query is unclear, ask clarifying questions:** If you are unsure what the user is asking, politely request more information.\n* **Do not ask for personal information:** You are here to provide sales support based on the provided data.\n* **Format your responses clearly:** Use bullet points or numbered lists when presenting multiple pieces of information.\n* **When referencing data, be specific:** If you are pulling information from a specific field in the sales data, mention it (e.g., \"According to the 'Product Name' field...\").\n* **Stay within the scope of sales support:** Do not engage in conversations unrelated to sales inquiries.",
-                    fieldValue2: "Node-8",
-                },
-                width: 204,
-                height: 854,
-                selected: false,
-                positionAbsolute: {
-                    x: 423.99939924080064,
-                    y: -234.96300393417778,
-                },
-                dragging: false,
-            },
-            {
-                id: "NodeNode-9",
-                type: "NodeNode",
-                position: {
-                    x: 967.1425821772832,
-                    y: -76.44238747350536,
-                },
-                data: {
-                    name: "Gemini",
-                    isInput: true,
-                    isType: false,
-                    rightHandles: 1,
-                    leftHandles: 4,
-                    bgcolor: "#ffe682",
-                    headColor: "#f5d65b",
-                    img: "/google.png",
-                    category: "LLMs",
-                    sources: ["system", "prompt", "query", "data"],
-                    targets: ["response"],
-                    fieldValue1:
-                        "User query: {{query}}\n\nSales data: {{data}}",
-                    fieldValue2: "Node-9",
-                },
-                width: 204,
-                height: 203,
-                selected: false,
-                positionAbsolute: {
-                    x: 967.1425821772832,
-                    y: -76.44238747350536,
-                },
-                dragging: false,
-            },
-            {
-                id: "NodeNode-10",
-                type: "NodeNode",
-                position: {
-                    x: 1346.2247176280898,
-                    y: 86.7084542625962,
-                },
-                data: {
-                    name: "Database Output",
-                    desc: "Save pipeline output in a new database",
-                    isInput: true,
-                    isType: false,
-                    rightHandles: 0,
-                    leftHandles: 1,
-                    bgcolor: "#f57e2a",
-                    img: "/database-res.png",
-                    category: "Knowledge Base",
-                    sources: ["results"],
-                    fieldValue1: "",
-                    fieldValue2: "Node-10",
-                    username: false,
-                },
-                width: 204,
-                height: 173,
-                selected: false,
-                positionAbsolute: {
-                    x: 1346.2247176280898,
-                    y: 86.7084542625962,
-                },
-                dragging: false,
-            },
-        ],
-        edges: [
-            {
-                source: "NodeNode-1",
-                sourceHandle: "NodeNode-1-right-handle-0",
-                target: "NodeNode-3",
-                targetHandle: "NodeNode-3-left-handle-0",
-                type: "smoothstep",
-                animated: true,
-                markerEnd: {
-                    type: "arrow",
-                    height: "20px",
-                    width: "40px",
-                    color: "#aaa",
-                },
-                id: "reactflow__edge-NodeNode-1NodeNode-1-right-handle-0-NodeNode-3NodeNode-3-left-handle-0",
-            },
-            {
-                source: "NodeNode-8",
-                sourceHandle: "NodeNode-8-right-handle-0",
-                target: "NodeNode-9",
-                targetHandle: "NodeNode-9-left-handle-0",
-                type: "smoothstep",
-                animated: true,
-                markerEnd: {
-                    type: "arrow",
-                    height: "20px",
-                    width: "40px",
-                    color: "#aaa",
-                },
-                id: "reactflow__edge-NodeNode-8NodeNode-8-right-handle-0-NodeNode-9NodeNode-9-left-handle-0",
-            },
-            {
-                source: "NodeNode-3",
-                sourceHandle: "NodeNode-3-right-handle-0",
-                target: "NodeNode-9",
-                targetHandle: "NodeNode-9-left-handle-3",
-                type: "smoothstep",
-                animated: true,
-                markerEnd: {
-                    type: "arrow",
-                    height: "20px",
-                    width: "40px",
-                    color: "#aaa",
-                },
-                id: "reactflow__edge-NodeNode-3NodeNode-3-right-handle-0-NodeNode-9NodeNode-9-left-handle-3",
-            },
-            {
-                source: "NodeNode-1",
-                sourceHandle: "NodeNode-1-right-handle-0",
-                target: "NodeNode-9",
-                targetHandle: "NodeNode-9-left-handle-2",
-                type: "smoothstep",
-                animated: true,
-                markerEnd: {
-                    type: "arrow",
-                    height: "20px",
-                    width: "40px",
-                    color: "#aaa",
-                },
-                id: "reactflow__edge-NodeNode-1NodeNode-1-right-handle-0-NodeNode-9NodeNode-9-left-handle-2",
-            },
-            {
-                source: "NodeNode-9",
-                sourceHandle: "NodeNode-9-right-handle-0",
-                target: "NodeNode-10",
-                targetHandle: "NodeNode-10-left-handle-0",
-                type: "smoothstep",
-                animated: true,
-                markerEnd: {
-                    type: "arrow",
-                    height: "20px",
-                    width: "40px",
-                    color: "#aaa",
-                },
-                id: "reactflow__edge-NodeNode-9NodeNode-9-right-handle-0-NodeNode-10NodeNode-10-left-handle-0",
-            },
-        ],
-    },
-    {
-        templateName: "AI Powered FAQ bot",
-        displayImage: "/select.webp",
-        templateId: "template-6",
-        tags: ["Saved"],
-        nodes: [
-            {
-                id: "NodeNode-1",
-                type: "NodeNode",
-                position: {
-                    x: 88,
-                    y: 112.19999694824219,
-                },
-                data: {
-                    name: "Input",
-                    isInput: true,
-                    isType: true,
-                    bgcolor: "#498bf5",
-                    rightHandles: 1,
-                    leftHandles: 0,
-                    img: "/input.png",
-                    category: "General",
-                    targets: ["Input"],
-                    sources: [],
-                    fieldValue1: "Node-1",
-                    fieldValue2: "Node-1",
-                },
-                width: 204,
-                height: 108,
-                selected: false,
-                positionAbsolute: {
-                    x: 88,
-                    y: 112.19999694824219,
-                },
-                dragging: false,
-            },
-            {
-                id: "NodeNode-2",
-                type: "NodeNode",
-                position: {
-                    x: 682,
-                    y: -42.80000305175781,
-                },
-                data: {
-                    name: "OpenAI",
-                    isInput: true,
-                    isType: false,
-                    rightHandles: 1,
-                    leftHandles: 10,
-                    bgcolor: "#ffe682",
-                    headColor: "#f5d65b",
-                    img: "/openai.png",
-                    category: "LLMs",
-                    sources: [
-                        "system",
-                        "prompt",
-                        "query",
-                        "context",
-                        "query",
-                        "context",
-                        "query",
-                        "context",
-                        "query",
-                        "context",
-                    ],
-                    targets: ["response"],
-                    fieldValue1:
-                        "Given the user query  and the context regarding the query , generate an appropriate answer for the user.\n\nInstructions: \n\n    Analyze the user query to determine the intent and desired outcome.\n    Use the provided context to tailor the email content appropriately.\n    Maintain a tone consistent with the purpose of the email (e.g., professional, friendly, urgent).\n    Ensure clarity, conciseness, and relevance in both the subject line and body.\n    Avoid placeholders or vague language; provide complete and actionable content.\n     \n\nUser query: {{query}}\n\nContext: {{context}}",
-                    fieldValue2:
-                        "You are an AI assistant designed to help users create professional and engaging emails. Your task is to generate the subject line and body of an email based on the user's query and the provided context. Ensure that the tone and content align with the purpose of the communication, whether it’s formal, casual, or promotional.",
-                },
-                width: 204,
-                height: 703,
-                selected: false,
-                positionAbsolute: {
-                    x: 682,
-                    y: -42.80000305175781,
-                },
-                dragging: false,
-            },
-            {
-                id: "NodeNode-3",
-                type: "NodeNode",
-                position: {
-                    x: 358,
-                    y: 291.1999969482422,
-                },
-                data: {
-                    name: "Database (RAG)",
-                    isInput: false,
-                    isType: false,
-                    rightHandles: 1,
-                    leftHandles: 1,
-                    bgcolor: "#f57e2a",
-                    img: "/database.png",
-                    category: "Knowledge Base",
-                    sources: ["query"],
-                    targets: ["results"],
-                    fieldValue1: "NodeNode-3",
-                    fieldValue2: "Node-3",
-                    constantValueList: [
-                        {
-                            name: "Max Chunk Size",
-                            value: 1000,
-                            placeholder: "Exactly what it says",
-                        },
-                        {
-                            name: "Chunk Overlap",
-                            value: 200,
-                            placeholder: "Overlap between chunks",
-                        },
-                        {
-                            name: "Number of Chunks",
-                            value: 5,
-                            placeholder: "Total number of chunks",
-                        },
-                    ],
-                },
-                width: 204,
-                height: 301,
-                selected: false,
-                positionAbsolute: {
-                    x: 358,
-                    y: 291.1999969482422,
-                },
-                dragging: false,
-            },
-            {
-                id: "NodeNode-5",
-                type: "NodeNode",
-                position: {
-                    x: 1065,
-                    y: 159.1999969482422,
-                },
-                data: {
-                    name: "Output",
-                    isInput: true,
-                    isType: true,
-                    bgcolor: "#58c742",
-                    rightHandles: 0,
-                    leftHandles: 1,
-                    img: "/output.png",
-                    category: "General",
-                    sources: ["Output"],
-                    fieldValue1: "Node-5",
-                    fieldValue2: "Node-5",
-                },
-                width: 204,
-                height: 108,
-                selected: true,
-                positionAbsolute: {
-                    x: 1065,
-                    y: 159.1999969482422,
-                },
-                dragging: false,
-            },
-        ],
-        edges: [
-            {
-                source: "NodeNode-1",
-                sourceHandle: "NodeNode-1-right-handle-0",
-                target: "NodeNode-3",
-                targetHandle: "NodeNode-3-left-handle-0",
-                type: "smoothstep",
-                animated: true,
-                markerEnd: {
-                    type: "arrow",
-                    height: "20px",
-                    width: "40px",
-                    color: "#aaa",
-                },
-                id: "reactflow__edge-NodeNode-1NodeNode-1-right-handle-0-NodeNode-3NodeNode-3-left-handle-0",
-            },
-            {
-                source: "NodeNode-1",
-                sourceHandle: "NodeNode-1-right-handle-0",
-                target: "NodeNode-2",
-                targetHandle: "NodeNode-2-left-handle-4",
-                type: "smoothstep",
-                animated: true,
-                markerEnd: {
-                    type: "arrow",
-                    height: "20px",
-                    width: "40px",
-                    color: "#aaa",
-                },
-                id: "reactflow__edge-NodeNode-1NodeNode-1-right-handle-0-NodeNode-2NodeNode-2-left-handle-4",
-            },
-            {
-                source: "NodeNode-3",
-                sourceHandle: "NodeNode-3-right-handle-0",
-                target: "NodeNode-2",
-                targetHandle: "NodeNode-2-left-handle-5",
-                type: "smoothstep",
-                animated: true,
-                markerEnd: {
-                    type: "arrow",
-                    height: "20px",
-                    width: "40px",
-                    color: "#aaa",
-                },
-                id: "reactflow__edge-NodeNode-3NodeNode-3-right-handle-0-NodeNode-2NodeNode-2-left-handle-5",
-            },
-            {
-                source: "NodeNode-2",
-                sourceHandle: "NodeNode-2-right-handle-0",
-                target: "NodeNode-5",
-                targetHandle: "NodeNode-5-left-handle-0",
-                type: "smoothstep",
-                animated: true,
-                markerEnd: {
-                    type: "arrow",
-                    height: "20px",
-                    width: "40px",
-                    color: "#aaa",
-                },
-                id: "reactflow__edge-NodeNode-2NodeNode-2-right-handle-0-NodeNode-5NodeNode-5-left-handle-0",
-            },
-        ],
-    },
-    {
-        templateName: "Summarize Meetings Into Email",
-        displayImage: "/select.webp",
-        templateId: "template-7",
-        tags: ["Saved"],
+        templateName: "Summarize Meetings Into GDocs",
+        displayImage: star,
+        templateId: "template-612321",
+        tags: ["Gen AI"],
         nodes: [
             {
                 id: "NodeNode-7",
                 type: "NodeNode",
                 position: {
-                    x: 647.0015135318521,
-                    y: -242.42314782393822,
-                },
-                data: {
-                    name: "Gemini",
-                    isInput: true,
-                    isType: false,
-                    rightHandles: 1,
-                    leftHandles: 3,
-                    bgcolor: "#ffe682",
-                    headColor: "#f5d65b",
-                    img: "/google.png",
-                    category: "LLMs",
-                    sources: ["system", "prompt", "transcript"],
-                    targets: ["response"],
-                    fieldValue1:
-                        'Please generate a comprehensive yet concise summary of the following Google Meet transcript:\n\n{{transcript}}\n\nSummarize the meeting transcript and strictly output the result as a JSON object with the following keys:\n\n* `"subject"`: A concise title or subject for the meeting summary (string).\n* `"text"`: A detailed summary of the meeting, including:\n    * Meeting Title/Topic (if explicitly mentioned or can be inferred)\n    * Date and Time (if explicitly mentioned in the transcript)\n    * Attendees (List of individuals who participated, if identifiable)\n    * Key Discussion Points (Summarize the main topics discussed and the key takeaways from each)\n    * Decisions Made (Clearly list any concrete decisions that were reached during the meeting)\n    * Action Items (List all assigned tasks, including who is responsible and the due date if mentioned)\n    * Next Steps (Outline any planned follow-up actions or future meetings)\n    * Overall Sentiment/Tone (Briefly describe the general atmosphere and focus of the meeting) (string).\n\nEnsure the output is a single, valid JSON object. Do not include any introductory or concluding remarks outside of the JSON structure.',
-                    fieldValue2:
-                        "You are an expert AI assistant specializing in summarizing meeting transcripts. Your primary goal is to extract key information, decisions, action items, and overall sentiment from the provided text and present it in a concise and easily understandable summary. Pay close attention to speaker attributions to accurately reflect who said what and who is responsible for specific tasks. Maintain a professional and objective tone. **Crucially, your final output MUST be a valid JSON object conforming to the specified schema.**",
-                },
-                width: 204,
-                height: 1039,
-                selected: false,
-                positionAbsolute: {
-                    x: 647.0015135318521,
-                    y: -242.42314782393822,
-                },
-                dragging: false,
-            },
-            {
-                id: "NodeNode-8",
-                type: "NodeNode",
-                position: {
-                    x: 100.92019001076864,
-                    y: 167.53203645213102,
-                },
-                data: {
-                    name: "Google Meet",
-                    desc: "Reads the transcript of a Google Meet session based on the provided title or filename. You need a Google Workspace Business Standard or higher subscription.",
-                    isInput: true,
-                    isType: false,
-                    bgcolor: "#34d4ed",
-                    rightHandles: 1,
-                    leftHandles: 0,
-                    targets: ["Transcript"],
-                    fieldValue1: "NodeNode-8",
-                    img: "/meet.png",
-                    category: "Integrations",
-                    fieldValue2: "Node-8",
-                    username: false,
-                },
-                width: 204,
-                height: 200,
-                selected: false,
-                positionAbsolute: {
-                    x: 100.92019001076864,
-                    y: 167.53203645213102,
-                },
-                dragging: false,
-            },
-            {
-                id: "NodeNode-13",
-                type: "NodeNode",
-                position: {
-                    x: 1082.902171565311,
-                    y: 103.19374647138918,
-                },
-                data: {
-                    name: "Gmail",
-                    desc: "Read emails, create drafts or just send one!",
-                    Nodestate: ["Create draft", "Send email", "Read emails"],
-                    isInput: false,
-                    isType: false,
-                    bgcolor: "#ea4335",
-                    rightHandles: 0,
-                    leftHandles: 1,
-                    sources: ["Message"],
-                    targets: [],
-                    fieldValue1: {
-                        isDraft: false,
-                    },
-                    img: "/gmail.png",
-                    category: "Integrations",
-                    fieldValue2: "Node-13",
-                    username: false,
-                },
-                width: 204,
-                height: 200,
-                selected: true,
-                dragging: false,
-                positionAbsolute: {
-                    x: 1082.902171565311,
-                    y: 103.19374647138918,
-                },
-            },
-        ],
-        edges: [
-            {
-                source: "NodeNode-8",
-                sourceHandle: "NodeNode-8-right-handle-0",
-                target: "NodeNode-7",
-                targetHandle: "NodeNode-7-left-handle-2",
-                type: "smoothstep",
-                animated: true,
-                markerEnd: {
-                    type: "arrow",
-                    height: "20px",
-                    width: "40px",
-                    color: "#aaa",
-                },
-                id: "reactflow__edge-NodeNode-8NodeNode-8-right-handle-0-NodeNode-7NodeNode-7-left-handle-2",
-            },
-            {
-                source: "NodeNode-7",
-                sourceHandle: "NodeNode-7-right-handle-0",
-                target: "NodeNode-13",
-                targetHandle: "NodeNode-13-left-handle-0",
-                type: "smoothstep",
-                animated: true,
-                markerEnd: {
-                    type: "arrow",
-                    height: "20px",
-                    width: "40px",
-                    color: "#aaa",
-                },
-                id: "reactflow__edge-NodeNode-7NodeNode-7-right-handle-0-NodeNode-13NodeNode-13-left-handle-0",
-            },
-        ],
-    },
-    {
-        templateName: "Summarize meetings into GDocs",
-        displayImage: "/select.webp",
-        templateId: "template-6",
-        tags: ["Saved"],
-        nodes: [
-            {
-                id: "NodeNode-7",
-                type: "NodeNode",
-                position: {
-                    x: 647.0015135318521,
-                    y: -242.42314782393822,
+                    x: 574.5912623627245,
+                    y: 91.25145588971634,
                 },
                 data: {
                     name: "Gemini",
@@ -5451,11 +7700,11 @@ const templateNodes = [
                         'You are an expert AI assistant specializing in summarizing meeting transcripts. Your primary goal is to extract key information, decisions, action items, and overall sentiment from the provided text and present it in a concise and easily understandable summary. Pay close attention to speaker attributions to accurately reflect who said what and who is responsible for specific tasks. Maintain a professional and objective tone.\n\nCrucially, all output must be strictly formatted as a JSON object with the keys "text" and "title". The "text" field will contain the meeting summary, and the "title" field will contain a concise title for the meeting summary (if inferable, otherwise a generic title like "Meeting Summary").',
                 },
                 width: 204,
-                height: 1207,
+                height: 179,
                 selected: false,
                 positionAbsolute: {
-                    x: 647.0015135318521,
-                    y: -242.42314782393822,
+                    x: 574.5912623627245,
+                    y: 91.25145588971634,
                 },
                 dragging: false,
             },
@@ -5463,8 +7712,8 @@ const templateNodes = [
                 id: "NodeNode-8",
                 type: "NodeNode",
                 position: {
-                    x: 100.92019001076864,
-                    y: 167.53203645213102,
+                    x: 176.92019001076864,
+                    y: 102.53203645213102,
                 },
                 data: {
                     name: "Google Meet",
@@ -5475,18 +7724,18 @@ const templateNodes = [
                     rightHandles: 1,
                     leftHandles: 0,
                     targets: ["Transcript"],
-                    fieldValue1: "NodeNode-8",
+                    fieldValue1: "",
                     img: "/meet.png",
                     category: "Integrations",
                     fieldValue2: "Node-8",
                     username: false,
                 },
                 width: 204,
-                height: 200,
+                height: 198,
                 selected: false,
                 positionAbsolute: {
-                    x: 100.92019001076864,
-                    y: 167.53203645213102,
+                    x: 176.92019001076864,
+                    y: 102.53203645213102,
                 },
                 dragging: false,
             },
@@ -5494,8 +7743,8 @@ const templateNodes = [
                 id: "NodeNode-12",
                 type: "NodeNode",
                 position: {
-                    x: 1020.4876573762315,
-                    y: 102.14888136488531,
+                    x: 934.4876573762315,
+                    y: 90.14888136488531,
                 },
                 data: {
                     name: "GDocs",
@@ -5518,8 +7767,8 @@ const templateNodes = [
                 height: 181,
                 selected: false,
                 positionAbsolute: {
-                    x: 1020.4876573762315,
-                    y: 102.14888136488531,
+                    x: 934.4876573762315,
+                    y: 90.14888136488531,
                 },
                 dragging: false,
             },
@@ -5558,152 +7807,17 @@ const templateNodes = [
         ],
     },
     {
-        templateName: "Summarize meetings",
-        displayImage: "/select.webp",
-        templateId: "template-5",
-        tags: ["Saved"],
-        nodes: [
-            {
-                id: "NodeNode-7",
-                type: "NodeNode",
-                position: {
-                    x: 634.2552719912827,
-                    y: -194.62474204680325,
-                },
-                data: {
-                    name: "Gemini",
-                    isInput: true,
-                    isType: false,
-                    rightHandles: 1,
-                    leftHandles: 3,
-                    bgcolor: "#ffe682",
-                    headColor: "#f5d65b",
-                    img: "/google.png",
-                    category: "LLMs",
-                    sources: ["system", "prompt", "transcript"],
-                    targets: ["response"],
-                    fieldValue1:
-                        "generate a comprehensive yet concise summary of the following Google Meet transcript:\n\n{{transcript}}\n\nIn your summary, please ensure to include the following:\n\n* **Meeting Title/Topic:** (If explicitly mentioned or can be inferred)\n* **Date and Time:** (If explicitly mentioned in the transcript)\n* **Attendees:** (List of individuals who participated, if identifiable)\n* **Key Discussion Points:** (Summarize the main topics discussed and the key takeaways from each)\n* **Decisions Made:** (Clearly list any concrete decisions that were reached during the meeting)\n* **Action Items:** (List all assigned tasks, including who is responsible and the due date if mentioned)\n* **Next Steps:** (Outline any planned follow-up actions or future meetings)\n* **Overall Sentiment/Tone:** (Briefly describe the general atmosphere and focus of the meeting)\n\nPlease format the summary clearly using headings and bullet points for easy readability.",
-                    fieldValue2:
-                        "You are an expert AI assistant specializing in summarizing meeting transcripts. Your primary goal is to extract key information, decisions, action items, and overall sentiment from the provided text and present it in a concise and easily understandable summary. Pay close attention to speaker attributions to accurately reflect who said what and who is responsible for specific tasks. Maintain a professional and objective tone.",
-                },
-                width: 204,
-                height: 919,
-                selected: false,
-                positionAbsolute: {
-                    x: 634.2552719912827,
-                    y: -194.62474204680325,
-                },
-                dragging: false,
-            },
-            {
-                id: "NodeNode-8",
-                type: "NodeNode",
-                position: {
-                    x: 100.92019001076864,
-                    y: 167.53203645213102,
-                },
-                data: {
-                    name: "Google Meet",
-                    desc: "Reads the transcript of a Google Meet session based on the provided title or filename. You need a Google Workspace Business Standard or higher subscription.",
-                    isInput: true,
-                    isType: false,
-                    bgcolor: "#34d4ed",
-                    rightHandles: 1,
-                    leftHandles: 0,
-                    targets: ["Transcript"],
-                    fieldValue1: "NodeNode-8",
-                    img: "/meet.png",
-                    category: "Integrations",
-                    fieldValue2: "Node-8",
-                    username: false,
-                },
-                width: 204,
-                height: 200,
-                selected: false,
-                positionAbsolute: {
-                    x: 100.92019001076864,
-                    y: 167.53203645213102,
-                },
-                dragging: false,
-            },
-            {
-                id: "NodeNode-9",
-                type: "NodeNode",
-                position: {
-                    x: 1092.048621116682,
-                    y: 113.96465110824076,
-                },
-                data: {
-                    name: "Discord",
-                    desc: "Our discord bot will send messages to your requested channel",
-                    isInput: true,
-                    isType: false,
-                    bgcolor: "#5865F2",
-                    rightHandles: 0,
-                    leftHandles: 1,
-                    fieldValue1: "",
-                    sources: ["Message Content"],
-                    img: "/discord.png",
-                    category: "Integrations",
-                    fieldValue2: "Node-9",
-                    username: false,
-                },
-                width: 204,
-                height: 162,
-                selected: true,
-                positionAbsolute: {
-                    x: 1092.048621116682,
-                    y: 113.96465110824076,
-                },
-                dragging: false,
-            },
-        ],
-        edges: [
-            {
-                source: "NodeNode-8",
-                sourceHandle: "NodeNode-8-right-handle-0",
-                target: "NodeNode-7",
-                targetHandle: "NodeNode-7-left-handle-2",
-                type: "smoothstep",
-                animated: true,
-                markerEnd: {
-                    type: "arrow",
-                    height: "20px",
-                    width: "40px",
-                    color: "#aaa",
-                },
-                id: "reactflow__edge-NodeNode-8NodeNode-8-right-handle-0-NodeNode-7NodeNode-7-left-handle-2",
-            },
-            {
-                source: "NodeNode-7",
-                sourceHandle: "NodeNode-7-right-handle-0",
-                target: "NodeNode-9",
-                targetHandle: "NodeNode-9-left-handle-0",
-                type: "smoothstep",
-                animated: true,
-                markerEnd: {
-                    type: "arrow",
-                    height: "20px",
-                    width: "40px",
-                    color: "#aaa",
-                },
-                id: "reactflow__edge-NodeNode-7NodeNode-7-right-handle-0-NodeNode-9NodeNode-9-left-handle-0",
-            },
-        ],
-    },
-    {
-        templateName: "simple email professional generator",
-        displayImage: "/select.webp",
-        templateId: "template-3",
-        tags: ["Saved"],
+        templateName: "Professional Email Formatting Tool",
+        displayImage: star,
+        templateId: "template-28326151",
+        tags: ["Gen AI", "Gmail"],
         nodes: [
             {
                 id: "NodeNode-1",
                 type: "NodeNode",
                 position: {
-                    x: 88,
-                    y: 112.19999694824219,
+                    x: 59,
+                    y: 280.1999969482422,
                 },
                 data: {
                     name: "Input",
@@ -5723,8 +7837,8 @@ const templateNodes = [
                 height: 108,
                 selected: false,
                 positionAbsolute: {
-                    x: 88,
-                    y: 112.19999694824219,
+                    x: 59,
+                    y: 280.1999969482422,
                 },
                 dragging: false,
             },
@@ -5732,8 +7846,8 @@ const templateNodes = [
                 id: "NodeNode-4",
                 type: "NodeNode",
                 position: {
-                    x: 1059,
-                    y: 104.19999694824219,
+                    x: 743,
+                    y: 296.1999969482422,
                 },
                 data: {
                     name: "Gmail",
@@ -5748,7 +7862,7 @@ const templateNodes = [
                     targets: [],
                     fieldValue1: {
                         1: "",
-                        isDraft: false,
+                        isDraft: true,
                     },
                     img: "/gmail.png",
                     category: "Integrations",
@@ -5757,10 +7871,10 @@ const templateNodes = [
                 },
                 width: 204,
                 height: 200,
-                selected: true,
+                selected: false,
                 positionAbsolute: {
-                    x: 1059,
-                    y: 104.19999694824219,
+                    x: 743,
+                    y: 296.1999969482422,
                 },
                 dragging: false,
             },
@@ -5768,8 +7882,8 @@ const templateNodes = [
                 id: "NodeNode-5",
                 type: "NodeNode",
                 position: {
-                    x: 623.0000000000001,
-                    y: -4.8000030517578125,
+                    x: 375.0000000000001,
+                    y: 53.19999694824219,
                 },
                 data: {
                     name: "OpenAI",
@@ -5789,12 +7903,12 @@ const templateNodes = [
                         'You are an AI assistant designed to help users create professional and engaging emails. Your task is to generate the subject line and body of an email based on the user\'s query and the provided context. Ensure that the tone and content align with the purpose of the communication, whether it’s formal, casual, or promotional. The output must be formatted as a JSON object with two keys: "subject" for the email subject line and "text" for the email body.',
                 },
                 width: 204,
-                height: 835,
+                height: 179,
                 selected: false,
                 dragging: false,
                 positionAbsolute: {
-                    x: 623.0000000000001,
-                    y: -4.8000030517578125,
+                    x: 375.0000000000001,
+                    y: 53.19999694824219,
                 },
             },
         ],
@@ -5830,6 +7944,385 @@ const templateNodes = [
                 id: "reactflow__edge-NodeNode-5NodeNode-5-right-handle-0-NodeNode-4NodeNode-4-left-handle-0",
             },
         ],
+    },
+    {
+        templateName: "Chat with GForms",
+        displayImage: star,
+        templateId: "template-900",
+        tags: ["Gen AI"],
+        nodes: [
+            {
+                id: "NodeNode-60",
+                type: "NodeNode",
+                position: {
+                    x: 198.66066437825123,
+                    y: 306.9573588427913,
+                },
+                data: {
+                    name: "Input",
+                    isInput: true,
+                    isType: true,
+                    bgcolor: "#498bf5",
+                    rightHandles: 1,
+                    leftHandles: 0,
+                    img: "/input.png",
+                    category: "General",
+                    targets: ["Query"],
+                    sources: [],
+                    fieldValue1: "Query",
+                    fieldValue2: "Node-60",
+                },
+                width: 204,
+                height: 108,
+                selected: false,
+                positionAbsolute: {
+                    x: 198.66066437825123,
+                    y: 306.9573588427913,
+                },
+                dragging: false,
+            },
+            {
+                id: "NodeNode-61",
+                type: "NodeNode",
+                position: {
+                    x: 198.66140338414112,
+                    y: 82.89238068267395,
+                },
+                data: {
+                    name: "GForms",
+                    desc: "Reads a Google Form based on the provided identifier (title, link, or form ID).",
+                    isInput: true,
+                    isType: false,
+                    bgcolor: "#9434ed",
+                    rightHandles: 1,
+                    leftHandles: 0,
+                    targets: ["Form Data"],
+                    fieldValue1: "",
+                    img: "/forms.png",
+                    category: "Integrations",
+                    fieldValue2: "Node-61",
+                    username: false,
+                },
+                width: 204,
+                height: 174,
+                selected: false,
+                positionAbsolute: {
+                    x: 198.66140338414112,
+                    y: 82.89238068267395,
+                },
+                dragging: false,
+            },
+            {
+                id: "NodeNode-63",
+                type: "NodeNode",
+                position: {
+                    x: 606.6694573634256,
+                    y: 125.4185561300315,
+                },
+                data: {
+                    name: "Gemini",
+                    isInput: true,
+                    isType: false,
+                    rightHandles: 1,
+                    leftHandles: 4,
+                    bgcolor: "#ffe682",
+                    headColor: "#f5d65b",
+                    img: "/google.png",
+                    category: "LLMs",
+                    sources: ["system", "prompt", "data", "query"],
+                    targets: ["response"],
+                    fieldValue1:
+                        "Here is the data collected from the Google Form:\n\n{{data}}\n\nUser query: {{query}}",
+                    fieldValue2:
+                        "You are a helpful and knowledgeable AI assistant designed to understand and answer questions based on data retrieved from the Google Forms API. You have access to structured data representing responses submitted through a Google Form. Each response consists of answers to the questions defined in the form. The structure of the data will be provided in the main prompt, typically as a list of dictionaries or a similar structured format, where each dictionary represents a single form submission and keys correspond to the form questions or their identifiers.\n\nYour primary goal is to accurately answer user questions by analyzing this structured data. You can perform various operations such as filtering responses based on specific answers, counting occurrences of certain responses, identifying trends, and summarizing the data.\n\nWhen answering, be concise and directly address the user's query. Clearly state the steps you took or the logic you applied to arrive at the answer. If a question cannot be answered based on the provided data, politely state that.\n\nPay close attention to the data types of the responses. Be mindful that some responses might be free-text answers, while others might be multiple-choice selections or numerical values.\n\nWhen presenting data, format it clearly and understandably, potentially using lists, tables, or summaries as appropriate. Avoid making assumptions or bringing in outside information unless explicitly asked to do so in relation to the provided form data.",
+                },
+                width: 204,
+                height: 1003,
+                selected: false,
+                positionAbsolute: {
+                    x: 606.6694573634256,
+                    y: 125.4185561300315,
+                },
+                dragging: false,
+            },
+            {
+                id: "NodeNode-65",
+                type: "NodeNode",
+                position: {
+                    x: 949.8514217393541,
+                    y: 169.84292997434642,
+                },
+                data: {
+                    name: "Output",
+                    isInput: true,
+                    isType: true,
+                    bgcolor: "#58c742",
+                    rightHandles: 0,
+                    leftHandles: 1,
+                    img: "/output.png",
+                    category: "General",
+                    sources: ["Output"],
+                    fieldValue1: "Node-65",
+                    fieldValue2: "Node-65",
+                },
+                width: 204,
+                height: 108,
+                selected: true,
+                positionAbsolute: {
+                    x: 949.8514217393541,
+                    y: 169.84292997434642,
+                },
+                dragging: false,
+            },
+        ],
+        edges: [
+            {
+                source: "NodeNode-61",
+                sourceHandle: "NodeNode-61-right-handle-0",
+                target: "NodeNode-63",
+                targetHandle: "NodeNode-63-left-handle-2",
+                type: "smoothstep",
+                animated: true,
+                markerEnd: {
+                    type: "arrow",
+                    height: "20px",
+                    width: "40px",
+                    color: "#aaa",
+                },
+                id: "reactflow__edge-NodeNode-61NodeNode-61-right-handle-0-NodeNode-63NodeNode-63-left-handle-2",
+            },
+            {
+                source: "NodeNode-60",
+                sourceHandle: "NodeNode-60-right-handle-0",
+                target: "NodeNode-63",
+                targetHandle: "NodeNode-63-left-handle-3",
+                type: "smoothstep",
+                animated: true,
+                markerEnd: {
+                    type: "arrow",
+                    height: "20px",
+                    width: "40px",
+                    color: "#aaa",
+                },
+                id: "reactflow__edge-NodeNode-60NodeNode-60-right-handle-0-NodeNode-63NodeNode-63-left-handle-3",
+            },
+            {
+                source: "NodeNode-63",
+                sourceHandle: "NodeNode-63-right-handle-0",
+                target: "NodeNode-65",
+                targetHandle: "NodeNode-65-left-handle-0",
+                type: "smoothstep",
+                animated: true,
+                markerEnd: {
+                    type: "arrow",
+                    height: "20px",
+                    width: "40px",
+                    color: "#aaa",
+                },
+                id: "reactflow__edge-NodeNode-63NodeNode-63-right-handle-0-NodeNode-65NodeNode-65-left-handle-0",
+            },
+        ],
+    },
+    {
+        "templateName": "Simple Email Draft",
+        "displayImage": gmail,
+        "templateId": "template-312123",
+        "tags": [
+          "Gmail", "Discord", "assistant"
+        ],
+        "nodes": [
+          {
+            "id": "NodeNode-102",
+            "type": "NodeNode",
+            "position": {
+              "x": 522,
+              "y": 445.1999969482422
+            },
+            "data": {
+              "name": "Input",
+              "isInput": true,
+              "isType": true,
+              "bgcolor": "#498bf5",
+              "rightHandles": 1,
+              "leftHandles": 0,
+              "img": "/input.png",
+              "category": "General",
+              "targets": [
+                "address"
+              ],
+              "sources": [],
+              "fieldValue1": "address",
+              "fieldValue2": "✨"
+            },
+            "width": 204,
+            "height": 108,
+            "selected": false,
+            "positionAbsolute": {
+              "x": 522,
+              "y": 445.1999969482422
+            },
+            "dragging": false
+          },
+          {
+            "id": "NodeNode-104",
+            "type": "NodeNode",
+            "position": {
+              "x": 186,
+              "y": 138.1999969482422
+            },
+            "data": {
+              "name": "Input",
+              "isInput": true,
+              "isType": true,
+              "bgcolor": "#498bf5",
+              "rightHandles": 1,
+              "leftHandles": 0,
+              "img": "/input.png",
+              "category": "General",
+              "targets": [
+                "query"
+              ],
+              "sources": [],
+              "fieldValue1": "query",
+              "fieldValue2": "✨"
+            },
+            "width": 204,
+            "height": 108,
+            "selected": false,
+            "positionAbsolute": {
+              "x": 186,
+              "y": 138.1999969482422
+            },
+            "dragging": false
+          },
+          {
+            "id": "NodeNode-105",
+            "type": "NodeNode",
+            "position": {
+              "x": 525,
+              "y": 113.19999694824219
+            },
+            "data": {
+              "name": "Gemini",
+              "isInput": true,
+              "isType": false,
+              "rightHandles": 1,
+              "leftHandles": 3,
+              "bgcolor": "#ffe682",
+              "headColor": "#f5d65b",
+              "img": "/google.png",
+              "category": "LLMs",
+              "sources": [
+                "system",
+                "prompt",
+                "query"
+              ],
+              "targets": [
+                "response"
+              ],
+              "fieldValue1": "User query: {{query}}",
+              "fieldValue2": "You are an expert AI email assistant. Generate a professional and effective email based *solely* on the user's query. Aim for clarity, conciseness, and a suitable tone. Output *only* the complete email."
+            },
+            "width": 204,
+            "height": 271,
+            "selected": false,
+            "positionAbsolute": {
+              "x": 525,
+              "y": 113.19999694824219
+            },
+            "dragging": false
+          },
+          {
+            "id": "NodeNode-106",
+            "type": "NodeNode",
+            "position": {
+              "x": 891,
+              "y": 125.19999694824219
+            },
+            "data": {
+              "name": "Gmail",
+              "desc": "Read emails, create drafts or just send one!",
+              "Nodestate": [
+                "Create draft",
+                "Send email",
+                "Read emails"
+              ],
+              "isInput": false,
+              "isType": false,
+              "bgcolor": "#ea4335",
+              "rightHandles": 0,
+              "leftHandles": 2,
+              "sources": [
+                "Message",
+                "address"
+              ],
+              "targets": [],
+              "fieldValue1": {
+                "1": "{{address}}",
+                "isDraft": true
+              },
+              "img": "/gmail.png",
+              "category": "Integrations",
+              "fieldValue2": "✨",
+              "username": "a@m.com"
+            },
+            "width": 204,
+            "height": 200,
+            "selected": false,
+            "positionAbsolute": {
+              "x": 891,
+              "y": 125.19999694824219
+            },
+            "dragging": false
+          }
+        ],
+        "edges": [
+          {
+            "source": "NodeNode-104",
+            "sourceHandle": "NodeNode-104-right-handle-0",
+            "target": "NodeNode-105",
+            "targetHandle": "NodeNode-105-left-handle-2",
+            "type": "smoothstep",
+            "animated": true,
+            "markerEnd": {
+              "type": "arrow",
+              "height": "20px",
+              "width": "40px",
+              "color": "#aaa"
+            },
+            "id": "reactflow__edge-NodeNode-104NodeNode-104-right-handle-0-NodeNode-105NodeNode-105-left-handle-2"
+          },
+          {
+            "source": "NodeNode-105",
+            "sourceHandle": "NodeNode-105-right-handle-0",
+            "target": "NodeNode-106",
+            "targetHandle": "NodeNode-106-left-handle-0",
+            "type": "smoothstep",
+            "animated": true,
+            "markerEnd": {
+              "type": "arrow",
+              "height": "20px",
+              "width": "40px",
+              "color": "#aaa"
+            },
+            "id": "reactflow__edge-NodeNode-105NodeNode-105-right-handle-0-NodeNode-106NodeNode-106-left-handle-0"
+          },
+          {
+            "source": "NodeNode-102",
+            "sourceHandle": "NodeNode-102-right-handle-0",
+            "target": "NodeNode-106",
+            "targetHandle": "NodeNode-106-left-handle-1",
+            "type": "smoothstep",
+            "animated": true,
+            "markerEnd": {
+              "type": "arrow",
+              "height": "20px",
+              "width": "40px",
+              "color": "#aaa"
+            },
+            "id": "reactflow__edge-NodeNode-102NodeNode-102-right-handle-0-NodeNode-106NodeNode-106-left-handle-1"
+          }
+        ]
     },
 ];
 

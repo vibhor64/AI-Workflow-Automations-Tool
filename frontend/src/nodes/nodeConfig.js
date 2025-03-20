@@ -298,6 +298,7 @@ const newNodesConfig = [
     type: 'NodeNode',
     data: {
       name: 'Database (RAG)',
+      desc: 'Fetches only the relevant text chunks from the database',
       isInput: false,
       isType: false,
       rightHandles: 1,

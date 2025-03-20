@@ -38,7 +38,7 @@ export const DraggableNode = ({ type, label, configId, img, name }) => {
         fontSize: '11px',
         boxShadow: hover ? ' rgba(100, 100, 111, 0.2) 0px 7px 29px 0px' : 'none',
         transition: 'all 0.2s ease',
-      
+        
       }}
       draggable={name === 'Coming Soon' ? false : true}
       onMouseEnter={() => setHover(true)}

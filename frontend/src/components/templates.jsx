@@ -549,14 +549,19 @@ export const Templates = () => {
                                 Gmail
                             </button>
                             <button
+                                onClick={() => setContent("Discord")}
+                                className={styles.buttons}>
+                                Discord
+                            </button>
+                            <button
+                                onClick={() => setContent("Assistant")}
+                                className={styles.buttons}>
+                                Assistant
+                            </button>
+                            <button
                                 onClick={() => setContent("Gen AI")}
                                 className={styles.buttons}>
                                 Gen AI
-                            </button>
-                            <button
-                                onClick={() => setContent("YouTube")}
-                                className={styles.buttons}>
-                                YouTube
                             </button>
                             <button
                                 onClick={() => setContent("Saved")}
@@ -630,7 +635,8 @@ export const Templates = () => {
                                             marginRight: "20px",
                                             display: "flex",
                                             flexDirection: "column",
-                                            border: "0px solid #2d4ecf",
+                                            border: "2px solid #000",
+                                            borderRadius: 20, boxShadow: '-6px 6px 0px 0px rgba(42, 42, 42, .85)', borderWidth: 1.7, borderColor: '#000', 
                                             cursor: "pointer",
                                             marginBottom: "20px",
                                         }}>

@@ -60,7 +60,7 @@ export const NewNode = ({ id, data, position }) => {
 
     const [status, setStatus] = useState(null);
     const [nodeState, setNodeState] = useState();
-    const [inputType, setInputType] = useState(id || "Text");
+    const [inputType, setInputType] = useState(fieldValue1 || "🖊️");
     const initialName =
         name === "GForms" ||
         name === "Google Meet" ||
@@ -68,8 +68,8 @@ export const NewNode = ({ id, data, position }) => {
         name === "Discord" ||
         category === "Knowledge Base"
             ? inputType
-            : fieldValue1 || `Node-${id.split("-")[1]}`;
-    const initialName2 = fieldValue2 || `Node-${id.split("-")[1]}`;
+            : fieldValue1 || ``;
+    const initialName2 = fieldValue2 || `✨`;
     const [currName, setCurrName] = useState(initialName);
     const [currName2, setCurrName2] = useState(initialName2);
     const [LH, setLH] = useState(leftHandles);
@@ -287,16 +287,23 @@ export const NewNode = ({ id, data, position }) => {
         setIntegrationValue1(s);
         updateNodeField(id, "fieldValue1", { ...fieldValue1, 1: s }); // to, max_results, doc indentifier
 
-        if (name != "Gmail" && name != "GSheets" && name != "Airtable") {
+        if (name != "GSheets" && name != "Airtable") {
             const matches = getVariableCount(s.trim());
             const variableCount = matches.length;
-            updateHandleCount(variableCount + LH);
-            updateNodeField(id, "leftHandles", variableCount + LH);
+            if (name==="Gmail" || name==="GSheets" || name==="Airtable"){
+                updateHandleCount(variableCount + LH+1);
+                updateNodeField(id, "leftHandles", variableCount + LH+1);
+            }
+            else{
+                updateHandleCount(variableCount + LH);
+                updateNodeField(id, "leftHandles", variableCount + LH);
+            }
             if (!initSources) {
                 setInitSources([]);
             }
             const updatedSources = initSources?.concat(matches);
             updateNodeField(id, "sources", updatedSources);
+            
         }
     };
 
@@ -304,6 +311,7 @@ export const NewNode = ({ id, data, position }) => {
         setIntegrationValue2(s);
         updateNodeField(id, "fieldValue1", { ...fieldValue1, 2: s }); // labels
 
+        if (name=== 'Gmail') return
         const matches = getVariableCount(s.trim());
         const variableCount = matches.length;
         updateHandleCount(variableCount + LH);
@@ -312,57 +320,12 @@ export const NewNode = ({ id, data, position }) => {
             setInitSources([]);
         }
         const updatedSources = initSources?.concat(matches);
-        if (name === "Gmail") {
-            updateNodeField(id, "sources", matches);
-        } else {
-            updateNodeField(id, "sources", updatedSources);
-        }
+        
+        updateNodeField(id, "sources", updatedSources);
+        
     };
 
-    // const handleValueList = (index, s) => {
-    //     // setValueArray((prev) => ({ ...prev, [index]: s }));
-    //     // updateNodeField(id, "fieldValue2", { ...fieldValue2, [index]: s });
-
-    //     setValueArray((prev) => {
-    //         const updatedValueArray = { ...prev, [index]: s };
-    //         updateNodeField(id, "fieldValue2", updatedValueArray);
-    //         return updatedValueArray;
-    //     });
-
-    //     // Identify user-defined variables in the new input
-    //     const matches = getVariableCount(s.trim());
-    //     const newVariableSet = new Set(matches);
-
-    //     // Retrieve previous variables for this index
-    //     const prevMatches = leftHandleCounterArray[index] || [];
-    //     const prevVariableSet = new Set(prevMatches);
-
-    //     // Calculate variables added and removed
-    //     const addedVariables = [...newVariableSet].filter(
-    //         (v) => !prevVariableSet.has(v)
-    //     );
-    //     const removedVariables = [...prevVariableSet].filter(
-    //         (v) => !newVariableSet.has(v)
-    //     );
-
-    //     // Update leftHandles count
-    //     const newLeftHandles =
-    //         leftHandles + addedVariables.length - removedVariables.length;
-    //     updateHandleCount(newLeftHandles);
-    //     updateNodeField(id, "leftHandles", newLeftHandles);
-
-    //     // Update sources array
-    //     const updatedSources = [
-    //         ...sources.filter((v) => !removedVariables.includes(v)), // Remove old variables
-    //         ...addedVariables, // Add new variables
-    //     ];
-    //     updateNodeField(id, "sources", updatedSources);
-
-    //     // Store the updated variable list for this index
-    //     leftHandleCounterArray[index] = matches;
-    // };
-
-    // Claude's version
+    // New paradigm
     const handleValueList = (index, s) => {
         // Update value array and fieldValue2
         setValueArray((prev) => {
@@ -965,7 +928,7 @@ export const NewNode = ({ id, data, position }) => {
                                             onFocus={() => setIsFocused(2)}
                                             onBlur={() => setIsFocused(0)}
                                             rows={1}
-                                            placeholder="Eg. 100"
+                                            placeholder="100"
                                             style={{
                                                 marginTop: "2px",
                                                 fontFamily: "Inter",

@@ -64,8 +64,9 @@ export const PipelineToolbar = () => {
                                 selectedCategory === category ? "#fff" : "#333",
                             boxShadow:
                                 selectedCategory === category
-                                    ? " rgba(17, 12, 46, 0.15) 0px 48px 100px 0px"
+                                    ? '-4px 4px 0px 0px rgba(42, 42, 42, .85)'
                                     : "none",
+                                    borderRadius: 20, borderWidth: 1.7, borderColor: '#000', 
                         }}
                         onMouseEnter={() => setHoveredCategory(category)}
                         onMouseLeave={() => setHoveredCategory(null)}
@@ -88,7 +89,7 @@ export const PipelineToolbar = () => {
                     WebkitOverflowScrolling: "touch",
                     scrollbarWidth: "none",
                     msOverflowStyle: "none",
-                    boxShadow: ''
+                    boxShadow: '',
                 }}>
                 {newNodesConfig
                     .filter(
