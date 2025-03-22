@@ -25,12 +25,12 @@ yarn-debug.log*
 yarn-error.log*
 
 # landing page
-/landing page/node_modules
-/landing page/.next/
-/landing page/out/
-/landing page/.DS_Store
-/landing page/*.pem
-/landing page/npm-debug.log*
-/landing page/.vercel
-/landing page/*.tsbuildinfo
-/landing page/next-env.d.ts
+"/landing page/node_modules"
+"/landing page/.next/"
+"/landing page/out/"
+"/landing page/.DS_Store"
+"/landing page/*.pem"
+"/landing page/npm-debug.lo"
+"/landing page/.vercel"
+"/landing page/*.tsbuildinf"
+"/landing page/next-env.d.t"
