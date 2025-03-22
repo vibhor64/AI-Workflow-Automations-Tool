@@ -64,6 +64,12 @@ export const useStore = create((set, get) => ({
     });
   },
   loadTemplate: (template) => {
+    // Clear existing nodes and edges
+    set({
+      nodes: [],
+      edges: [],
+    });
+    
     // Create deep copies of the template data to prevent reference issues
     const templateNodes = template.nodes.map(node => ({
       ...node,

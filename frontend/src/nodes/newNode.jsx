@@ -80,7 +80,7 @@ export const NewNode = ({ id, data, position }) => {
     const [hoverClose, setHoverClose] = useState(false);
     const [globalHover, setGlobalHover] = useState(0);
     const [initSources, setInitSources] = useState(sources);
-    const [integrationValue1, setIntegrationValue1] = useState("");
+    const [integrationValue1, setIntegrationValue1] = useState(fieldValue1?.["1"] || "");
     const [integrationValue2, setIntegrationValue2] = useState("");
     const valueList = [];
     const lhList = [];

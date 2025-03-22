@@ -10,12 +10,14 @@ import { NewNode } from "./nodes/newNode";
 import { newNodesConfig } from "./nodes/nodeConfig";
 import RocketImg from "/rocket.png";
 import Reset from "/reset.png";
+import Help from "/help.svg";
 import axios from "axios";
 import { Templates } from "./components/templates";
 import { useNavigate } from "react-router-dom";
 // import './CreateDatabase.css';
 
 import "reactflow/dist/style.css";
+import Onboarding from "./components/onboarding";
 
 const gridSize = 10;
 const proOptions = { hideAttribution: true };
@@ -49,8 +51,13 @@ export const PipelineUI = () => {
         clearCanvas,
         createDeployment,
     } = useStore(selector, shallow);
-
+    
     const [hover, setHover] = useState(false);
+    const [onboarding, setOnboarding] = useState(false);
+    if (!sessionStorage.getItem("new_user")){
+        sessionStorage.setItem("new_user", "1");
+        setOnboarding(true);
+    } 
 
     const onDrop = useCallback(
         (event) => {
@@ -332,7 +339,67 @@ export const PipelineUI = () => {
                         Reset
                     </p>
                 </div>
+
+                {/* Help */}
+                <div
+                    style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        position: "absolute",
+                        bottom: "60px",
+                        height: "10vh",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        right: "15rem",
+                    }}>
+                    <button
+                        style={{
+                            backgroundColor: "#d1d1d1",
+                            borderRadius: "10px",
+                            border: "0px solid #d1d1d1",
+                            color: "#fff",
+                            cursor: "pointer",
+                            display: "inline-block",
+                            // fontFamily: 'Poppins',
+                            fontSize: "18px",
+                            fontWeight: 700,
+                            listStyle: "none",
+                            margin: "0",
+                            padding: "5px 5px",
+                            textAlign: "center",
+                            transition: "all 200ms",
+                            verticalAlign: "baseline",
+                            whiteSpace: "nowrap",
+                            userSelect: "none",
+                            WebkitUserSelect: "none",
+                            touchAction: "manipulation",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            boxShadow:
+                                " rgba(100, 100, 111, 0.2) 0px 7px 29px 0px",
+                        }}
+                        onClick={()=>setOnboarding(true)}
+                        type="submit" title="Help">
+                        <img
+                            src={Help}
+                            alt="Help"
+                            style={{ width: "20px", height: "20px" }}
+                        />
+                    </button>
+                    <p
+                        style={{
+                            fontSize: "12px",
+                            color: "#d1d1d1",
+                            marginTop: "2px",
+                            fontWeight: 500,
+                        }}>
+                        Help
+                    </p>
+                </div>
                 <Templates />
+                {onboarding && 
+                <Onboarding setOnboarding={setOnboarding}/>}
             </div>
         </>
     );

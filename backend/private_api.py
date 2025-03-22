@@ -329,13 +329,15 @@ def refresh(response: Response, refresh_token: str = Cookie(None)):
 @private_app.post("/logout")
 async def logout(response: Response):
     # Clear the refresh_token cookie
-    response.delete_cookie(
-        key="refresh_token",
-        path="/",
-        httponly=True,
-        secure=True,
-        samesite="none"
-    )
+    # response.delete_cookie(
+    #     key="refresh_token",
+    #     path="/",
+    #     httponly=True,
+    #     secure=True,
+    #     samesite="none"
+    # )
+    response.headers["Set-Cookie"] = f"refresh_token=; HttpOnly; Secure; SameSite=None; Partitioned; Max-Age=0; Path=/"
+    
     print("Logout successful")
     return {"message": "Logged out successfully"}
 

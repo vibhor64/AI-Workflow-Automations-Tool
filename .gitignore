@@ -15,6 +15,7 @@
 /frontend/.env.development.local
 /frontend/.env.test.local
 /frontend/.env.production.local
+/webhooks/.env
 
 # misc
 .DS_Store

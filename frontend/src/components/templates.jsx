@@ -96,17 +96,17 @@ export const Templates = () => {
         addTemplate(newTemplate);
 
         // Convert to JSON and trigger download
-        const jsonString = JSON.stringify(newTemplate, null, 2); // Pretty print JSON
-        const blob = new Blob([jsonString], { type: "application/json" });
-        const url = URL.createObjectURL(blob);
+        // const jsonString = JSON.stringify(newTemplate, null, 2); // Pretty print JSON
+        // const blob = new Blob([jsonString], { type: "application/json" });
+        // const url = URL.createObjectURL(blob);
 
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `${newTemplate.templateName || "template"}.json`; // Filename
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url); // Cleanup
+        // const a = document.createElement("a");
+        // a.href = url;
+        // a.download = `${newTemplate.templateName || "template"}.json`; // Filename
+        // document.body.appendChild(a);
+        // a.click();
+        // document.body.removeChild(a);
+        // URL.revokeObjectURL(url); // Cleanup
     };
 
     const navigate = useNavigate();

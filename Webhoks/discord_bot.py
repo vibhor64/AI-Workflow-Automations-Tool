@@ -88,5 +88,5 @@ async def on_message(message):
     return {"status": "executed", "message": message.content}
 
 # Start the client
-client.run(TOKEN)
+client.run(str(TOKEN))
 

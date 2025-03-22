@@ -1,7 +1,6 @@
 import gmail from "/gmail.png";
 import bot from "/bot.png";
 import star from "/star.png";
-import forms from "/forms.png";
 import discord from "/discord.png";
 import sheet from "/sheets.png";
 
@@ -6923,7 +6922,7 @@ const templateNodes = [
     {
         "templateName": "Write Emails With Discord",
         "displayImage": discord,
-        "templateId": "template-21",
+        "templateId": "template-2137300",
         "tags": [
           "Discord", "Gmail"
         ],

@@ -34,7 +34,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/vibhor64/AI-Workflow-Automations-Tool">
-    <img src="frontend/src/assets/weavebot logo 2.png" alt="Logo" width="80" height="80">
+    <img src="frontend/public/favicon.png" alt="Logo" width="80" height="80">
   </a>
 
   <h3 align="center">Weavebot</h3>
